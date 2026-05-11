@@ -1,0 +1,17 @@
+2026-05-11 07:46:34 - {"update_id":617871261,
+"message":{"message_id":63,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485590,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}
+2026-05-11 07:46:36 - {"update_id":617871261,
+"message":{"message_id":63,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485590,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}
+2026-05-11 07:46:40 - {"update_id":617871261,
+"message":{"message_id":63,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485590,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}
+2026-05-11 07:46:46 - {"update_id":617871261,
+"message":{"message_id":63,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485590,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}
+2026-05-11 07:46:56 - {"update_id":617871261,
+"message":{"message_id":63,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485590,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}
+2026-05-11 07:47:14 - {"update_id":617871261,
+"message":{"message_id":63,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485590,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}
+2026-05-11 07:47:31 - 
+2026-05-11 07:47:48 - {"update_id":617871261,
+"message":{"message_id":63,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485590,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}
+2026-05-11 07:48:54 - {"update_id":617871261,
+"message":{"message_id":63,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485590,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}

@@ -1,0 +1,550 @@
+2026-05-11 07:31:57 - Array
+(
+    [update_id] => 617871258
+    [message] => Array
+        (
+            [message_id] => 58
+            [from] => Array
+                (
+                    [id] => 6103145555
+                    [is_bot] => 
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [language_code] => en
+                )
+
+            [chat] => Array
+                (
+                    [id] => 6103145555
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [type] => private
+                )
+
+            [date] => 1778484715
+            [text] => /start
+            [entities] => Array
+                (
+                    [0] => Array
+                        (
+                            [offset] => 0
+                            [length] => 6
+                            [type] => bot_command
+                        )
+
+                )
+
+        )
+
+)
+
+2026-05-11 07:31:58 - Response: 
+2026-05-11 07:36:07 - Array
+(
+    [update_id] => 617871259
+    [message] => Array
+        (
+            [message_id] => 59
+            [from] => Array
+                (
+                    [id] => 6103145555
+                    [is_bot] => 
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [language_code] => en
+                )
+
+            [chat] => Array
+                (
+                    [id] => 6103145555
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [type] => private
+                )
+
+            [date] => 1778484824
+            [text] => /start
+            [entities] => Array
+                (
+                    [0] => Array
+                        (
+                            [offset] => 0
+                            [length] => 6
+                            [type] => bot_command
+                        )
+
+                )
+
+        )
+
+)
+
+2026-05-11 07:36:09 - Response: {"ok":true,"result":{"message_id":60,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778484968,"text":"Halo ekobudi17! Selamat datang di bot saya."}}
+2026-05-11 07:36:15 - Array
+(
+    [update_id] => 617871260
+    [message] => Array
+        (
+            [message_id] => 61
+            [from] => Array
+                (
+                    [id] => 6103145555
+                    [is_bot] => 
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [language_code] => en
+                )
+
+            [chat] => Array
+                (
+                    [id] => 6103145555
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [type] => private
+                )
+
+            [date] => 1778484974
+            [text] => /start
+            [entities] => Array
+                (
+                    [0] => Array
+                        (
+                            [offset] => 0
+                            [length] => 6
+                            [type] => bot_command
+                        )
+
+                )
+
+        )
+
+)
+
+2026-05-11 07:36:17 - Response: {"ok":true,"result":{"message_id":62,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778484975,"text":"Halo ekobudi17! Selamat datang di bot saya."}}
+2026-05-11 07:46:32 - Array
+(
+    [update_id] => 617871261
+    [message] => Array
+        (
+            [message_id] => 63
+            [from] => Array
+                (
+                    [id] => 6103145555
+                    [is_bot] => 
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [language_code] => en
+                )
+
+            [chat] => Array
+                (
+                    [id] => 6103145555
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [type] => private
+                )
+
+            [date] => 1778485590
+            [text] => /start
+            [entities] => Array
+                (
+                    [0] => Array
+                        (
+                            [offset] => 0
+                            [length] => 6
+                            [type] => bot_command
+                        )
+
+                )
+
+        )
+
+)
+
+2026-05-11 07:46:34 - Response: {"ok":true,"result":{"message_id":64,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485593,"text":"Halo ekobudi17! Selamat datang di bot saya."}}
+2026-05-11 07:46:34 - Array
+(
+    [update_id] => 617871261
+    [message] => Array
+        (
+            [message_id] => 63
+            [from] => Array
+                (
+                    [id] => 6103145555
+                    [is_bot] => 
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [language_code] => en
+                )
+
+            [chat] => Array
+                (
+                    [id] => 6103145555
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [type] => private
+                )
+
+            [date] => 1778485590
+            [text] => /start
+            [entities] => Array
+                (
+                    [0] => Array
+                        (
+                            [offset] => 0
+                            [length] => 6
+                            [type] => bot_command
+                        )
+
+                )
+
+        )
+
+)
+
+2026-05-11 07:46:36 - Response: {"ok":true,"result":{"message_id":65,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485594,"text":"Halo ekobudi17! Selamat datang di bot saya."}}
+2026-05-11 07:46:38 - Array
+(
+    [update_id] => 617871261
+    [message] => Array
+        (
+            [message_id] => 63
+            [from] => Array
+                (
+                    [id] => 6103145555
+                    [is_bot] => 
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [language_code] => en
+                )
+
+            [chat] => Array
+                (
+                    [id] => 6103145555
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [type] => private
+                )
+
+            [date] => 1778485590
+            [text] => /start
+            [entities] => Array
+                (
+                    [0] => Array
+                        (
+                            [offset] => 0
+                            [length] => 6
+                            [type] => bot_command
+                        )
+
+                )
+
+        )
+
+)
+
+2026-05-11 07:46:40 - Response: {"ok":true,"result":{"message_id":66,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485598,"text":"Halo ekobudi17! Selamat datang di bot saya."}}
+2026-05-11 07:46:44 - Array
+(
+    [update_id] => 617871261
+    [message] => Array
+        (
+            [message_id] => 63
+            [from] => Array
+                (
+                    [id] => 6103145555
+                    [is_bot] => 
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [language_code] => en
+                )
+
+            [chat] => Array
+                (
+                    [id] => 6103145555
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [type] => private
+                )
+
+            [date] => 1778485590
+            [text] => /start
+            [entities] => Array
+                (
+                    [0] => Array
+                        (
+                            [offset] => 0
+                            [length] => 6
+                            [type] => bot_command
+                        )
+
+                )
+
+        )
+
+)
+
+2026-05-11 07:46:46 - Response: {"ok":true,"result":{"message_id":67,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485604,"text":"Halo ekobudi17! Selamat datang di bot saya."}}
+2026-05-11 07:46:54 - Array
+(
+    [update_id] => 617871261
+    [message] => Array
+        (
+            [message_id] => 63
+            [from] => Array
+                (
+                    [id] => 6103145555
+                    [is_bot] => 
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [language_code] => en
+                )
+
+            [chat] => Array
+                (
+                    [id] => 6103145555
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [type] => private
+                )
+
+            [date] => 1778485590
+            [text] => /start
+            [entities] => Array
+                (
+                    [0] => Array
+                        (
+                            [offset] => 0
+                            [length] => 6
+                            [type] => bot_command
+                        )
+
+                )
+
+        )
+
+)
+
+2026-05-11 07:46:56 - Response: {"ok":true,"result":{"message_id":68,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485614,"text":"Halo ekobudi17! Selamat datang di bot saya."}}
+2026-05-11 07:47:12 - Array
+(
+    [update_id] => 617871261
+    [message] => Array
+        (
+            [message_id] => 63
+            [from] => Array
+                (
+                    [id] => 6103145555
+                    [is_bot] => 
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [language_code] => en
+                )
+
+            [chat] => Array
+                (
+                    [id] => 6103145555
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [type] => private
+                )
+
+            [date] => 1778485590
+            [text] => /start
+            [entities] => Array
+                (
+                    [0] => Array
+                        (
+                            [offset] => 0
+                            [length] => 6
+                            [type] => bot_command
+                        )
+
+                )
+
+        )
+
+)
+
+2026-05-11 07:47:14 - Response: {"ok":true,"result":{"message_id":70,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485632,"text":"Halo ekobudi17! Selamat datang di bot saya."}}
+2026-05-11 07:47:46 - Array
+(
+    [update_id] => 617871261
+    [message] => Array
+        (
+            [message_id] => 63
+            [from] => Array
+                (
+                    [id] => 6103145555
+                    [is_bot] => 
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [language_code] => en
+                )
+
+            [chat] => Array
+                (
+                    [id] => 6103145555
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [type] => private
+                )
+
+            [date] => 1778485590
+            [text] => /start
+            [entities] => Array
+                (
+                    [0] => Array
+                        (
+                            [offset] => 0
+                            [length] => 6
+                            [type] => bot_command
+                        )
+
+                )
+
+        )
+
+)
+
+2026-05-11 07:47:48 - Response: {"ok":true,"result":{"message_id":71,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485666,"text":"Halo ekobudi17! Selamat datang di bot saya."}}
+2026-05-11 07:48:52 - Array
+(
+    [update_id] => 617871261
+    [message] => Array
+        (
+            [message_id] => 63
+            [from] => Array
+                (
+                    [id] => 6103145555
+                    [is_bot] => 
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [language_code] => en
+                )
+
+            [chat] => Array
+                (
+                    [id] => 6103145555
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [type] => private
+                )
+
+            [date] => 1778485590
+            [text] => /start
+            [entities] => Array
+                (
+                    [0] => Array
+                        (
+                            [offset] => 0
+                            [length] => 6
+                            [type] => bot_command
+                        )
+
+                )
+
+        )
+
+)
+
+2026-05-11 07:48:54 - Response: {"ok":true,"result":{"message_id":72,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485733,"text":"Halo ekobudi17! Selamat datang di bot saya."}}
+2026-05-11 07:50:19 - Array
+(
+    [update_id] => 617871261
+    [message] => Array
+        (
+            [message_id] => 63
+            [from] => Array
+                (
+                    [id] => 6103145555
+                    [is_bot] => 
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [language_code] => en
+                )
+
+            [chat] => Array
+                (
+                    [id] => 6103145555
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [type] => private
+                )
+
+            [date] => 1778485590
+            [text] => /start
+            [entities] => Array
+                (
+                    [0] => Array
+                        (
+                            [offset] => 0
+                            [length] => 6
+                            [type] => bot_command
+                        )
+
+                )
+
+        )
+
+)
+
+2026-05-11 07:50:21 - Response: {"ok":true,"result":{"message_id":73,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485820,"text":"Halo ekobudi17! Selamat datang di bot saya."}}
+2026-05-11 07:50:22 - Array
+(
+    [update_id] => 617871262
+    [message] => Array
+        (
+            [message_id] => 69
+            [from] => Array
+                (
+                    [id] => 6103145555
+                    [is_bot] => 
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [language_code] => en
+                )
+
+            [chat] => Array
+                (
+                    [id] => 6103145555
+                    [first_name] => Eko Budianto
+                    [username] => ekobudi17
+                    [type] => private
+                )
+
+            [date] => 1778485627
+            [text] => /start
+            [entities] => Array
+                (
+                    [0] => Array
+                        (
+                            [offset] => 0
+                            [length] => 6
+                            [type] => bot_command
+                        )
+
+                )
+
+        )
+
+)
+
+2026-05-11 07:50:23 - Response: {"ok":true,"result":{"message_id":74,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778485822,"text":"Halo ekobudi17! Selamat datang di bot saya."}}
+2026-05-11 08:05:52 - Input: 
+2026-05-11 08:07:45 - Input: 
+2026-05-11 08:08:14 - Input: '{message:{chat:{id:123456789},text:test,from:{username:testuser}}}'
+2026-05-11 08:09:26 - Input: 
+2026-05-11 08:12:12 - Input: 
+2026-05-11 08:15:04 - Input: 
+2026-05-11 08:15:12 - Input: 
+2026-05-11 08:18:31 - Input: 
+2026-05-11 08:21:28 - Input: {"update_id":617871263,
+"message":{"message_id":75,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778486644,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}
+2026-05-11 08:21:30 - Response: {"ok":true,"result":{"message_id":77,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778487688,"text":"Halo ekobudi17!\nAnda mengirim: /start\nTerima kasih sudah menghubungi bot ini.","entities":[{"offset":31,"length":6,"type":"bot_command"}]}}
+2026-05-11 08:21:30 - Input: {"update_id":617871264,
+"message":{"message_id":76,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778487341,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}
+2026-05-11 08:21:32 - Response: {"ok":true,"result":{"message_id":78,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778487690,"text":"Halo ekobudi17!\nAnda mengirim: /start\nTerima kasih sudah menghubungi bot ini.","entities":[{"offset":31,"length":6,"type":"bot_command"}]}}
+2026-05-11 08:21:41 - Input: {"update_id":617871265,
+"message":{"message_id":79,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778487700,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}
+2026-05-11 08:21:43 - Response: {"ok":true,"result":{"message_id":80,"from":{"id":8539939076,"is_bot":true,"first_name":"Keyboard","username":"Ahdirakb_bot"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778487701,"text":"Halo ekobudi17!\nAnda mengirim: /start\nTerima kasih sudah menghubungi bot ini.","entities":[{"offset":31,"length":6,"type":"bot_command"}]}}
