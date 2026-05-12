@@ -14,6 +14,58 @@ BotLogger::info('=== NEW REQUEST START ===');
 // Selalu response 200 OK ke Telegram
 http_response_code(200);
 
+function getUsers(){
+    global $conn;
+    
+    $sql = "SELECT telegram_id, created_at FROM users ORDER BY id DESC";
+    $result = $conn->query($sql);
+    
+    if ($result && $result->num_rows > 0) {
+        $reply = "📋 <b>Daftar User Telegram:</b>\n\n";
+        $no = 1;
+        while ($row = $result->fetch_assoc()) {
+            $tanggal = date('d-m-Y H:i', strtotime($row['created_at']));
+            $reply .= "{$no}. Telegram ID: <code>{$row['telegram_id']}</code>\n";
+            $reply .= "   Bergabung: {$tanggal}\n";
+            $reply .= "   ─────────────────\n";
+            $no++;
+        }
+        $reply .= "\nTotal: " . ($no-1) . " user";
+        BotLogger::info('User list retrieved', ['count' => $no-1]);
+    } else {
+        $reply = " Tidak ada data user.";
+        BotLogger::warning('No users found in database');
+    }
+    return $reply;
+}
+
+function getTaskByUser($chatId) {
+    global $conn;
+    
+    // $sql = "SELECT id, task_name, created_at FROM tasks WHERE chat_id = ? ORDER BY id DESC";
+    // $sql = "SELECT task_id, description, task_name, created_at FROM tasks WHERE chat_id = " . $chatId . " ORDER BY task_id DESC";
+    // $stmt = $conn->prepare($sql);
+    // $stmt->bind_param("i", $chatId);
+    // $stmt->execute();
+    // $result = $stmt->get_result();
+    
+    // if ($result && $result->num_rows > 0) {
+    //     $reply = "📋 <b>Daftar Task Anda:</b>\n\n";
+    //     $no = 1;
+    //     while ($row = $result->fetch_assoc()) {
+    //         $tanggal = date('d-m-Y H:i', strtotime($row['created_at']));
+    //         $reply .= "{$no}. <b>{$row['task_name']}</b>\n";
+    //         $reply .= "   Dibuat: {$tanggal}\n";
+    //         $reply .= "   Deskripsi: {$row['description']}\n";
+    //         $reply .= "   ─────────────────\n";
+    //         $no++;
+    //     }
+    //     return $reply;
+    // } else {
+    //     return "❌ Anda belum memiliki task.";
+    // }
+    return $chatId;
+}
 /**
  * Fungsi untuk mengirim pesan ke Telegram
  */
@@ -104,29 +156,16 @@ if (isset($update['message'])) {
     }
     // Handle command /list_user
     elseif ($messageText == '/list_user') {
-        BotLogger::info('Command /list_user received', ['chat_id' => $chatId]);
+    
+
+        $reply = getUsers(); /*i tried this*/
         
-        // Ambil data dari tabel users
-        $sql = "SELECT telegram_id, created_at FROM users ORDER BY id DESC";
-        $result = $conn->query($sql);
+        sendMessage($chatId, $reply);
+    }
+    elseif ($messageText == '/list_tasks') {
+        BotLogger::info('Command /list_tasks received', ['chat_id' => $chatId]);
         
-        if ($result && $result->num_rows > 0) {
-            $reply = "📋 <b>Daftar User Telegram:</b>\n\n";
-            $no = 1;
-            while ($row = $result->fetch_assoc()) {
-                $tanggal = date('d-m-Y H:i', strtotime($row['created_at']));
-                $reply .= "{$no}. Telegram ID: <code>{$row['telegram_id']}</code>\n";
-                $reply .= "   Bergabung: {$tanggal}\n";
-                $reply .= "   ─────────────────\n";
-                $no++;
-            }
-            $reply .= "\nTotal: " . ($no-1) . " user";
-            BotLogger::info('User list retrieved', ['count' => $no-1]);
-        } else {
-            $reply = "❌ Tidak ada data user.";
-            BotLogger::warning('No users found in database');
-        }
-        
+        $reply = getTaskByUser($chatId);
         sendMessage($chatId, $reply);
     }
     // BALAS PESAN BIASA
@@ -141,6 +180,7 @@ if (isset($update['message'])) {
         $reply .= "<b>Command yang tersedia:</b>\n";
         $reply .= "• /tambah_task - Menambah task baru\n";
         $reply .= "• /list_user - Melihat daftar user\n";
+        $reply .= "• /list_tasks - Melihat daftar task\n";
         $reply .= "• /cancel - Membatalkan proses";
         
         sendMessage($chatId, $reply);

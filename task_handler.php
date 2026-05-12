@@ -165,7 +165,7 @@ function createTask($telegramId, $description) {
     
     BotLogger::info('Creating new task', [
         'telegram_id' => $telegramId,
-        'description' => $description
+        'task_description' => $description
     ]);
     
     try {
@@ -185,7 +185,7 @@ function createTask($telegramId, $description) {
             'status' => $status
         ]);
         
-        $sql = "INSERT INTO reminders (telegram_id, description, timestamp, `interval`, target, last_date, progress, status) 
+        $sql = "INSERT INTO reminders (telegram_id, task_description, timestamp, `interval`, target, last_date, progress, status) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
         $stmt = $conn->prepare($sql);

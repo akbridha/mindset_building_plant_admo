@@ -172,3 +172,276 @@
 [2026-05-12 00:49:01] [DEBUG] User state cleared {"telegram_id":6103145555}
 [2026-05-12 00:49:01] [DEBUG] Database connection closed 
 [2026-05-12 00:49:01] [INFO] === REQUEST END === 
+[2026-05-12 01:07:21] [INFO] Task handler loaded 
+[2026-05-12 01:07:21] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:07:21] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:07:21] [DEBUG] Telegram update received {"update":{"update_id":617871314,"message":{"message_id":177,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778548039,"text":"\/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}}
+[2026-05-12 01:07:21] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/start"}
+[2026-05-12 01:07:21] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:07:21] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/start"}
+[2026-05-12 01:07:21] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"\/start"}
+[2026-05-12 01:07:23] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:07:23] [DEBUG] Database connection closed 
+[2026-05-12 01:07:23] [INFO] === REQUEST END === 
+[2026-05-12 01:10:04] [INFO] Task handler loaded 
+[2026-05-12 01:10:04] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:10:04] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:10:04] [DEBUG] Telegram update received {"update":{"update_id":617871315,"message":{"message_id":179,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778548202,"text":"\/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}}
+[2026-05-12 01:10:04] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/start"}
+[2026-05-12 01:10:04] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:10:04] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/start"}
+[2026-05-12 01:10:04] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"\/start"}
+[2026-05-12 01:10:06] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:10:06] [DEBUG] Database connection closed 
+[2026-05-12 01:10:06] [INFO] === REQUEST END === 
+[2026-05-12 01:10:10] [INFO] Task handler loaded 
+[2026-05-12 01:10:10] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:10:10] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:10:10] [DEBUG] Telegram update received {"update":{"update_id":617871316,"message":{"message_id":181,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778548208,"text":"\/list_tasks","entities":[{"offset":0,"length":11,"type":"bot_command"}]}}}
+[2026-05-12 01:10:10] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_tasks"}
+[2026-05-12 01:10:10] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:10:10] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/list_tasks"}
+[2026-05-12 01:10:10] [INFO] Command /list_tasks received {"chat_id":6103145555}
+[2026-05-12 01:10:10] [INFO] User list retrieved {"count":4}
+[2026-05-12 01:10:12] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:10:12] [DEBUG] Database connection closed 
+[2026-05-12 01:10:12] [INFO] === REQUEST END === 
+[2026-05-12 01:21:19] [INFO] Task handler loaded 
+[2026-05-12 01:21:19] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:21:19] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:21:19] [DEBUG] Telegram update received {"update":{"update_id":617871317,"message":{"message_id":183,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778548877,"text":"\/list_user","entities":[{"offset":0,"length":10,"type":"bot_command"}]}}}
+[2026-05-12 01:21:19] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_user"}
+[2026-05-12 01:21:19] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:21:19] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/list_user"}
+[2026-05-12 01:21:20] [INFO] Task handler loaded 
+[2026-05-12 01:21:20] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:21:20] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:21:20] [DEBUG] Telegram update received {"update":{"update_id":617871317,"message":{"message_id":183,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778548877,"text":"\/list_user","entities":[{"offset":0,"length":10,"type":"bot_command"}]}}}
+[2026-05-12 01:21:20] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_user"}
+[2026-05-12 01:21:20] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:21:20] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/list_user"}
+[2026-05-12 01:21:22] [INFO] Task handler loaded 
+[2026-05-12 01:21:22] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:21:22] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:21:22] [DEBUG] Telegram update received {"update":{"update_id":617871317,"message":{"message_id":183,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778548877,"text":"\/list_user","entities":[{"offset":0,"length":10,"type":"bot_command"}]}}}
+[2026-05-12 01:21:22] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_user"}
+[2026-05-12 01:21:22] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:21:22] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/list_user"}
+[2026-05-12 01:21:27] [INFO] Task handler loaded 
+[2026-05-12 01:21:27] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:21:27] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:21:27] [DEBUG] Telegram update received {"update":{"update_id":617871317,"message":{"message_id":183,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778548877,"text":"\/list_user","entities":[{"offset":0,"length":10,"type":"bot_command"}]}}}
+[2026-05-12 01:21:27] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_user"}
+[2026-05-12 01:21:27] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:21:27] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/list_user"}
+[2026-05-12 01:21:35] [INFO] Task handler loaded 
+[2026-05-12 01:21:35] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:21:35] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:21:35] [DEBUG] Telegram update received {"update":{"update_id":617871317,"message":{"message_id":183,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778548877,"text":"\/list_user","entities":[{"offset":0,"length":10,"type":"bot_command"}]}}}
+[2026-05-12 01:21:35] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_user"}
+[2026-05-12 01:21:35] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:21:35] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/list_user"}
+[2026-05-12 01:21:52] [INFO] Task handler loaded 
+[2026-05-12 01:21:52] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:21:52] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:21:52] [DEBUG] Telegram update received {"update":{"update_id":617871317,"message":{"message_id":183,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778548877,"text":"\/list_user","entities":[{"offset":0,"length":10,"type":"bot_command"}]}}}
+[2026-05-12 01:21:52] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_user"}
+[2026-05-12 01:21:52] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:21:52] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/list_user"}
+[2026-05-12 01:22:24] [INFO] Task handler loaded 
+[2026-05-12 01:22:24] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:22:24] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:22:24] [DEBUG] Telegram update received {"update":{"update_id":617871317,"message":{"message_id":183,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778548877,"text":"\/list_user","entities":[{"offset":0,"length":10,"type":"bot_command"}]}}}
+[2026-05-12 01:22:24] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_user"}
+[2026-05-12 01:22:24] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:22:24] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/list_user"}
+[2026-05-12 01:23:29] [INFO] Task handler loaded 
+[2026-05-12 01:23:29] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:23:29] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:23:29] [DEBUG] Telegram update received {"update":{"update_id":617871317,"message":{"message_id":183,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778548877,"text":"\/list_user","entities":[{"offset":0,"length":10,"type":"bot_command"}]}}}
+[2026-05-12 01:23:29] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_user"}
+[2026-05-12 01:23:29] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:23:29] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/list_user"}
+[2026-05-12 01:25:11] [INFO] Task handler loaded 
+[2026-05-12 01:25:11] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:25:11] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:25:11] [DEBUG] Telegram update received {"update":{"update_id":617871317,"message":{"message_id":183,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778548877,"text":"\/list_user","entities":[{"offset":0,"length":10,"type":"bot_command"}]}}}
+[2026-05-12 01:25:11] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_user"}
+[2026-05-12 01:25:11] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:25:11] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/list_user"}
+[2026-05-12 01:25:11] [INFO] Command /list_user received {"chat_id":6103145555}
+[2026-05-12 01:25:11] [INFO] User list retrieved {"count":4}
+[2026-05-12 01:25:12] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:25:12] [DEBUG] Database connection closed 
+[2026-05-12 01:25:12] [INFO] === REQUEST END === 
+[2026-05-12 01:25:13] [INFO] Task handler loaded 
+[2026-05-12 01:25:13] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:25:13] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:25:13] [DEBUG] Telegram update received {"update":{"update_id":617871318,"message":{"message_id":184,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778548890,"text":"\/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}}
+[2026-05-12 01:25:13] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/start"}
+[2026-05-12 01:25:13] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:25:13] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/start"}
+[2026-05-12 01:25:13] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"\/start"}
+[2026-05-12 01:25:14] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:25:14] [DEBUG] Database connection closed 
+[2026-05-12 01:25:14] [INFO] === REQUEST END === 
+[2026-05-12 01:25:15] [INFO] Task handler loaded 
+[2026-05-12 01:25:15] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:25:15] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:25:15] [DEBUG] Telegram update received {"update":{"update_id":617871319,"message":{"message_id":185,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778549056,"text":"\/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}}
+[2026-05-12 01:25:15] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/start"}
+[2026-05-12 01:25:15] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:25:15] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/start"}
+[2026-05-12 01:25:15] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"\/start"}
+[2026-05-12 01:25:17] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:25:17] [DEBUG] Database connection closed 
+[2026-05-12 01:25:17] [INFO] === REQUEST END === 
+[2026-05-12 01:25:17] [INFO] Task handler loaded 
+[2026-05-12 01:25:17] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:25:17] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:25:17] [DEBUG] Telegram update received {"update":{"update_id":617871320,"message":{"message_id":186,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778549074,"text":"\/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}}
+[2026-05-12 01:25:17] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/start"}
+[2026-05-12 01:25:17] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:25:17] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/start"}
+[2026-05-12 01:25:17] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"\/start"}
+[2026-05-12 01:25:19] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:25:19] [DEBUG] Database connection closed 
+[2026-05-12 01:25:19] [INFO] === REQUEST END === 
+[2026-05-12 01:25:20] [INFO] Task handler loaded 
+[2026-05-12 01:25:20] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:25:20] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:25:20] [DEBUG] Telegram update received {"update":{"update_id":617871321,"message":{"message_id":187,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778549095,"text":"\/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}}
+[2026-05-12 01:25:20] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/start"}
+[2026-05-12 01:25:20] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:25:20] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/start"}
+[2026-05-12 01:25:20] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"\/start"}
+[2026-05-12 01:25:21] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:25:21] [DEBUG] Database connection closed 
+[2026-05-12 01:25:21] [INFO] === REQUEST END === 
+[2026-05-12 01:25:46] [INFO] Task handler loaded 
+[2026-05-12 01:25:46] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:25:46] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:25:46] [DEBUG] Telegram update received {"update":{"update_id":617871322,"message":{"message_id":193,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778549144,"text":"\/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}}
+[2026-05-12 01:25:46] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/start"}
+[2026-05-12 01:25:46] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:25:46] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/start"}
+[2026-05-12 01:25:46] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"\/start"}
+[2026-05-12 01:25:47] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:25:47] [DEBUG] Database connection closed 
+[2026-05-12 01:25:47] [INFO] === REQUEST END === 
+[2026-05-12 01:25:55] [INFO] Task handler loaded 
+[2026-05-12 01:25:55] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:25:55] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:25:55] [DEBUG] Telegram update received {"update":{"update_id":617871323,"message":{"message_id":195,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778549153,"text":"\/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}}
+[2026-05-12 01:25:55] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/start"}
+[2026-05-12 01:25:55] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:25:55] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/start"}
+[2026-05-12 01:25:55] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"\/start"}
+[2026-05-12 01:25:57] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:25:57] [DEBUG] Database connection closed 
+[2026-05-12 01:25:57] [INFO] === REQUEST END === 
+[2026-05-12 01:27:18] [INFO] Task handler loaded 
+[2026-05-12 01:27:18] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:27:18] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:27:18] [DEBUG] Telegram update received {"update":{"update_id":617871324,"message":{"message_id":197,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778549235,"text":"\/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}}
+[2026-05-12 01:27:18] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/start"}
+[2026-05-12 01:27:18] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:27:18] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/start"}
+[2026-05-12 01:27:18] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"\/start"}
+[2026-05-12 01:27:19] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:27:19] [DEBUG] Database connection closed 
+[2026-05-12 01:27:19] [INFO] === REQUEST END === 
+[2026-05-12 01:28:39] [INFO] Task handler loaded 
+[2026-05-12 01:28:39] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:28:39] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:28:39] [DEBUG] Telegram update received {"update":{"update_id":617871325,"message":{"message_id":199,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778549317,"text":"\/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}}
+[2026-05-12 01:28:39] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/start"}
+[2026-05-12 01:28:39] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:28:39] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/start"}
+[2026-05-12 01:28:39] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"\/start"}
+[2026-05-12 01:28:40] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:28:40] [DEBUG] Database connection closed 
+[2026-05-12 01:28:40] [INFO] === REQUEST END === 
+[2026-05-12 01:29:13] [INFO] Task handler loaded 
+[2026-05-12 01:29:13] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:29:13] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:29:13] [DEBUG] Telegram update received {"update":{"update_id":617871326,"message":{"message_id":201,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778549351,"text":"\/list_user","entities":[{"offset":0,"length":10,"type":"bot_command"}]}}}
+[2026-05-12 01:29:13] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_user"}
+[2026-05-12 01:29:13] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:29:13] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/list_user"}
+[2026-05-12 01:29:13] [INFO] User list retrieved {"count":4}
+[2026-05-12 01:29:14] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:29:14] [DEBUG] Database connection closed 
+[2026-05-12 01:29:14] [INFO] === REQUEST END === 
+[2026-05-12 01:30:58] [INFO] Task handler loaded 
+[2026-05-12 01:30:58] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:30:58] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:30:58] [DEBUG] Telegram update received {"update":{"update_id":617871327,"message":{"message_id":203,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778549456,"text":"\/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}}
+[2026-05-12 01:30:58] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/start"}
+[2026-05-12 01:30:58] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:30:58] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/start"}
+[2026-05-12 01:30:58] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"\/start"}
+[2026-05-12 01:31:00] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:31:00] [DEBUG] Database connection closed 
+[2026-05-12 01:31:00] [INFO] === REQUEST END === 
+[2026-05-12 01:31:04] [INFO] Task handler loaded 
+[2026-05-12 01:31:04] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:31:04] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:31:04] [DEBUG] Telegram update received {"update":{"update_id":617871328,"message":{"message_id":205,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778549462,"text":"\/list_user","entities":[{"offset":0,"length":10,"type":"bot_command"}]}}}
+[2026-05-12 01:31:04] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_user"}
+[2026-05-12 01:31:04] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:31:04] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/list_user"}
+[2026-05-12 01:31:04] [INFO] User list retrieved {"count":4}
+[2026-05-12 01:31:06] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:31:06] [DEBUG] Database connection closed 
+[2026-05-12 01:31:06] [INFO] === REQUEST END === 
+[2026-05-12 01:31:07] [INFO] Task handler loaded 
+[2026-05-12 01:31:07] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:31:07] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:31:07] [DEBUG] Telegram update received {"update":{"update_id":617871329,"message":{"message_id":207,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778549466,"text":"\/list_tasks","entities":[{"offset":0,"length":11,"type":"bot_command"}]}}}
+[2026-05-12 01:31:07] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_tasks"}
+[2026-05-12 01:31:07] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:31:07] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/list_tasks"}
+[2026-05-12 01:31:07] [INFO] Command /list_tasks received {"chat_id":6103145555}
+[2026-05-12 01:31:09] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:31:09] [DEBUG] Database connection closed 
+[2026-05-12 01:31:09] [INFO] === REQUEST END === 
+[2026-05-12 01:36:25] [INFO] Task handler loaded 
+[2026-05-12 01:36:25] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:36:25] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:36:25] [DEBUG] Telegram update received {"update":{"update_id":617871330,"message":{"message_id":209,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778549783,"text":"\/tambah_task","entities":[{"offset":0,"length":12,"type":"bot_command"}]}}}
+[2026-05-12 01:36:25] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/tambah_task"}
+[2026-05-12 01:36:25] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:36:25] [DEBUG] User state check {"telegram_id":6103145555,"current_state":null,"message":"\/tambah_task"}
+[2026-05-12 01:36:25] [INFO] Command /tambah_task received {"chat_id":6103145555}
+[2026-05-12 01:36:25] [INFO] handleTambahTask called {"chat_id":6103145555,"telegram_id":6103145555,"message_text":"","message_length":0}
+[2026-05-12 01:36:25] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:36:25] [DEBUG] Current user state from database {"telegram_id":6103145555,"state":null}
+[2026-05-12 01:36:25] [DEBUG] Starting new task creation flow {"telegram_id":6103145555}
+[2026-05-12 01:36:25] [DEBUG] Setting user state {"telegram_id":6103145555,"state":"waiting_description","context_data":{"started_at":"2026-05-12 01:36:25","chat_id":6103145555}}
+[2026-05-12 01:36:25] [INFO] User state set successfully {"telegram_id":6103145555,"state":"waiting_description"}
+[2026-05-12 01:36:27] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:36:27] [INFO] Initial message sent successfully {"chat_id":6103145555}
+[2026-05-12 01:36:27] [DEBUG] Database connection closed 
+[2026-05-12 01:36:27] [INFO] === REQUEST END === 
+[2026-05-12 01:36:35] [INFO] Task handler loaded 
+[2026-05-12 01:36:35] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 01:36:35] [INFO] === NEW REQUEST START === 
+[2026-05-12 01:36:35] [DEBUG] Telegram update received {"update":{"update_id":617871331,"message":{"message_id":211,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778549793,"text":"Mandikapau"}}}
+[2026-05-12 01:36:35] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"Mandikapau"}
+[2026-05-12 01:36:35] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":"waiting_description"}
+[2026-05-12 01:36:35] [DEBUG] User state check {"telegram_id":6103145555,"current_state":"waiting_description","message":"Mandikapau"}
+[2026-05-12 01:36:35] [INFO] Processing task addition flow {"chat_id":6103145555,"current_state":"waiting_description"}
+[2026-05-12 01:36:35] [INFO] handleTambahTask called {"chat_id":6103145555,"telegram_id":6103145555,"message_text":"Mandikapau","message_length":10}
+[2026-05-12 01:36:35] [DEBUG] User state retrieved {"telegram_id":6103145555,"state":"waiting_description"}
+[2026-05-12 01:36:35] [DEBUG] Current user state from database {"telegram_id":6103145555,"state":"waiting_description"}
+[2026-05-12 01:36:35] [DEBUG] Processing task description {"chat_id":6103145555,"description":"Mandikapau"}
+[2026-05-12 01:36:35] [INFO] Creating new task {"telegram_id":6103145555,"task_description":"Mandikapau"}
+[2026-05-12 01:36:35] [DEBUG] Task data prepared {"timestamp":"2026-05-13 01:36:35","interval":"once","target":"2026-05-13","progress":0,"status":"pending"}
+[2026-05-12 01:36:35] [INFO] Task created successfully {"task_id":11,"telegram_id":6103145555}
+[2026-05-12 01:36:37] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 01:36:37] [INFO] Task creation completed {"task_id":11,"chat_id":6103145555,"telegram_id":6103145555}
+[2026-05-12 01:36:37] [INFO] User state cleared {"telegram_id":6103145555}
+[2026-05-12 01:36:37] [DEBUG] User state cleared {"telegram_id":6103145555}
+[2026-05-12 01:36:37] [DEBUG] Database connection closed 
+[2026-05-12 01:36:37] [INFO] === REQUEST END === 
