@@ -1,6 +1,6 @@
 <?php
 // Ganti dengan token bot Anda dari @BotFather
-define('BOT_TOKEN', '8539939076:AAE90SdHLPT3wdIVisPTUtMMFE7ohB4hDoM');
+define('BOT_TOKEN', '7985978623:AAEM9Z-RlEbfX1lEYdAGzmNSPv5sNHbUA3k');
 
 // Include files
 require_once 'koneksi.php';
@@ -21,7 +21,7 @@ function getUsers(){
     $result = $conn->query($sql);
     
     if ($result && $result->num_rows > 0) {
-        $reply = "📋 <b>Daftar User Telegram:</b>\n\n";
+        $reply = " <b>Daftar User Telegram:</b>\n <b>INI DUMMY</b> \n <b>Belajar ambil data dari DB</b>\n";
         $no = 1;
         while ($row = $result->fetch_assoc()) {
             $tanggal = date('d-m-Y H:i', strtotime($row['created_at']));
@@ -37,34 +37,169 @@ function getUsers(){
         BotLogger::warning('No users found in database');
     }
     return $reply;
+
+
+    // versi lebih lengkap log  nya ==========
+    // try {
+    //     BotLogger::info('Getting all users');
+        
+    //     $sql = "SELECT telegram_id, created_at FROM users ORDER BY id DESC";
+    //     $result = $conn->query($sql);
+        
+    //     if (!$result) {
+    //         $error = "Query error: " . $conn->error;
+    //         BotLogger::error('Failed to query users', ['error' => $conn->error, 'sql' => $sql]);
+    //         return " Error query: " . $conn->error;
+    //     }
+        
+    //     if ($result->num_rows > 0) {
+    //         $reply = "📋 <b>Daftar User Telegram:</b>\n\n";
+    //         $no = 1;
+    //         while ($row = $result->fetch_assoc()) {
+    //             try {
+    //                 $tanggal = !empty($row['created_at']) ? date('d-m-Y H:i', strtotime($row['created_at'])) : 'N/A';
+    //                 $reply .= "{$no}. Telegram ID: <code>{$row['telegram_id']}</code>\n";
+    //                 $reply .= "   Bergabung: {$tanggal}\n";
+    //                 $reply .= "   ─────────────────\n";
+    //                 $no++;
+    //             } catch (Exception $rowError) {
+    //                 BotLogger::error('Error processing user row', [
+    //                     'row' => $row,
+    //                     'error' => $rowError->getMessage()
+    //                 ]);
+    //                 $reply .= "{$no}.  Error reading user data\n";
+    //                 $no++;
+    //             }
+    //         }
+    //         $reply .= "\n Total: " . ($no - 1) . " user";
+    //         BotLogger::info('User list retrieved', ['count' => $no-1]);
+    //     } else {
+    //         $reply = " Tidak ada data user.";
+    //         BotLogger::warning('No users found in database');
+    //     }
+    //     return $reply;
+        
+    // } catch (Exception $e) {
+    //     $errorMsg = "Exception in getUsers: " . $e->getMessage();
+    //     BotLogger::error($errorMsg, [
+    //         'file' => $e->getFile(),
+    //         'line' => $e->getLine(),
+    //         'trace' => $e->getTraceAsString()
+    //     ]);
+    //     return " Error fatal: " . $e->getMessage() . " (cek bot_detailed.log)";
+    // }
 }
 
 function getTaskByUser($chatId) {
     global $conn;
     
-    // $sql = "SELECT id, task_name, created_at FROM tasks WHERE chat_id = ? ORDER BY id DESC";
-    // $sql = "SELECT task_id, description, task_name, created_at FROM tasks WHERE chat_id = " . $chatId . " ORDER BY task_id DESC";
-    // $stmt = $conn->prepare($sql);
-    // $stmt->bind_param("i", $chatId);
-    // $stmt->execute();
-    // $result = $stmt->get_result();
-    
-    // if ($result && $result->num_rows > 0) {
-    //     $reply = "📋 <b>Daftar Task Anda:</b>\n\n";
-    //     $no = 1;
-    //     while ($row = $result->fetch_assoc()) {
-    //         $tanggal = date('d-m-Y H:i', strtotime($row['created_at']));
-    //         $reply .= "{$no}. <b>{$row['task_name']}</b>\n";
-    //         $reply .= "   Dibuat: {$tanggal}\n";
-    //         $reply .= "   Deskripsi: {$row['description']}\n";
-    //         $reply .= "   ─────────────────\n";
-    //         $no++;
-    //     }
-    //     return $reply;
-    // } else {
-    //     return "❌ Anda belum memiliki task.";
-    // }
-    return $chatId;
+    try {
+        BotLogger::info('Getting tasks for user', ['chat_id' => $chatId, 'telegram_id' => $chatId]);
+        
+        // Query ke table reminders dengan field yang benar
+        $sql = "SELECT  task_description, status, created_at, progress, target 
+                FROM reminders 
+                WHERE telegram_id = ? 
+                ORDER BY created_at DESC";
+        
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            $error = "Database prepare error: " . $conn->error;
+            BotLogger::error('Failed to prepare statement', [
+                'telegram_id' => $chatId,
+                'error' => $conn->error,
+                'sql' => $sql
+            ]);
+            return " Error database: " . $conn->error;
+        }
+        
+        $stmt->bind_param("i", $chatId);
+        
+        if (!$stmt->execute()) {
+            $error = "Database execute error: " . $stmt->error;
+            BotLogger::error('Failed to execute statement', [
+                'telegram_id' => $chatId,
+                'error' => $stmt->error
+            ]);
+            $stmt->close();
+            return " Error query: " . $stmt->error;
+        }
+        
+        $result = $stmt->get_result();
+        
+        if (!$result) {
+            $error = "Failed to get result: " . $conn->error;
+            BotLogger::error('Failed to get result', [
+                'telegram_id' => $chatId,
+                'error' => $conn->error
+            ]);
+            $stmt->close();
+            return " Error result: " . $conn->error;
+        }
+        
+        if ($result->num_rows > 0) {
+            $reply = "== <b>Daftar Task Anda:</b>==\n\n";
+            $no = 1;
+            
+            while ($row = $result->fetch_assoc()) {
+                try {
+                    // Validasi bahwa data yang diambil sesuai
+                    if (empty($row['task_description'])) {
+                        $row['task_description'] = "[No description]";
+                    }
+                    
+                    $tanggal = !empty($row['created_at']) ? date('d-m-Y H:i', strtotime($row['created_at'])) : 'N/A';
+                    $status = !empty($row['status']) ? $row['status'] : 'unknown';
+                    
+                
+                    $reply .= "  {$no}. Deskripsi: {$row['task_description']}\n";
+                    $reply .= "   Dibuat: {$tanggal}\n";
+                    $reply .= "    Status: <code>{$status}</code>\n";
+                    if (!empty($row['target'])) {
+                        $reply .= "    Target: {$row['target']}\n";
+                    }
+                    if ($row['progress'] !== null) {
+                        $reply .= "    Progress: {$row['progress']}%\n";
+                    }
+                    $reply .= "   ─────────────────\n";
+                    $no++;
+                } catch (Exception $rowError) {
+                    BotLogger::error('Error processing task row', [
+                        'telegram_id' => $chatId,
+                        'row' => $row,
+                        'error' => $rowError->getMessage()
+                    ]);
+                    $reply .= "{$no}.  Error reading task\n";
+                    $no++;
+                }
+            }
+            
+            $reply .= "\n Total: " . ($no - 1) . " task";
+            BotLogger::info('Task list retrieved successfully', [
+                'telegram_id' => $chatId,
+                'count' => $no - 1
+            ]);
+            
+            $stmt->close();
+            return $reply;
+        } else {
+            $reply = " Anda belum memiliki task.\n\nGunakan /tambah_task untuk membuat task baru";
+            BotLogger::info('No tasks found for user', ['telegram_id' => $chatId]);
+            $stmt->close();
+            return $reply;
+        }
+        
+    } catch (Exception $e) {
+        $errorMsg = "Exception in getTaskByUser: " . $e->getMessage();
+        BotLogger::error($errorMsg, [
+            'telegram_id' => $chatId,
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        return " Error fatal: " . $e->getMessage() . " (cek bot_detailed.log)";
+    }
+
 }
 /**
  * Fungsi untuk mengirim pesan ke Telegram

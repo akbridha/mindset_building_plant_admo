@@ -1,6 +1,6 @@
 <?php
-// Ganti dengan token bot Anda dari @BotFather
-define('BOT_TOKEN', '8539939076:AAE90SdHLPT3wdIVisPTUtMMFE7ohB4hDoM');
+
+define('BOT_TOKEN', '7985978623:AAEM9Z-RlEbfX1lEYdAGzmNSPv5sNHbUA3k');
 
 // Include files
 require_once 'koneksi.php';

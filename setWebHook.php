@@ -1,6 +1,6 @@
 <?php
 // Ganti dengan token bot Anda
-define('BOT_TOKEN', '8539939076:AAE90SdHLPT3wdIVisPTUtMMFE7ohB4hDoM');
+define('BOT_TOKEN', '7985978623:AAEM9Z-RlEbfX1lEYdAGzmNSPv5sNHbUA3k');
 
 // Ganti dengan URL ngrok Anda
 $NGROK_URL = 'https://oversized-hankie-babble.ngrok-free.dev';
