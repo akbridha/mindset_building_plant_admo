@@ -11,13 +11,6 @@ require_once 'logger.php';
 BotLogger::logRequest();
 BotLogger::info('=== NEW REQUEST START ===');
 
-// PENTING: Jangan gunakan session_start() untuk webhook Telegram!
-// Webhook adalah stateless dan session bisa menyebabkan locking/timeout issues
-// Gunakan $GLOBALS atau database untuk menyimpan state multi-step conversation
-// Untuk sekarang, kita akan gunakan $_SESSION tapi tanpa session_start() yang bisa gagal
-// Note: $_SESSION sudah bisa digunakan meski session_start() belum dipanggil
-// jika ini running dalam environment yang sudah memiliki session handling
-
 // Selalu response 200 OK ke Telegram
 http_response_code(200);
 
@@ -81,20 +74,20 @@ if (isset($update['message'])) {
         'message_text' => $messageText
     ]);
     
-    // Cek apakah user sedang dalam proses tambah task
-    $sessionKey = "add_task_{$chatId}";
+    // Check user state dari database (bukan dari $_SESSION)
+    $userState = getUserState($telegramId);
+    $currentState = $userState ? $userState['state'] : null;
     
-    BotLogger::debug('Session check', [
-        'session_key' => $sessionKey,
-        'session_exists' => isset($_SESSION[$sessionKey]),
-        'session_value' => $_SESSION[$sessionKey] ?? 'not set',
-        'all_session' => $_SESSION
+    BotLogger::debug('User state check', [
+        'telegram_id' => $telegramId,
+        'current_state' => $currentState,
+        'message' => $messageText
     ]);
     
-    if (isset($_SESSION[$sessionKey])) {
+    if ($currentState !== null) {
         BotLogger::info('Processing task addition flow', [
             'chat_id' => $chatId,
-            'current_state' => $_SESSION[$sessionKey]
+            'current_state' => $currentState
         ]);
         // Handle proses tambah task
         handleTambahTask($chatId, $telegramId, $messageText);
@@ -107,8 +100,7 @@ if (isset($update['message'])) {
     // Handle command /cancel (untuk membatalkan)
     elseif ($messageText == '/cancel') {
         BotLogger::info('Command /cancel received', ['chat_id' => $chatId]);
-        cancelTambahTask($chatId);
-        sendMessage($chatId, "✅ Semua proses dibatalkan.");
+        cancelTambahTask($chatId, $telegramId);
     }
     // Handle command /list_user
     elseif ($messageText == '/list_user') {
