@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `reminders` (
   `task_id` INT(11) NOT NULL AUTO_INCREMENT,
   `telegram_id` BIGINT(20) NOT NULL,
-  `description` TEXT NOT NULL,
+  `task_description` TEXT NOT NULL,
   `timestamp` TIMESTAMP NULL DEFAULT NULL,
   `interval` VARCHAR(50) NOT NULL,
   `target` VARCHAR(100) NOT NULL,

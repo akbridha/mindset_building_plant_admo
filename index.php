@@ -91,115 +91,46 @@ function getUsers(){
 }
 
 function getTaskByUser($chatId) {
-    global $conn;
-    
-    try {
-        BotLogger::info('Getting tasks for user', ['chat_id' => $chatId, 'telegram_id' => $chatId]);
-        
-        // Query ke table reminders dengan field yang benar
-        $sql = "SELECT  task_description, status, created_at, progress, target 
-                FROM reminders 
-                WHERE telegram_id = ? 
-                ORDER BY created_at DESC";
-        
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) {
-            $error = "Database prepare error: " . $conn->error;
-            BotLogger::error('Failed to prepare statement', [
-                'telegram_id' => $chatId,
-                'error' => $conn->error,
-                'sql' => $sql
-            ]);
-            return " Error database: " . $conn->error;
-        }
-        
-        $stmt->bind_param("i", $chatId);
-        
-        if (!$stmt->execute()) {
-            $error = "Database execute error: " . $stmt->error;
-            BotLogger::error('Failed to execute statement', [
-                'telegram_id' => $chatId,
-                'error' => $stmt->error
-            ]);
-            $stmt->close();
-            return " Error query: " . $stmt->error;
-        }
-        
-        $result = $stmt->get_result();
-        
-        if (!$result) {
-            $error = "Failed to get result: " . $conn->error;
-            BotLogger::error('Failed to get result', [
-                'telegram_id' => $chatId,
-                'error' => $conn->error
-            ]);
-            $stmt->close();
-            return " Error result: " . $conn->error;
-        }
-        
-        if ($result->num_rows > 0) {
-            $reply = "== <b>Daftar Task Anda:</b>==\n\n";
-            $no = 1;
-            
-            while ($row = $result->fetch_assoc()) {
-                try {
-                    // Validasi bahwa data yang diambil sesuai
-                    if (empty($row['task_description'])) {
-                        $row['task_description'] = "[No description]";
-                    }
-                    
-                    $tanggal = !empty($row['created_at']) ? date('d-m-Y H:i', strtotime($row['created_at'])) : 'N/A';
-                    $status = !empty($row['status']) ? $row['status'] : 'unknown';
-                    
-                
-                    $reply .= "  {$no}. Deskripsi: {$row['task_description']}\n";
-                    $reply .= "   Dibuat: {$tanggal}\n";
-                    $reply .= "    Status: <code>{$status}</code>\n";
-                    if (!empty($row['target'])) {
-                        $reply .= "    Target: {$row['target']}\n";
-                    }
-                    if ($row['progress'] !== null) {
-                        $reply .= "    Progress: {$row['progress']}%\n";
-                    }
-                    $reply .= "   ─────────────────\n";
-                    $no++;
-                } catch (Exception $rowError) {
-                    BotLogger::error('Error processing task row', [
-                        'telegram_id' => $chatId,
-                        'row' => $row,
-                        'error' => $rowError->getMessage()
-                    ]);
-                    $reply .= "{$no}.  Error reading task\n";
-                    $no++;
-                }
-            }
-            
-            $reply .= "\n Total: " . ($no - 1) . " task";
-            BotLogger::info('Task list retrieved successfully', [
-                'telegram_id' => $chatId,
-                'count' => $no - 1
-            ]);
-            
-            $stmt->close();
-            return $reply;
-        } else {
-            $reply = " Anda belum memiliki task.\n\nGunakan /tambah_task untuk membuat task baru";
-            BotLogger::info('No tasks found for user', ['telegram_id' => $chatId]);
-            $stmt->close();
-            return $reply;
-        }
-        
-    } catch (Exception $e) {
-        $errorMsg = "Exception in getTaskByUser: " . $e->getMessage();
-        BotLogger::error($errorMsg, [
-            'telegram_id' => $chatId,
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        return " Error fatal: " . $e->getMessage() . " (cek bot_detailed.log)";
+    $tasks = getTasksByUser($chatId);
+    if ($tasks === false) {
+        return "Error mengambil daftar task. Silakan coba lagi nanti.";
     }
 
+    if (count($tasks) === 0) {
+        return " Anda belum memiliki task.\n\nGunakan /list_tasks untuk melihat daftar task, lalu /tambah_task untuk membuat task baru.";
+    }
+
+    $reply = "== <b>Daftar Task Anda:</b>==\n\n";
+    $no = 1;
+    foreach ($tasks as $row) {
+        try {
+            $description = !empty($row['description']) ? $row['description'] : "[No description]";
+            $tanggal = !empty($row['created_at']) ? date('d-m-Y H:i', strtotime($row['created_at'])) : 'N/A';
+            $status = !empty($row['status']) ? $row['status'] : 'unknown';
+
+            $reply .= "  {$no}. Deskripsi: {$description}\n";
+            $reply .= "   Dibuat: {$tanggal}\n";
+            $reply .= "    Status: <code>{$status}</code>\n";
+            if (!empty($row['target'])) {
+                $reply .= "    Target: {$row['target']}\n";
+            }
+            if ($row['progress'] !== null) {
+                $reply .= "    Progress: {$row['progress']}%\n";
+            }
+            $reply .= "   ─────────────────\n";
+            $no++;
+        } catch (Exception $rowError) {
+            BotLogger::error('Error processing task row', [
+                'telegram_id' => $chatId,
+                'row' => $row,
+                'error' => $rowError->getMessage()
+            ]);
+            $reply .= "{$no}.  Error reading task\n";
+            $no++;
+        }
+    }
+    $reply .= "\n Total: " . ($no - 1) . " task";
+    return $reply;
 }
 /**
  * Fungsi untuk mengirim pesan ke Telegram
@@ -271,41 +202,41 @@ if (isset($update['message'])) {
         'message' => $messageText
     ]);
     
-    if ($currentState !== null) {
-        BotLogger::info('Processing task addition flow', [
-            'chat_id' => $chatId,
-            'current_state' => $currentState
-        ]);
-        // Handle proses tambah task
-        handleTambahTask($chatId, $telegramId, $messageText);
-    }
-    // Handle command /tambah_task
-    elseif ($messageText == '/tambah_task') {
-        BotLogger::info('Command /tambah_task received', ['chat_id' => $chatId]);
-        handleTambahTask($chatId, $telegramId, '');
-    }
-    // Handle command /cancel (untuk membatalkan)
-    elseif ($messageText == '/cancel') {
+    // Prioritaskan command khusus terlebih dahulu
+    if ($messageText == '/cancel') {
         BotLogger::info('Command /cancel received', ['chat_id' => $chatId]);
         cancelTambahTask($chatId, $telegramId);
     }
-    // Handle command /list_user
-    elseif ($messageText == '/list_user') {
-    
-
-        $reply = getUsers(); /*i tried this*/
-        
-        sendMessage($chatId, $reply);
-    }
     elseif ($messageText == '/list_tasks') {
         BotLogger::info('Command /list_tasks received', ['chat_id' => $chatId]);
-        
-        $reply = getTaskByUser($chatId);
+        sendTaskList($chatId, $telegramId);
+    }
+    elseif ($messageText == '/list_user') {
+        $reply = getUsers();
         sendMessage($chatId, $reply);
     }
-    // BALAS PESAN BIASA
+    elseif ($messageText == '/tambah_task') {
+        if ($currentState === 'awaiting_list_action') {
+            BotLogger::info('Command /tambah_task received from list menu', ['chat_id' => $chatId]);
+            handleTambahTask($chatId, $telegramId, '');
+        } else {
+            BotLogger::warning('Add task requested before list_tasks', ['chat_id' => $chatId]);
+            sendMessage($chatId, "Sebelum menambah task baru, silakan gunakan /list_tasks terlebih dahulu.\n\nSetelah daftar task muncul, Anda dapat memilih /tambah_task untuk menambah task atau ketik hapus <code>id</code> untuk menghapus task.");
+        }
+    }
+    elseif ($currentState !== null) {
+        if ($currentState === 'awaiting_list_action') {
+            handleListAction($chatId, $telegramId, $messageText);
+        } else {
+            BotLogger::info('Processing task addition flow', [
+                'chat_id' => $chatId,
+                'current_state' => $currentState
+            ]);
+            handleTambahTask($chatId, $telegramId, $messageText);
+        }
+    }
     else {
-        BotLogger::debug('Regular message (not a command)', [
+        BotLogger::debug('Regular message or unknown command', [
             'chat_id' => $chatId,
             'message' => $messageText
         ]);
@@ -313,10 +244,10 @@ if (isset($update['message'])) {
         $reply = "Halo $username!\n";
         $reply .= "Anda mengirim: $messageText\n\n";
         $reply .= "<b>Command yang tersedia:</b>\n";
-        $reply .= "• /tambah_task - Menambah task baru\n";
-        $reply .= "• /list_user - Melihat daftar user\n";
         $reply .= "• /list_tasks - Melihat daftar task\n";
-        $reply .= "• /cancel - Membatalkan proses";
+        $reply .= "• /list_user - Melihat daftar user\n";
+        $reply .= "• /cancel - Membatalkan proses\n";
+        $reply .= "\nGunakan /list_tasks dulu sebelum /tambah_task.";
         
         sendMessage($chatId, $reply);
     }

@@ -16,9 +16,9 @@ print_r($result);
 echo "</pre>";
 
 if ($result['ok']) {
-    echo "✅ Webhook berhasil diset ke: $webhookUrl";
+    echo " Webhook berhasil diset ke: $webhookUrl";
 } else {
-    echo "❌ Gagal: " . $result['description'];
+    echo "! Gagal: " . $result['description'];
 }
 
 // Tampilkan info webhook saat ini

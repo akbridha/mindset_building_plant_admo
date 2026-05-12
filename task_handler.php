@@ -226,6 +226,190 @@ function createTask($telegramId, $description) {
 }
 
 /**
+ * Escape text for HTML parse mode
+ */
+function escapeHtml($text) {
+    return htmlspecialchars((string)$text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+
+/**
+ * Ambil daftar task user dari database
+ */
+function getTasksByUser($telegramId) {
+    global $conn;
+    try {
+        $sql = "SELECT task_id, task_description, status, created_at, progress, target 
+                FROM reminders 
+                WHERE telegram_id = ? 
+                ORDER BY created_at DESC";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            BotLogger::error('Failed to prepare getTasksByUser statement', [
+                'error' => $conn->error,
+                'telegram_id' => $telegramId
+            ]);
+            return false;
+        }
+        $stmt->bind_param("i", $telegramId);
+        if (!$stmt->execute()) {
+            BotLogger::error('Failed to execute getTasksByUser', [
+                'error' => $stmt->error,
+                'telegram_id' => $telegramId
+            ]);
+            $stmt->close();
+            return false;
+        }
+        $result = $stmt->get_result();
+        if (!$result) {
+            BotLogger::error('Failed to get result for getTasksByUser', [
+                'error' => $conn->error,
+                'telegram_id' => $telegramId
+            ]);
+            $stmt->close();
+            return false;
+        }
+        $tasks = [];
+        while ($row = $result->fetch_assoc()) {
+            $tasks[] = $row;
+        }
+        $stmt->close();
+        return $tasks;
+    } catch (Exception $e) {
+        BotLogger::error('Exception in getTasksByUser', [
+            'message' => $e->getMessage(),
+            'telegram_id' => $telegramId
+        ]);
+        return false;
+    }
+}
+
+/**
+ * Send list task dan set state agar user bisa memilih delete atau add.
+ */
+function sendTaskList($chatId, $telegramId) {
+    $tasks = getTasksByUser($telegramId);
+    if ($tasks === false) {
+        sendMessage($chatId, "Terjadi kesalahan saat mengambil daftar task. Silakan coba lagi nanti.");
+        return false;
+    }
+
+    if (count($tasks) === 0) {
+        setUserState($telegramId, 'awaiting_list_action', ['source' => 'list_tasks']);
+        sendMessage($chatId, "Anda belum memiliki task.\n\nKetik /tambah_task untuk menambah task baru, atau ketik /cancel untuk keluar dari mode daftar task.");
+        return true;
+    }
+
+    $reply = "== <b>Daftar Task Anda:</b> ==\n\n";
+    foreach ($tasks as $index => $row) {
+        $no = $index + 1;
+        $description = escapeHtml(!empty($row['task_description']) ? $row['task_description'] : '[No description]');
+        $tanggal = !empty($row['created_at']) ? date('d-m-Y H:i', strtotime($row['created_at'])) : 'N/A';
+        $status = escapeHtml(!empty($row['status']) ? $row['status'] : 'unknown');
+        $reply .= "{$no}. <b>ID:</b> <code>{$row['task_id']}</code>\n";
+        $reply .= "   Deskripsi: {$description}\n";
+        $reply .= "   Dibuat: {$tanggal}\n";
+        $reply .= "   Status: <code>{$status}</code>\n";
+        if (!empty($row['target'])) {
+            $reply .= "   Target: " . escapeHtml($row['target']) . "\n";
+        }
+        if ($row['progress'] !== null) {
+            $reply .= "   Progress: {$row['progress']}%\n";
+        }
+        $reply .= "   ─────────────────\n";
+    }
+    $reply .= "\nKetik /tambah_task untuk menambah task baru.\n";
+    $reply .= "Ketik hapus <code>id</code> untuk menghapus task.\n";
+    $reply .= "Ketik /cancel untuk membatalkan saat ini.";
+
+    setUserState($telegramId, 'awaiting_list_action', ['source' => 'list_tasks']);
+    sendMessage($chatId, $reply);
+    return true;
+}
+
+/**
+ * Hapus task jika ID valid dan milik user.
+ */
+function deleteTask($telegramId, $taskId) {
+    global $conn;
+    try {
+        $sql = "DELETE FROM reminders WHERE task_id = ? AND telegram_id = ?";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            BotLogger::error('Failed to prepare deleteTask statement', [
+                'error' => $conn->error,
+                'telegram_id' => $telegramId,
+                'task_id' => $taskId
+            ]);
+            return false;
+        }
+        $stmt->bind_param("ii", $taskId, $telegramId);
+        if (!$stmt->execute()) {
+            BotLogger::error('Failed to execute deleteTask', [
+                'error' => $stmt->error,
+                'telegram_id' => $telegramId,
+                'task_id' => $taskId
+            ]);
+            $stmt->close();
+            return false;
+        }
+        $deleted = $stmt->affected_rows > 0;
+        $stmt->close();
+        return $deleted;
+    } catch (Exception $e) {
+        BotLogger::error('Exception in deleteTask', [
+            'message' => $e->getMessage(),
+            'telegram_id' => $telegramId,
+            'task_id' => $taskId
+        ]);
+        return false;
+    }
+}
+
+/**
+ * Handle command setelah daftar task tampil.
+ */
+function handleListAction($chatId, $telegramId, $messageText) {
+    $normalized = trim(strtolower($messageText));
+
+    if (preg_match('/^(hapus|delete)\s+(\d+)$/', $normalized, $matches)) {
+        $taskId = (int) $matches[2];
+        if ($taskId <= 0) {
+            sendMessage($chatId, "ID task tidak valid. Gunakan format: hapus <code>id</code>.");
+            return true;
+        }
+        $deleted = deleteTask($telegramId, $taskId);
+        if ($deleted) {
+            BotLogger::info('Task deleted by user', ['telegram_id' => $telegramId, 'task_id' => $taskId]);
+            sendMessage($chatId, "Task dengan ID <code>{$taskId}</code> berhasil dihapus.");
+        } else {
+            sendMessage($chatId, "Gagal menghapus task. Pastikan ID benar dan task milik Anda.");
+        }
+        sendTaskList($chatId, $telegramId);
+        return true;
+    }
+
+    if (preg_match('/^(\d+)$/', $normalized, $matches)) {
+        $taskId = (int) $matches[1];
+        if ($taskId <= 0) {
+            sendMessage($chatId, "ID task tidak valid. Gunakan format: hapus <code>id</code> atau ketik /tambah_task.");
+            return true;
+        }
+        $deleted = deleteTask($telegramId, $taskId);
+        if ($deleted) {
+            BotLogger::info('Task deleted by ID only', ['telegram_id' => $telegramId, 'task_id' => $taskId]);
+            sendMessage($chatId, "Task dengan ID <code>{$taskId}</code> berhasil dihapus.");
+        } else {
+            sendMessage($chatId, "Gagal menghapus task. Pastikan ID benar dan task milik Anda.");
+        }
+        sendTaskList($chatId, $telegramId);
+        return true;
+    }
+
+    sendMessage($chatId, "Perintah tidak dikenali.\n\nKetik /tambah_task untuk menambah task baru atau hapus <code>id</code> untuk menghapus task.\nKetik /cancel untuk membatalkan.");
+    return true;
+}
+
+/**
  * Handle proses tambah task
  * Menggunakan database state management (lebih reliable untuk webhook)
  */
@@ -246,9 +430,9 @@ function handleTambahTask($chatId, $telegramId, $messageText) {
         'state' => $currentState
     ]);
     
-    // State: idle/null - mulai proses tambah task
-    if ($currentState === null) {
-        BotLogger::debug('Starting new task creation flow', ['telegram_id' => $telegramId]);
+    // State: idle/null atau sudah melalui list_tasks - mulai proses tambah task
+    if ($currentState === null || $currentState === 'awaiting_list_action') {
+        BotLogger::debug('Starting new task creation flow', ['telegram_id' => $telegramId, 'current_state' => $currentState]);
         
         // Set state ke waiting_description
         setUserState($telegramId, 'waiting_description', [
@@ -256,7 +440,7 @@ function handleTambahTask($chatId, $telegramId, $messageText) {
             'chat_id' => $chatId
         ]);
         
-        $result = sendMessage($chatId, "📝 Silakan ketikkan nama/deskripsi task yang ingin ditambahkan:\n\nContoh: Belajar PHP jam 8 malam\n\nKetik /cancel untuk membatalkan.");
+        $result = sendMessage($chatId, " Silakan ketikkan nama/deskripsi task yang ingin ditambahkan:\n\nContoh: Belajar PHP jam 8 malam\n\nKetik /cancel untuk membatalkan.");
         
         if ($result === false) {
             BotLogger::error('Failed to send initial message', ['chat_id' => $chatId]);
@@ -280,7 +464,7 @@ function handleTambahTask($chatId, $telegramId, $messageText) {
                 'chat_id' => $chatId,
                 'length' => strlen($description)
             ]);
-            sendMessage($chatId, "❌ Deskripsi terlalu pendek. Minimal 3 karakter.\n\nSilakan ketik ulang deskripsi task:");
+            sendMessage($chatId, " Deskripsi terlalu pendek. Minimal 3 karakter.\n\nSilakan ketik ulang deskripsi task:");
             return true;
         }
         
@@ -288,11 +472,11 @@ function handleTambahTask($chatId, $telegramId, $messageText) {
         $taskId = createTask($telegramId, $description);
         
         if ($taskId) {
-            $successMsg = "✅ Task berhasil ditambahkan!\n\n📋 ID Task: {$taskId}\n📝 Deskripsi: {$description}\n⏰ Status: Pending\n\nKetik /list_task untuk melihat semua task Anda.";
+            $successMsg = " Task berhasil ditambahkan!\n\n ID Task: {$taskId}\n Deskripsi: {$description}\n Status: Pending\n\nKetik /list_task untuk melihat semua task Anda.";
             sendMessage($chatId, $successMsg);
             BotLogger::info('Task creation completed', ['task_id' => $taskId, 'chat_id' => $chatId, 'telegram_id' => $telegramId]);
         } else {
-            $errorMsg = "❌ Gagal menambahkan task. Silakan coba lagi nanti.\n\nError telah dicatat di log.";
+            $errorMsg = " Gagal menambahkan task. Silakan coba lagi nanti.\n\nError telah dicatat di log.";
             sendMessage($chatId, $errorMsg);
             BotLogger::error('Task creation failed', ['chat_id' => $chatId, 'telegram_id' => $telegramId]);
         }
@@ -320,7 +504,7 @@ function cancelTambahTask($chatId, $telegramId) {
     if ($userState && $userState['state'] !== null) {
         clearUserState($telegramId);
         BotLogger::debug('User state cleared on cancel', ['telegram_id' => $telegramId]);
-        sendMessage($chatId, "❌ Proses penambahan task dibatalkan.");
+        sendMessage($chatId, " Proses penambahan task dibatalkan.");
         return true;
     }
     
