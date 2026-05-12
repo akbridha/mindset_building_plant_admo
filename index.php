@@ -104,7 +104,7 @@ function getTaskByUser($chatId) {
     $no = 1;
     foreach ($tasks as $row) {
         try {
-            $description = !empty($row['description']) ? $row['description'] : "[No description]";
+            $description = escapeHtml(!empty($row['task_description']) ? $row['task_description'] : "[No description]");
             $tanggal = !empty($row['created_at']) ? date('d-m-Y H:i', strtotime($row['created_at'])) : 'N/A';
             $status = !empty($row['status']) ? $row['status'] : 'unknown';
 
