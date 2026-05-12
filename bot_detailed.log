@@ -1,0 +1,92 @@
+[2026-05-12 00:35:36] [INFO] Task handler loaded 
+[2026-05-12 00:35:36] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 00:35:36] [INFO] === NEW REQUEST START === 
+[2026-05-12 00:35:36] [DEBUG] Telegram update received {"update":{"update_id":617871301,"message":{"message_id":151,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778546134,"text":"\/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}}
+[2026-05-12 00:35:36] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/start"}
+[2026-05-12 00:35:36] [DEBUG] Session check {"session_key":"add_task_6103145555","session_exists":false,"session_value":"not set","all_session":null}
+[2026-05-12 00:35:36] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"\/start"}
+[2026-05-12 00:35:38] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 00:35:38] [DEBUG] Database connection closed 
+[2026-05-12 00:35:38] [INFO] === REQUEST END === 
+[2026-05-12 00:35:49] [INFO] Task handler loaded 
+[2026-05-12 00:35:49] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 00:35:49] [INFO] === NEW REQUEST START === 
+[2026-05-12 00:35:49] [DEBUG] Telegram update received {"update":{"update_id":617871302,"message":{"message_id":153,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778546147,"text":"\/tambah_task","entities":[{"offset":0,"length":12,"type":"bot_command"}]}}}
+[2026-05-12 00:35:49] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/tambah_task"}
+[2026-05-12 00:35:49] [DEBUG] Session check {"session_key":"add_task_6103145555","session_exists":false,"session_value":"not set","all_session":null}
+[2026-05-12 00:35:49] [INFO] Command /tambah_task received {"chat_id":6103145555}
+[2026-05-12 00:35:49] [INFO] handleTambahTask called {"chat_id":6103145555,"telegram_id":6103145555,"message_text":"","message_length":0}
+[2026-05-12 00:35:49] [DEBUG] Starting new task creation flow {"session_key":"add_task_6103145555"}
+[2026-05-12 00:35:50] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 00:35:50] [INFO] Initial message sent successfully {"chat_id":6103145555}
+[2026-05-12 00:35:50] [DEBUG] Database connection closed 
+[2026-05-12 00:35:50] [INFO] === REQUEST END === 
+[2026-05-12 00:36:59] [INFO] Task handler loaded 
+[2026-05-12 00:36:59] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 00:36:59] [INFO] === NEW REQUEST START === 
+[2026-05-12 00:36:59] [DEBUG] Telegram update received {"update":{"update_id":617871303,"message":{"message_id":155,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778546217,"text":"Jalan kaki di sekitar komplek"}}}
+[2026-05-12 00:36:59] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"Jalan kaki di sekitar komplek"}
+[2026-05-12 00:36:59] [DEBUG] Session check {"session_key":"add_task_6103145555","session_exists":false,"session_value":"not set","all_session":null}
+[2026-05-12 00:36:59] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"Jalan kaki di sekitar komplek"}
+[2026-05-12 00:37:01] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 00:37:01] [DEBUG] Database connection closed 
+[2026-05-12 00:37:01] [INFO] === REQUEST END === 
+[2026-05-12 00:37:14] [INFO] Task handler loaded 
+[2026-05-12 00:37:14] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 00:37:14] [INFO] === NEW REQUEST START === 
+[2026-05-12 00:37:14] [DEBUG] Telegram update received {"update":{"update_id":617871304,"message":{"message_id":157,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778546232,"text":"\/list_user","entities":[{"offset":0,"length":10,"type":"bot_command"}]}}}
+[2026-05-12 00:37:14] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_user"}
+[2026-05-12 00:37:14] [DEBUG] Session check {"session_key":"add_task_6103145555","session_exists":false,"session_value":"not set","all_session":null}
+[2026-05-12 00:37:14] [INFO] Command /list_user received {"chat_id":6103145555}
+[2026-05-12 00:37:14] [INFO] User list retrieved {"count":4}
+[2026-05-12 00:37:15] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 00:37:15] [DEBUG] Database connection closed 
+[2026-05-12 00:37:15] [INFO] === REQUEST END === 
+[2026-05-12 00:45:41] [INFO] Task handler loaded 
+[2026-05-12 00:45:41] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 00:45:41] [INFO] === NEW REQUEST START === 
+[2026-05-12 00:45:41] [DEBUG] Telegram update received {"update":{"update_id":617871305,"message":{"message_id":159,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778546739,"text":"\/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}}
+[2026-05-12 00:45:41] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/start"}
+[2026-05-12 00:45:41] [DEBUG] Session check {"session_key":"add_task_6103145555","session_exists":false,"session_value":"not set","all_session":null}
+[2026-05-12 00:45:41] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"\/start"}
+[2026-05-12 00:45:42] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 00:45:42] [DEBUG] Database connection closed 
+[2026-05-12 00:45:42] [INFO] === REQUEST END === 
+[2026-05-12 00:45:47] [INFO] Task handler loaded 
+[2026-05-12 00:45:47] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 00:45:47] [INFO] === NEW REQUEST START === 
+[2026-05-12 00:45:47] [DEBUG] Telegram update received {"update":{"update_id":617871306,"message":{"message_id":161,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778546745,"text":"\/list_user","entities":[{"offset":0,"length":10,"type":"bot_command"}]}}}
+[2026-05-12 00:45:47] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/list_user"}
+[2026-05-12 00:45:47] [DEBUG] Session check {"session_key":"add_task_6103145555","session_exists":false,"session_value":"not set","all_session":null}
+[2026-05-12 00:45:47] [INFO] Command /list_user received {"chat_id":6103145555}
+[2026-05-12 00:45:47] [INFO] User list retrieved {"count":4}
+[2026-05-12 00:45:49] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 00:45:49] [DEBUG] Database connection closed 
+[2026-05-12 00:45:49] [INFO] === REQUEST END === 
+[2026-05-12 00:45:59] [INFO] Task handler loaded 
+[2026-05-12 00:45:59] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 00:45:59] [INFO] === NEW REQUEST START === 
+[2026-05-12 00:45:59] [DEBUG] Telegram update received {"update":{"update_id":617871307,"message":{"message_id":163,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778546757,"text":"\/tambah_task","entities":[{"offset":0,"length":12,"type":"bot_command"}]}}}
+[2026-05-12 00:45:59] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"\/tambah_task"}
+[2026-05-12 00:45:59] [DEBUG] Session check {"session_key":"add_task_6103145555","session_exists":false,"session_value":"not set","all_session":null}
+[2026-05-12 00:45:59] [INFO] Command /tambah_task received {"chat_id":6103145555}
+[2026-05-12 00:45:59] [INFO] handleTambahTask called {"chat_id":6103145555,"telegram_id":6103145555,"message_text":"","message_length":0}
+[2026-05-12 00:45:59] [DEBUG] No state found for user {"telegram_id":6103145555}
+[2026-05-12 00:45:59] [DEBUG] Current user state from database {"telegram_id":6103145555,"state":null}
+[2026-05-12 00:45:59] [DEBUG] Starting new task creation flow {"telegram_id":6103145555}
+[2026-05-12 00:45:59] [DEBUG] Setting user state {"telegram_id":6103145555,"state":"waiting_description","context_data":{"started_at":"2026-05-12 00:45:59","chat_id":6103145555}}
+[2026-05-12 00:45:59] [INFO] User state set successfully {"telegram_id":6103145555,"state":"waiting_description"}
+[2026-05-12 00:46:01] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 00:46:01] [INFO] Initial message sent successfully {"chat_id":6103145555}
+[2026-05-12 00:46:01] [DEBUG] Database connection closed 
+[2026-05-12 00:46:01] [INFO] === REQUEST END === 
+[2026-05-12 00:46:23] [INFO] Task handler loaded 
+[2026-05-12 00:46:23] [INFO] Request received {"method":"POST","uri":"\/bot\/","ip":"::1","user_agent":"UNKNOWN"}
+[2026-05-12 00:46:23] [INFO] === NEW REQUEST START === 
+[2026-05-12 00:46:23] [DEBUG] Telegram update received {"update":{"update_id":617871308,"message":{"message_id":165,"from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},"chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},"date":1778546781,"text":"Mandi Air Es sebelum tidur"}}}
+[2026-05-12 00:46:23] [INFO] Message received {"chat_id":6103145555,"telegram_id":6103145555,"username":"ekobudi17","message_text":"Mandi Air Es sebelum tidur"}
+[2026-05-12 00:46:23] [DEBUG] Session check {"session_key":"add_task_6103145555","session_exists":false,"session_value":"not set","all_session":null}
+[2026-05-12 00:46:23] [DEBUG] Regular message (not a command) {"chat_id":6103145555,"message":"Mandi Air Es sebelum tidur"}
+[2026-05-12 00:46:24] [DEBUG] sendMessage success {"chat_id":6103145555}
+[2026-05-12 00:46:24] [DEBUG] Database connection closed 
+[2026-05-12 00:46:24] [INFO] === REQUEST END === 
