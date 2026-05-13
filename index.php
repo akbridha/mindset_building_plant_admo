@@ -49,51 +49,48 @@ if (isset($update['message'])) {
         'message' => $messageText
     ]);
     
-    // Prioritaskan command khusus terlebih dahulu
+    // Classify message and determine response
+    $balasan = "";
+    
     if ($messageText == '/cancel') {
         BotLogger::info('Command /cancel received', ['chat_id' => $chatId]);
-        cancelUserState($chatId, $telegramId);
+        $balasan = handleCancelCommand($chatId, $telegramId);
     }
     elseif ($messageText == '/list_tasks') {
-        BotLogger::info('Command /list_tasks received', ['chat_id' => $chatId]);
-        sendTaskList($chatId, $telegramId);
+        // $balasan = handleListTasksCommand($chatId, $telegramId);
+        $balasan = "tasklist DUmmy";
     }
     elseif ($messageText == '/list_user') {
-        $reply = getUsers();
-        sendMessage($chatId, $reply);
+        $balasan = handleListUserCommand($chatId, $telegramId);
     }
     elseif ($messageText == '/tambah_task') {
-        if ($currentState === 'awaiting_list_action') {
-            BotLogger::info('Command /tambah_task received from list menu', ['chat_id' => $chatId]);
-            handleTambahTask($chatId, $telegramId, '');
-        } else {
-            BotLogger::warning('Add task requested before list_tasks', ['chat_id' => $chatId]);
-            sendMessage($chatId, "Sebelum menambah task baru, silakan gunakan /list_tasks terlebih dahulu.\n\nSetelah daftar task muncul, Anda dapat memilih /tambah_task untuk menambah task atau ketik hapus <code>id</code> untuk menghapus task.");
-        }
+        $balasan = handleTambahTaskCommand($chatId, $telegramId, $currentState);
+    }
+    elseif ($currentState === 'awaiting_list_action') {
+        BotLogger::info('Handling list action', ['chat_id' => $chatId, 'message' => $messageText]);
+        $balasan = handleListAction($chatId, $telegramId, $messageText);
     }
     elseif ($currentState !== null) {
-        if ($currentState === 'awaiting_list_action') {
-            handleListAction($chatId, $telegramId, $messageText);
-        } else {
-            BotLogger::info('Processing task addition flow', [
-                'chat_id' => $chatId,
-                'current_state' => $currentState
-            ]);
-            handleTambahTask($chatId, $telegramId, $messageText);
-        }
+        BotLogger::info('Processing task addition flow', [
+            'chat_id' => $chatId,
+            'current_state' => $currentState
+        ]);
+        $balasan = handleTambahTask($chatId, $telegramId, $messageText);
     }
     else {
         BotLogger::debug('Regular message or unknown command', [
             'chat_id' => $chatId,
             'message' => $messageText
         ]);
-        
-
-        $teksBalasan = getPesanBalasanDefault($username);
-        
-        sendMessage($chatId, $teksBalasan);
+        $balasan = getPesanBalasanDefault($username);
     }
-} 
+    
+    // Send response if not empty
+    if (!empty($balasan)) {
+        sendMessage($chatId, $balasan);
+        BotLogger::info('Response sent', ['chat_id' => $chatId, 'response' => $balasan]);
+    }
+}
 // Handle callback query jika ada
 elseif (isset($update['callback_query'])) {
     BotLogger::info('Callback query received', ['callback_data' => $update['callback_query']]);
