@@ -1,32 +1,24 @@
-
 const { Bot } = require("grammy");
-const { db } = require( "./db.js");
 const dotenv = require("dotenv");
 
 dotenv.config();
 
 const bot = new Bot(process.env.BOT_TOKEN);
 
+// import command
+const startCommand = require("./commands/start");
+const listCommand = require("./commands/list_user");
 
-// command /start
-bot.command("start", (ctx) => {
-  ctx.reply("Bot aktif 🚀");
-});
+// register command
+bot.command("start", startCommand);
+bot.command("list", listCommand);
+
+bot.start();
+
+console.log("Bot running...");
 
 
-bot.command("list", async (ctx) => {
-  const [rows] = await db.execute(`
-    SELECT telegram_id, created_at 
-    FROM users 
-    ORDER BY id DESC
-    `);
-    
-    let text = rows
-    .map((r) => `${r.telegram_id} - ${r.created_at}`)
-    .join("\n");
-    
-    await ctx.reply(text || "Data kosong");
-  });
+
   // kalau ada pesan
   // bot.on("message:text", (ctx) => {
   //   ctx.reply("Halo! Kamu bilang: " + ctx.message.text);
@@ -37,6 +29,6 @@ bot.command("list", async (ctx) => {
   // bot.on("message:audio")     // audio
   // bot.on("message:document")  // file
   
-  bot.start();
 
-  console.log("Bot running...");
+
+
