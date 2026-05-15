@@ -1,9 +1,13 @@
 const { Bot } = require("grammy");
+const cron = require("node-cron");
 const dotenv = require("dotenv");
 
 dotenv.config();
 
 const bot = new Bot(process.env.BOT_TOKEN);
+
+const TELEGRAM_ID_OWNER = process.env.TELEGRAM_ID_OWNER;
+
 
 // ========== IMPORT COMMANDS ==========
 const startCommand = require("./commands/start");
@@ -69,6 +73,10 @@ bot.on("callback_query:data", async (ctx) => {
         await addTaskStep4bCustom(ctx);
         break;
 
+      case "list_user":
+        await listUserCommand(ctx);
+        break;
+
       default:
         await ctx.answerCallbackQuery("Unknown action");
     }
@@ -76,8 +84,8 @@ bot.on("callback_query:data", async (ctx) => {
     // Answer callback query to remove "loading" state from button
     await ctx.answerCallbackQuery();
   } catch (error) {
-    console.error("Error handling callback query:", error);
-    await ctx.answerCallbackQuery("Error processing request");
+    console.error("Error handling callback query. Location index.js:callback_query:data:", error);
+    await ctx.answerCallbackQuery("Error Recognizing Callback Action.");
   }
 });
 
@@ -87,6 +95,23 @@ bot.on("message:text", messageRouter);
 
 // ========== START BOT ==========
 bot.start();
+
+
+
+// fungsi kirim 3 kali
+async function sendThreeTimes() {
+  for (let i = 0; i < 3; i++) {
+    await bot.api.sendMessage(TELEGRAM_ID_OWNER, `halo ke-${i + 1}`);
+
+    // delay biar tidak spam sekaligus
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+}
+
+cron.schedule("* * * * *", async () => {
+  console.log("Running scheduled task...");
+  await sendThreeTimes();
+});
 
 console.log("✅ Bot running...");
 

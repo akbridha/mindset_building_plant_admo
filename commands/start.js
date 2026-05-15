@@ -6,9 +6,10 @@ module.exports = async (ctx) => {
     parse_mode: "HTML",
     reply_markup: {
         inline_keyboard: [
-        [{ text: "➕ Tambah Task", callback_data: "add_task" }],
-          [{ text: "🗑️ Hapus Task", callback_data: "remove_task" }],
-          [{ text: "⛑️ List Users", callback_data: "list_user" }]
+            [{ text: "📋 Daftar Task", callback_data: "list_task" }],
+            [{ text: "➕ Tambah Task", callback_data: "add_task" }],
+            [{ text: "🗑️ Hapus Task", callback_data: "remove_task" }],
+            [{ text: "⛑️ Belajar Contoh Get-Users", callback_data: "list_user" }]
 
         ]
         // keyboard: [
