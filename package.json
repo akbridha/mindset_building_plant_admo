@@ -21,6 +21,7 @@
   "dependencies": {
     "dotenv": "^17.4.2",
     "grammy": "^1.42.0",
-    "mysql2": "^3.22.3"
+    "mysql2": "^3.22.3",
+    "node-cron": "^4.2.1"
   }
 }
