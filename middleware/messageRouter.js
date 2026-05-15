@@ -1,4 +1,4 @@
-const { addTaskStep2, addTaskStep3, addTaskStep4 } = require("../commands/add_task");
+const { addTaskStep2, addTaskStep3, addTaskStep4bInterval, addTaskStep5 } = require("../commands/add_task");
 const { removeTaskStep2, removeTaskConfirm } = require("../commands/remove_task");
 
 /**
@@ -27,8 +27,11 @@ async function messageRouter(ctx) {
       case "awaiting_checkpoint_time":
         return addTaskStep3(ctx, userInput);
 
+      case "awaiting_interval_custom":
+        return addTaskStep4bInterval(ctx, userInput);
+
       case "awaiting_target":
-        return addTaskStep4(ctx, userInput);
+        return addTaskStep5(ctx, userInput);
 
       case "awaiting_task_selection_for_removal":
         return removeTaskStep2(ctx, userInput);

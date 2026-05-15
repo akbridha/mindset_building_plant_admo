@@ -61,7 +61,7 @@ async function addTaskStep2(ctx, taskDescription) {
       task_description: taskDescription.trim() 
     });
 
-    // Move to step 2
+    // Move to step 3
     await stateService.setState(
       telegram_id,
       "awaiting_checkpoint_time",
@@ -70,14 +70,14 @@ async function addTaskStep2(ctx, taskDescription) {
 
     return ctx.reply(
       "✅ Task description saved: <b>" + taskDescription.trim() + "</b>\n\n" +
-      "⏰ <b>What time should the reminder trigger?</b>\n" +
-      "Send in <code>HH:MM</code> format (24-hour)\n\n" +
-      "Example: <code>14:30</code> for 2:30 PM",
+      "⏰ <b>Jam berapa reminder pertama kali dikirimkan?</b>\n" +
+      "Kirim dalam format <code>HH:MM</code> (24-hour)\n\n" +
+      "Contoh: <code>14:30</code> untuk Jam 2:30 sore",
       {
         parse_mode: "HTML",
         reply_markup: {
           inline_keyboard: [
-            [{ text: "❌ Cancel", callback_data: "cancel" }]
+            [{ text: "❌ Batal", callback_data: "cancel" }]
           ]
         }
       }
@@ -100,7 +100,7 @@ async function addTaskStep3(ctx, checkpointTime) {
     const timeRegex = /^([0-1]\d|2[0-3]):[0-5]\d$/;
     if (!timeRegex.test(checkpointTime)) {
       return ctx.reply(
-        "❌ Format Waktu Invalid .\n\n" +
+        "❌ Format Waktu Invalid.\n\n" +
         "Gunakan format <code>HH:MM</code> (24-hour)\n" +
         "Contoh: <code>14:30</code>\n\n" +
         "Coba lagi:",
@@ -113,16 +113,59 @@ async function addTaskStep3(ctx, checkpointTime) {
       checkpoint_time: checkpointTime 
     });
 
-    // Move to step 3
+    // Move to step 4: Ask for interval type
     await stateService.setState(
       telegram_id,
-      "awaiting_target",
+      "awaiting_interval_type",
       { ...context, checkpoint_time: checkpointTime }
     );
 
     return ctx.reply(
-      "✅ Checkpoint time saved: <b>" + checkpointTime + "</b>\n\n" +
-      "🎯 <b>Berapa kali reminder dikirimkan?</b>\n" +
+      "✅ Waktu mulai reminder: <b>" + checkpointTime + "</b>\n\n" +
+      "📅 <b>Kapan User hendak diberikan Reminder?</b>\n" +
+      "Pilih salah satu:",
+      {
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: "🗓️ Harian (24:00:00)", callback_data: "interval_daily" },
+              { text: "⏰ Per Jam:Menit", callback_data: "interval_custom" }
+            ]
+          ]
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Error in addTaskStep3:", error);
+    return ctx.reply("❌ Error processing time. Mohon Coba lagi.");
+  }
+}
+
+/**
+ * Step 4a: Handle interval type selection - Daily
+ */
+async function addTaskStep4aDaily(ctx) {
+  try {
+    const telegram_id = ctx.state.telegram_id;
+    const context = ctx.state.userContext;
+
+    // Set interval to daily (24:00:00 in TIME format)
+    await stateService.updateContext(telegram_id, {
+      interval_type: "harian",
+      interval: "24:00:00"
+    });
+
+    // Move to step 5: Ask for target/frequency
+    await stateService.setState(
+      telegram_id,
+      "awaiting_target",
+      { ...context, interval_type: "harian", interval: "24:00:00" }
+    );
+
+    return ctx.reply(
+      "✅ Tipe Reminder: <b>Harian (24 jam)</b>\n\n" +
+      "🎯 <b>Berapa kali reminder akan dikirimkan?</b>\n" +
       "Kirim dalam bentuk angka\n\n" +
       "Contoh: <code>3</code> artinya 3 total reminder",
       {
@@ -135,15 +178,109 @@ async function addTaskStep3(ctx, checkpointTime) {
       }
     );
   } catch (error) {
-    console.error("Error in addTaskStep3:", error);
-    return ctx.reply("❌ Error processing time.Mohon Coba lagi.");
+    console.error("Error in addTaskStep4aDaily:", error);
+    return ctx.reply("❌ Error processing selection. Please try again.");
   }
 }
 
 /**
- * Step 4: Handle target (frequency) input and finalize task creation
+ * Step 4b: Handle interval type selection - Custom
+ * Ask user to input custom interval time
  */
-async function addTaskStep4(ctx, target) {
+async function addTaskStep4bCustom(ctx) {
+  try {
+    const telegram_id = ctx.state.telegram_id;
+    const context = ctx.state.userContext;
+
+    // Move to step 4b: Ask for custom interval time
+    await stateService.setState(
+      telegram_id,
+      "awaiting_interval_custom",
+      { ...context, interval_type: "custom" }
+    );
+
+    return ctx.reply(
+      "✅ Tipe Reminder: <b>Per Jam:Menit</b>\n\n" +
+      "⏰ <b>Berapa interval setiap berapa jam:menit reminder dikirim?</b>\n" +
+      "Kirim dalam format <code>HH:MM</code>\n\n" +
+      "Contoh:\n" +
+      "<code>01:30</code> = setiap 1 jam 30 menit\n" +
+      "<code>00:30</code> = setiap 30 menit",
+      {
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "❌ Batal", callback_data: "cancel" }]
+          ]
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Error in addTaskStep4bCustom:", error);
+    return ctx.reply("❌ Error processing selection. Please try again.");
+  }
+}
+
+/**
+ * Step 4b-Extended: Handle custom interval time input
+ */
+async function addTaskStep4bInterval(ctx, intervalTime) {
+  try {
+    const telegram_id = ctx.state.telegram_id;
+    const context = ctx.state.userContext;
+
+    // Validate time format HH:MM
+    const timeRegex = /^([0-1]\d|2[0-3]):[0-5]\d$/;
+    if (!timeRegex.test(intervalTime)) {
+      return ctx.reply(
+        "❌ Format Interval Invalid.\n\n" +
+        "Gunakan format <code>HH:MM</code>\n" +
+        "Contoh: <code>01:30</code> atau <code>00:30</code>\n\n" +
+        "Coba lagi:",
+        { parse_mode: "HTML" }
+      );
+    }
+
+    // Convert HH:MM to HH:MM:00 format (TIME in MySQL)
+    const intervalFormatted = intervalTime + ":00";
+
+    // Update context with custom interval
+    await stateService.updateContext(telegram_id, {
+      interval_type: "custom",
+      interval: intervalFormatted
+    });
+
+    // Move to step 5: Ask for target/frequency
+    await stateService.setState(
+      telegram_id,
+      "awaiting_target",
+      { ...context, interval_type: "custom", interval: intervalFormatted }
+    );
+
+    return ctx.reply(
+      "✅ Interval: <b>" + intervalTime + " (setiap " + intervalTime + " jam:menit)</b>\n\n" +
+      "🎯 <b>Berapa kali reminder akan dikirimkan?</b>\n" +
+      "Kirim dalam bentuk angka\n\n" +
+      "Contoh: <code>3</code> artinya 3 total reminder",
+      {
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "❌ Batal", callback_data: "cancel" }]
+          ]
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Error in addTaskStep4bInterval:", error);
+    return ctx.reply("❌ Error processing interval. Please try again.");
+  }
+}
+
+/**
+ * Step 5 (Final): Handle target (frequency) input and finalize task creation
+ */
+async function addTaskStep5(ctx, target) {
   try {
     const telegram_id = ctx.state.telegram_id;
     const context = ctx.state.userContext;
@@ -152,19 +289,19 @@ async function addTaskStep4(ctx, target) {
     const targetNum = parseInt(target, 10);
     if (isNaN(targetNum) || targetNum <= 0) {
       return ctx.reply(
-        "❌ Please send a valid number.\n\n" +
-        "Example: <code>3</code>\n\n" +
-        "Try again:",
+        "❌ Mohon kirimkan angka yang valid.\n\n" +
+        "Contoh: <code>3</code>\n\n" +
+        "Coba lagi:",
         { parse_mode: "HTML" }
       );
     }
 
-    // Create task in database
+    // Create task in database with dynamic interval
     const taskData = {
       task_description: context.task_description,
       checkpoint_time: context.checkpoint_time,
       target: targetNum,
-      interval: "once"
+      interval: context.interval  // Now dynamic!
     };
 
     const taskId = await taskService.createTask(telegram_id, taskData);
@@ -172,10 +309,15 @@ async function addTaskStep4(ctx, target) {
     // Clear state
     await stateService.clearState(telegram_id);
 
+    const intervalDisplay = context.interval_type === "harian" 
+      ? "Harian (24:00:00)" 
+      : "Per " + context.interval;
+
     return ctx.reply(
-      "✅ <b>Task Berhasil Dibuat  !</b>\n\n" +
+      "✅ <b>Task Berhasil Dibuat !</b>\n\n" +
       "📝 " + context.task_description + "\n" +
-      "⏰ " + context.checkpoint_time + "\n" +
+      "⏰ Checkpoint: " + context.checkpoint_time + "\n" +
+      "📅 Interval: " + intervalDisplay + "\n" +
       "🎯 " + targetNum + " reminder(s)\n\n" +
       "Gunakan /list_task untuk melihat semua task.",
       {
@@ -189,7 +331,7 @@ async function addTaskStep4(ctx, target) {
       }
     );
   } catch (error) {
-    console.error("Error in addTaskStep4:", error);
+    console.error("Error in addTaskStep5:", error);
     await stateService.clearState(telegram_id);
     return ctx.reply("❌ Error membuat task. Mohon Coba Lagi.");
   }
@@ -199,5 +341,8 @@ module.exports = {
   addTaskCommand,
   addTaskStep2,
   addTaskStep3,
-  addTaskStep4
+  addTaskStep4aDaily,
+  addTaskStep4bCustom,
+  addTaskStep4bInterval,
+  addTaskStep5
 };

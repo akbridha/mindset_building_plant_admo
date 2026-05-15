@@ -9,14 +9,13 @@ const bot = new Bot(process.env.BOT_TOKEN);
 const startCommand = require("./commands/start");
 const listUserCommand = require("./commands/list_user");
 const listTaskCommand = require("./commands/list_task");
-const { addTaskCommand } = require("./commands/add_task");
-const { removeTaskCommand } = require("./commands/remove_task");
+const { addTaskCommand, addTaskStep4aDaily, addTaskStep4bCustom } = require("./commands/add_task");
+const { removeTaskCommand, removeTaskConfirm } = require("./commands/remove_task");
 const cancelCommand = require("./commands/cancel");
 
 // ========== IMPORT MIDDLEWARE ==========
 const stateMiddleware = require("./middleware/stateMiddleware");
 const messageRouter = require("./middleware/messageRouter");
-const { removeTaskConfirm } = require("./commands/remove_task");
 
 // ========== APPLY MIDDLEWARE ==========
 // State middleware must be applied BEFORE command handlers to attach state to context
@@ -60,6 +59,14 @@ bot.on("callback_query:data", async (ctx) => {
 
       case "list_task":
         await listTaskCommand(ctx);
+        break;
+
+      case "interval_daily":
+        await addTaskStep4aDaily(ctx);
+        break;
+
+      case "interval_custom":
+        await addTaskStep4bCustom(ctx);
         break;
 
       default:
