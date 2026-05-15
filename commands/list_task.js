@@ -13,8 +13,8 @@ async function listTaskCommand(ctx) {
 
     if (tasks.length === 0) {
       return ctx.reply(
-        "📋 You have no tasks yet.\n\n" +
-        "Use /add_task to create a new task!",
+        "📋 Anda Belum Memiliki Task.\n\n" +
+        "Gunakan  /add_task untuk membuat Task Baru!",
         {
           parse_mode: "HTML",
           reply_markup: {
@@ -37,20 +37,20 @@ async function listTaskCommand(ctx) {
       taskList += `   ⏰ ${task.checkpoint_time} | 🎯 ${task.progress}/${task.target} ${status}\n\n`;
     });
 
-    taskList += "\n<i>Tap /list_task to refresh</i>";
+    taskList += "\n<i>Tekan /list_task untuk refreshh</i>";
 
     return ctx.reply(taskList, {
       parse_mode: "HTML",
       reply_markup: {
         inline_keyboard: [
-          [{ text: "➕ Add Task", callback_data: "add_task" }],
-          [{ text: "🗑️ Remove Task", callback_data: "remove_task" }]
+          [{ text: "➕ Tambah Task", callback_data: "add_task" }],
+          [{ text: "🗑️ Hapus Task", callback_data: "remove_task" }]
         ]
       }
     });
   } catch (error) {
     console.error("Error in listTaskCommand:", error);
-    return ctx.reply("❌ Error loading tasks. Please try again later.");
+    return ctx.reply("❌ Error loading tasks. Mohon Coba lagi.");
   }
 }
 

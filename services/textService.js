@@ -1,29 +1,25 @@
 function getTeksBalasan() {
   return `
-🧠 <b>Mindset Building</b>
-Tracking System
-
+ 🚧 <b>Mindset Building</b> 🚧 👷🏼
+ ❇️<b>Tracking System</b> ❇️ by SBP
 
 Gunakan untuk :
 • Set Goal
 • Checkpoint
 • Summary
 
-
-📌 Kedisiplinan merupakan bagian dari standar profesional kerja.
-
 Silakan pilih menu untuk memulai.
-
-• /list_task
-• /list_user
-• /new_task
-
-
 `;
 }
-// kepada atasan secara <b>terstruktur</b> dan <b>terdokumentasi</b>.
+// 📌 Kedisiplinan merupakan bagian dari standar profesional kerja.
 // 👷🏼
 // ⛑️
+// 🧠
+// 🛠️
+// 🚧
+// ✨
+// ❇️
+// 🆘
 
 module.exports = {
   getTeksBalasan,

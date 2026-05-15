@@ -12,8 +12,8 @@ async function cancelCommand(ctx) {
     // Check if there's an active state
     if (currentState === null) {
       return ctx.reply(
-        "ℹ️ No active task flow to cancel.\n\n" +
-        "Use /add_task or /remove_task to start a flow."
+        "ℹ️ Tidak ada flow task yang sedang aktif untuk dibatalkan.\n\n" +
+        "Gunakan /add_task atau /remove_task untuk memulai flow."
       );
     }
 
@@ -21,20 +21,20 @@ async function cancelCommand(ctx) {
     await stateService.clearState(telegram_id);
 
     return ctx.reply(
-      "❌ <b>Cancelled.</b>\n\n" +
-      "All changes discarded. Back to normal mode.",
+      "❌ <b>Dibatalkan.</b>\n\n" +
+      "Semua perubahan tidak disimpan. kombali ke mode normal.",
       {
         parse_mode: "HTML",
         reply_markup: {
           inline_keyboard: [
-            [{ text: "📋 View Tasks", callback_data: "list_task" }]
+            [{ text: "📋 Lihat Task", callback_data: "list_task" }]
           ]
         }
       }
     );
   } catch (error) {
     console.error("Error in cancelCommand:", error);
-    return ctx.reply("❌ Error cancelling flow. Please try again.");
+    return ctx.reply("❌ Gagal Membatalkan Alur task. Mohon Coba lagi.");
   }
 }
 

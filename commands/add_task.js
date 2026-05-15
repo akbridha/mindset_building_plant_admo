@@ -13,8 +13,8 @@ async function addTaskCommand(ctx) {
     // Check if already in progress
     if (currentState !== null) {
       return ctx.reply(
-        "⚠️ You're already in the middle of a task flow.\n\n" +
-        "Use /cancel to restart, or complete the current flow."
+        "⚠️ Anda tengah berada di dalam suatu alur fitur.\n\n" +
+        "Gunakan /cancel untuk memulai ulang, atau selesaikan flow saat ini."
       );
     }
 
@@ -22,10 +22,10 @@ async function addTaskCommand(ctx) {
     await stateService.setState(telegram_id, "awaiting_task_description", {});
 
     return ctx.reply(
-      "📝 <b>Creating a new task</b>\n\n" +
-      "What should this task be about?\n" +
-      "<i>Send a text description</i>\n\n" +
-      "Example: <code>Water plants</code>",
+      "📝 <b>Menambahkan task baru</b>\n\n" +
+      "Buat Nama Task ?\n" +
+      "<i>Kirim deskripsi teks</i>\n\n" +
+      "Contoh: \n<code> - Belajar Membuat umpan pancing imitasi</code>\n <code>- Persiapan Ujian Kompetensi</code> ",
       {
         parse_mode: "HTML",
         reply_markup: {
@@ -51,8 +51,8 @@ async function addTaskStep2(ctx, taskDescription) {
     // Validate input
     if (!taskDescription || taskDescription.trim().length === 0) {
       return ctx.reply(
-        "❌ Please enter a valid task description.\n\n" +
-        "Try again or /cancel"
+        "❌ Mohon masukkan deskripsi task yang valid.\n\n" +
+        "Coba lagi atau /cancel"
       );
     }
 
@@ -100,10 +100,10 @@ async function addTaskStep3(ctx, checkpointTime) {
     const timeRegex = /^([0-1]\d|2[0-3]):[0-5]\d$/;
     if (!timeRegex.test(checkpointTime)) {
       return ctx.reply(
-        "❌ Invalid time format.\n\n" +
-        "Use <code>HH:MM</code> format (24-hour)\n" +
-        "Example: <code>14:30</code>\n\n" +
-        "Try again:",
+        "❌ Format Waktu Invalid .\n\n" +
+        "Gunakan format <code>HH:MM</code> (24-hour)\n" +
+        "Contoh: <code>14:30</code>\n\n" +
+        "Coba lagi:",
         { parse_mode: "HTML" }
       );
     }
@@ -122,21 +122,21 @@ async function addTaskStep3(ctx, checkpointTime) {
 
     return ctx.reply(
       "✅ Checkpoint time saved: <b>" + checkpointTime + "</b>\n\n" +
-      "🎯 <b>How many times should you be reminded?</b>\n" +
-      "Send a number\n\n" +
-      "Example: <code>3</code> means 3 reminders total",
+      "🎯 <b>Berapa kali reminder dikirimkan?</b>\n" +
+      "Kirim dalam bentuk angka\n\n" +
+      "Contoh: <code>3</code> artinya 3 total reminder",
       {
         parse_mode: "HTML",
         reply_markup: {
           inline_keyboard: [
-            [{ text: "❌ Cancel", callback_data: "cancel" }]
+            [{ text: "❌ Batal", callback_data: "cancel" }]
           ]
         }
       }
     );
   } catch (error) {
     console.error("Error in addTaskStep3:", error);
-    return ctx.reply("❌ Error processing time. Please try again.");
+    return ctx.reply("❌ Error processing time.Mohon Coba lagi.");
   }
 }
 
@@ -173,17 +173,17 @@ async function addTaskStep4(ctx, target) {
     await stateService.clearState(telegram_id);
 
     return ctx.reply(
-      "✅ <b>Task created successfully!</b>\n\n" +
+      "✅ <b>Task Berhasil Dibuat  !</b>\n\n" +
       "📝 " + context.task_description + "\n" +
       "⏰ " + context.checkpoint_time + "\n" +
       "🎯 " + targetNum + " reminder(s)\n\n" +
-      "Use /list_task to see all tasks.",
+      "Gunakan /list_task untuk melihat semua task.",
       {
         parse_mode: "HTML",
         reply_markup: {
           inline_keyboard: [
-            [{ text: "📋 View Tasks", callback_data: "list_task" }],
-            [{ text: "➕ Add Another", callback_data: "add_task" }]
+            [{ text: "📋 Lihat Task", callback_data: "list_task" }],
+            [{ text: "➕ Tambah Baru", callback_data: "add_task" }]
           ]
         }
       }
@@ -191,7 +191,7 @@ async function addTaskStep4(ctx, target) {
   } catch (error) {
     console.error("Error in addTaskStep4:", error);
     await stateService.clearState(telegram_id);
-    return ctx.reply("❌ Error creating task. Please try again.");
+    return ctx.reply("❌ Error membuat task. Mohon Coba Lagi.");
   }
 }
 

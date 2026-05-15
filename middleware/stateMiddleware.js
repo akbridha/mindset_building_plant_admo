@@ -23,8 +23,8 @@ async function stateMiddleware(ctx, next) {
       
       // Notify user of timeout
       await ctx.reply(
-        "⏱️ Your session timed out (5 minutes of inactivity).\n\n" +
-        "Type /start to begin again."
+        "⏱️ Sesi Anda telah kedaluwarsa (5 menit ketidakaktifan).\n\n" +
+        "Ketik /start untuk memulai lagi."
       );
       
       // Still process the command, but state is now cleared

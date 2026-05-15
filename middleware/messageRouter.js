@@ -14,8 +14,8 @@ async function messageRouter(ctx) {
     // If no state, user is idle - don't know what to do with message
     if (userState === null) {
       return ctx.reply(
-        "ℹ️ I don't understand that command.\n\n" +
-        "Try /start to see available commands."
+        "ℹ️ Perintah/Pesan tidak dikenal.\n\n" +
+        "Coba /start untuk melihat perintah yang tersedia."
       );
     }
 
@@ -36,13 +36,13 @@ async function messageRouter(ctx) {
       default:
         // Unknown state - reset and inform user
         return ctx.reply(
-          "⚠️ Unknown state. Please try /cancel and start over."
+          "⚠️ State tidak dikenal. Silakan coba /cancel dan mulai lagi."
         );
     }
   } catch (error) {
     console.error("Error in messageRouter:", error);
     return ctx.reply(
-      "❌ An error occurred. Please try /cancel and start over."
+      "❌ Terjadi kesalahan. Silakan coba /cancel dan mulai lagi."
     );
   }
 }
