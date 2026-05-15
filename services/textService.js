@@ -1,7 +1,8 @@
 function getTeksBalasan() {
   return `
  🚧 <b>Mindset Building</b> 🚧 👷🏼
- ❇️<b>Tracking System</b> ❇️ by SBP
+ ❇️<b>Tracking System</b> ❇️
+ #by SBP
 
 Gunakan untuk :
 • Set Goal

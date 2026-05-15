@@ -1,14 +1,37 @@
 const stateService = require("../services/stateService");
 const taskService = require("../services/taskService");
+const referenceService = require("../services/referenceService");
 
 /**
  * /remove_task command handler - Step 1: Show task list
  * Initiates the multi-step task removal flow
+ * Validates reference code status before allowing operation
  */
 async function removeTaskCommand(ctx) {
   try {
     const telegram_id = ctx.state.telegram_id;
     const currentState = ctx.state.userState;
+    const isAdmin = ctx.state.isAdmin;
+    const referenceCode = ctx.state.referenceCode;
+
+    // Check reference code status if user has one (non-admin users)
+    if (!isAdmin && referenceCode) {
+      const isValid = await referenceService.isReferenceCodeValid(referenceCode);
+      if (!isValid) {
+        return ctx.reply(
+          "❌ Reference code Anda sudah ditutup oleh admin.\n\n" +
+          "Hubungi admin untuk mendapatkan reference code baru."
+        );
+      }
+    }
+
+    // If user is not admin and has no reference code, reject
+    if (!isAdmin && !referenceCode) {
+      return ctx.reply(
+        "❌ Anda tidak authorized untuk menggunakan fitur ini.\n\n" +
+        "Silakan lakukan /start_[REFERENCE_CODE] terlebih dahulu."
+      );
+    }
 
     // Check if already in progress
     if (currentState !== null) {
