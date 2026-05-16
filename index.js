@@ -1,6 +1,7 @@
 const { Bot } = require("grammy");
 const cron = require("node-cron");
 const dotenv = require("dotenv");
+const { startCron } = require("./cron/runner");
 
 dotenv.config();
 
@@ -117,7 +118,7 @@ bot.on("message:text", messageRouter);
 // ========== START BOT ==========
 bot.start();
 
-
+startCron();
 
 // fungsi kirim 3 kali
 async function sendThreeTimes() {
@@ -125,7 +126,7 @@ async function sendThreeTimes() {
     await bot.api.sendMessage(TELEGRAM_ID_OWNER, `halo ke-${i + 1}`);
 
     // delay biar tidak spam sekaligus
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 5000));
   }
 }
 
