@@ -2,7 +2,7 @@ const {
   checkReminderService,
   checkDataCheckpointTime
 } = require("../services/check_reminder_service");
-function startCron() {
+async function startCron() {
   console.log("Cron started");
 
   const timeRange = 1; // in minutes
@@ -10,7 +10,7 @@ function startCron() {
   // run immediately once
   const allScheduleInRange =   await checkReminderService(timeRange);
 
-  const reminderInRange =   checkDataCheckpointTime(allScheduleInRange);
+  const reminderInRange =    checkDataCheckpointTime(allScheduleInRange);
 
   console.log("reminderInRange", reminderInRange);
 

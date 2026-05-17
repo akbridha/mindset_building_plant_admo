@@ -42,25 +42,27 @@ module.exports = async (ctx) => {
     }
 
     // Check if code already exists
-    const codeExists = await referenceService.referenceCodeExists(referenceCode);
-    if (codeExists) {
-      return ctx.reply(
-        `❌ Reference code <code>${referenceCode}</code> sudah ada di database.\n\n` +
-        "Gunakan reference code yang berbeda.",
-        { parse_mode: "HTML" }
-      );
-    }
+    // const codeExists = await referenceService.referenceCodeExists(referenceCode);
+    // if (codeExists) {
+    //   return ctx.reply(
+    //     `❌ Reference code <code>${referenceCode}</code> sudah ada di database.\n\n` +
+    //     "Gunakan reference code yang berbeda.",
+    //     { parse_mode: "HTML" }
+    //   );
+    // } 
+    //======= by pass karena kode digenerate secara random, kemungkinan duplikat sangat kecil, dan sudah ada pengecekan di service untuk memastikan tidak ada duplikat
 
     // Generate new reference code
-    await referenceService.generateReferenceCode(referenceCode);
+    const generatedReferenceCode = await referenceService.generateReferenceCode(/*jumlahMP dan durasi opsional*/);
 
     // Success message
     await ctx.reply(
       `✅ <b>Reference code berhasil dibuat!</b>\n\n` +
-      `Code: <code>${referenceCode}</code>\n` +
-      `Status: <code>OPEN</code>\n\n` +
+      `Code: <code>${generatedReferenceCode.referenceCode}</code>\n` +
+      `Jumlah MP: ${generatedReferenceCode.jumlahMP}\n` +
       `User dapat menggunakan:\n` +
-      `<code>/start_${referenceCode}</code>`,
+      `<code>/start_${generatedReferenceCode.referenceCode}</code>
+      \n\nExpired Time : ${generatedReferenceCode.expirationTime}`,
       {
         parse_mode: "HTML"
       }

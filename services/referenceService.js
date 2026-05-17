@@ -11,14 +11,14 @@ async function isReferenceCodeValid(referenceCode) {
       return false;
     }
 
-    const sql = "SELECT status FROM ms_ref WHERE reference_code = ?";
+    const sql = "SELECT reference_code FROM ms_ref WHERE reference_code = ?";
     const [rows] = await db.execute(sql, [referenceCode]);
 
     if (rows.length === 0) {
       return false; // Code does not exist
     }
 
-    return rows[0].status === "OPEN";
+    return true;
   } catch (error) {
     console.error("Error checking reference code validity:", error);
     throw error;
@@ -52,9 +52,18 @@ async function getReferenceCodeStatus(referenceCode) {
  * @returns {Promise<void>}
  * @throws {Error} If code already exists
  */
-async function generateReferenceCode(referenceCode) {
+async function generateReferenceCode(durationMinutes = 20, jumlahMP = 1) {
   try {
-    // Check if code already exists
+    // 1. Generate 13 digit random (huruf + angka)
+    const randomPart = Math.random().toString(36).substring(2, 15).toUpperCase();
+    // substring(2,15) menghasilkan 13 karakter karena 15-2 = 13
+        // 2. Format jumlahMP menjadi 2 digit dengan ditambahkan nol umpanya kurang dari sepuluh jumlah mp nya zero jika perlu
+    const mpFormatted = formatJumlahMP(jumlahMP);
+    // 3. Gabungkan menjadi 15 digit
+    const referenceCode = randomPart + mpFormatted;
+    const timestampGeneration = new Date();
+    const expirationTime = new Date(timestampGeneration.getTime() + durationMinutes * 60000); // Set expiration time
+    // cek dulu if code asudah ada
     const checkSql = "SELECT id FROM ms_ref WHERE reference_code = ?";
     const [checkRows] = await db.execute(checkSql, [referenceCode]);
 
@@ -64,37 +73,62 @@ async function generateReferenceCode(referenceCode) {
       throw error;
     }
 
-    // Insert new reference code
+    //buat Ke dalam dB
     const insertSql = `
-      INSERT INTO ms_ref (reference_code, status, created_at, updated_at)
-      VALUES (?, 'OPEN', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      INSERT INTO ms_ref (reference_code, created_at, off_time)
+      VALUES (?, ?, ?)
     `;
-    await db.execute(insertSql, [referenceCode]);
+    await db.execute(insertSql, [referenceCode, timestampGeneration, expirationTime]);
+    return {
+      referenceCode: referenceCode,
+      expirationTime: expirationTime,
+      jumlahMP: jumlahMP
+    };
+    // retun object supaya bisa diprint untuk balasan oleh bot ke user
   } catch (error) {
     console.error("Error generating reference code:", error);
     throw error;
   }
 }
 
-/**
- * Update reference code status (e.g., from OPEN to CLOSED)
- * @param {string} referenceCode - Reference code to update
- * @param {string} newStatus - New status ("OPEN" or "CLOSED")
- * @returns {Promise<void>}
- */
-async function updateReferenceCodeStatus(referenceCode, newStatus) {
-  try {
-    const sql = `
-      UPDATE ms_ref
-      SET status = ?, updated_at = CURRENT_TIMESTAMP
-      WHERE reference_code = ?
-    `;
-    await db.execute(sql, [newStatus, referenceCode]);
-  } catch (error) {
-    console.error("Error updating reference code status:", error);
-    throw error;
+
+function formatJumlahMP(jumlahMP) {
+  // Konversi ke integer (ambil angka depan, bulatkan ke bawah)
+  let mpInteger = Math.floor(jumlahMP);
+  
+  // Jika kurang dari 0, set ke 0
+  if (mpInteger < 0) {
+    mpInteger = 0;
   }
+  
+  // Jika lebih dari 99, batasi ke 99
+  if (mpInteger > 99) {
+    mpInteger = 99;
+  }
+  
+  // Format menjadi 2 digit dengan leading zero
+  return mpInteger.toString().padStart(2, '0');
 }
+
+// /**
+//  * Update reference code status (e.g., from OPEN to CLOSED)
+//  * @param {string} referenceCode - Reference code to update
+//  * @param {string} newStatus - New status ("OPEN" or "CLOSED")
+//  * @returns {Promise<void>}
+//  */
+// async function updateReferenceCodeStatus(referenceCode, newStatus) {
+//   try {
+//     const sql = `
+//       UPDATE ms_ref
+//       SET status = ?, updated_at = CURRENT_TIMESTAMP
+//       WHERE reference_code = ?
+//     `;
+//     await db.execute(sql, [newStatus, referenceCode]);
+//   } catch (error) {
+//     console.error("Error updating reference code status:", error);
+//     throw error;
+//   }
+// }
 
 /**
  * Check if reference code exists (regardless of status)
@@ -103,7 +137,7 @@ async function updateReferenceCodeStatus(referenceCode, newStatus) {
  */
 async function referenceCodeExists(referenceCode) {
   try {
-    const sql = "SELECT id FROM ms_ref WHERE reference_code = ?";
+    const sql = "SELECT id FROM ms_ref WHERE reference_code = ? and off_time > now()";
     const [rows] = await db.execute(sql, [referenceCode]);
     return rows.length > 0;
   } catch (error) {
@@ -116,6 +150,6 @@ module.exports = {
   isReferenceCodeValid,
   getReferenceCodeStatus,
   generateReferenceCode,
-  updateReferenceCodeStatus,
+  // updateReferenceCodeStatus,
   referenceCodeExists
 };

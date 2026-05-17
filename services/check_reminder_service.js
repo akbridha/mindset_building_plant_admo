@@ -32,7 +32,7 @@ async function checkReminderService(timeRange = 5) {
   }
 }
 
-function checkDataCheckpointTime(reminders) {
+ function checkDataCheckpointTime(reminders) {
 
   const now = new Date();
 

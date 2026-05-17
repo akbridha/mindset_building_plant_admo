@@ -26,7 +26,7 @@ User sends command → State Middleware checks timeout → State attached to ctx
 - `task_description` (TEXT) - Task description
 - `checkpoint_time` (TIME) - Reminder time (HH:MM)
 - `target` (VARCHAR) - Number of reminders
-- `status` (VARCHAR) - 'OPEN' or 'COMPLETED'
+- `status` (VARCHAR) - 'OPEN' or 'COMPLETED' /deprecated/
 
 ---
 
@@ -85,7 +85,7 @@ Manages tasks in `reminders` table:
 - `getTaskById(task_id)` - Fetch single task
 - `createTask(telegram_id, taskData)` - Create new task
 - `deleteTask(task_id)` - Remove task
-- `updateTask(task_id, updates)` - Update progress/status
+- `updateTask(task_id, updates)` - Update progress/status /*deprecated*/
 
 ### Middleware (`middleware/`)
 
