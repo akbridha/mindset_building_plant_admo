@@ -26,6 +26,7 @@ module.exports = async (ctx) => {
           [{ text: "📋 Daftar Task", callback_data: "list_task" }],
           [{ text: "➕ Tambah Task", callback_data: "add_task" }],
           [{ text: "🗑️ Hapus Task", callback_data: "remove_task" }],
+          [{ text: "🗝️ Belajar Contoh Get-Users", callback_data: "generate_key" }],
           [{ text: "⛑️ Belajar Contoh Get-Users", callback_data: "list_user" }]
         ]
       }

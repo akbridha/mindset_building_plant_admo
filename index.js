@@ -98,6 +98,9 @@ bot.on("callback_query:data", async (ctx) => {
       case "list_user":
         await listUserCommand(ctx);
         break;
+      case "generate_key":
+        await generateRefCommand(ctx);
+        break;
 
       default:
         await ctx.answerCallbackQuery("Unknown action");
