@@ -13,7 +13,12 @@ const TELEGRAM_ID_OWNER = process.env.TELEGRAM_ID_OWNER;
 // ========== IMPORT COMMANDS ==========
 const startCommand = require("./commands/start");
 const startWithCodeCommand = require("./commands/start_with_code");
-const generateRefCommand = require("./commands/generate_ref");
+const { 
+  generateRefCommand,   // fungsi 1
+  generateRefCommandStep1, // fungsi 2  
+  generateRefCommandStep2, // fungsi 3
+  generateRefCommandStep3  // fungsi 4
+} = require("./commands/generate_ref");
 const listUserCommand = require("./commands/list_user");
 const listTaskCommand = require("./commands/list_task");
 const { addTaskCommand, addTaskStep4aDaily, addTaskStep4bCustom } = require("./commands/add_task");
@@ -39,9 +44,9 @@ bot.on("message:text", async (ctx, next) => {
   }
 
   // Handle /generate_ref_CODE123
-  if (/^\/generate_ref_/.test(messageText)) {
-    return await generateRefCommand(ctx);
-  }
+  // if (/^\/generate_ref_/.test(messageText)) {
+  //   return await generateRefCommand(ctx);  /*lihat di constanta di baris 16 => generate_ref.js [commmand]*/
+  // }
 
   // Pass through to next handler (messageRouter)
   return next();
@@ -100,6 +105,12 @@ bot.on("callback_query:data", async (ctx) => {
         break;
       case "generate_key":
         await generateRefCommand(ctx);
+        break;
+      case "20_duration_reference":
+        await generateRefCommandStep1(ctx);
+        break;
+      case "60_duration_reference":
+        await generateRefCommandStep2(ctx);
         break;
 
       default:
