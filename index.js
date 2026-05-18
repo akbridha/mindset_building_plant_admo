@@ -14,10 +14,9 @@ const TELEGRAM_ID_OWNER = process.env.TELEGRAM_ID_OWNER;
 const startCommand = require("./commands/start");
 const startWithCodeCommand = require("./commands/start_with_code");
 const { 
-  generateRefCommand,   // fungsi 1
-  generateRefCommandStep1, // fungsi 2  
-  generateRefCommandStep2, // fungsi 3
-  generateRefCommandStep3  // fungsi 4
+  generateRefCommand,   // urutan 1
+  setDuration,// fungsi urutan 2  
+  setManpower // fungsi urutan 3
 } = require("./commands/generate_ref");
 const listUserCommand = require("./commands/list_user");
 const listTaskCommand = require("./commands/list_task");
@@ -54,6 +53,7 @@ bot.on("message:text", async (ctx, next) => {
 
 // ========== REGISTER COMMANDS ==========
 bot.command("start", startCommand);
+bot.command("new_ref", generateRefCommand);
 bot.command("list_user", listUserCommand);
 bot.command("list_task", listTaskCommand);
 bot.command("add_task", addTaskCommand);
@@ -107,10 +107,10 @@ bot.on("callback_query:data", async (ctx) => {
         await generateRefCommand(ctx);
         break;
       case "20_duration_reference":
-        await generateRefCommandStep1(ctx);
+        await setDuration(ctx, "20");
         break;
       case "60_duration_reference":
-        await generateRefCommandStep2(ctx);
+        await setDuration(ctx, "60");
         break;
 
       default:

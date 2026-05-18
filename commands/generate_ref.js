@@ -7,17 +7,31 @@ const stateService = require("../services/stateService");
  */
 async function generateRefCommand(ctx){
   try {
-    // const isAdmin = ctx.state.isAdmin;
-    // const telegram_id = ctx.state.telegram_id;
-    // // const messageText = ctx.message.text || "";
+    const isAdmin = ctx.state.isAdmin;
+    const telegram_id = ctx.state.telegram_id;
+      const currentState = ctx.state.userState;
+    // const messageText = ctx.message.text || "";
 
-    // // Check admin authorization
-    // if (!isAdmin) {
-    //   return ctx.reply(
-    //     "❌ Hanya admin yang dapat membuat reference code.\n\n" +
-    //     "Hubungi admin untuk bantuan."
-    //   );
-    // }
+    // Check admin authorization
+    if (!isAdmin) {
+      return ctx.reply(
+        "❌ Hanya admin yang dapat membuat reference code.\n\n" +
+        "Hubungi admin untuk bantuan."
+      );
+    }    
+
+    // cek dulu apakah dalam alur lain. misal masih dalam proses menambah task 
+    // tiba- tiba pencet tombol generate ref code.
+    // const currentState = await stateService.getState(telegram_id);
+    console.log("Current State:", currentState);
+    if (currentState !== null) {
+      return ctx.reply(
+        "⚠️ Anda tengah berada di dalam suatu alur fitur.\n\n" +
+        "Gunakan /cancel untuk memulai ulang, atau selesaikan flow saat ini."
+      );
+    }
+
+    await stateService.setState(telegram_id, "awaiting_duration_refcode", {  });
 
 
 
@@ -25,15 +39,15 @@ async function generateRefCommand(ctx){
     // await stateService.setState(telegram_id, "awaiting_total_mp", {});
 
     ctx.reply(
-      `📝<b>Generate Reference Code Baru</b>\n\n` +  
-      `<i>Pilih Durasi atau ketik Durasi sendiri</i>\n\n`,
+      `🗝️<b>Generate Reference Code Baru</b>\n\n` +  
+      `Pilih Durasi atau <i>ketik Durasi sendiri</i>\n\n`,
       {
         parse_mode: "HTML",
         reply_markup: {
           inline_keyboard: [
             [{ text: "❌ Cancel", callback_data: "cancel" }],
-            [{ text: "20 Menit", callback_data: "20_duration_reference" }],
-            [{ text: "1 Jam", callback_data: "60_duration_reference" }]
+            [{ text: "⏰ 20 Menit", callback_data: "20_duration_reference" }],
+            [{ text: "⏰  1 Jam", callback_data: "60_duration_reference" }]
           ]
         }
       }
@@ -105,24 +119,33 @@ async function generateRefCommand(ctx){
 /**
  * STEP 1: Handle durasi 20 menit
  */
-async function generateRefCommandStep1(ctx) {
+async function setDuration(ctx, duration) {
   try {
     const telegram_id = ctx.state.telegram_id;
+
     
-    // Simpan durasi ke state
-    const currentState = await stateService.getState(telegram_id);
-    await stateService.setState(telegram_id, "awaiting_mp_amount", {
-      duration: 20, // 20 minutes
-      ...(currentState.data || {})
-    });
+
     
     await ctx.reply(
-      `✅ Durasi 20 menit dipilih.\n\n` +
-      `Sekarang masukkan jumlah MP (Minat & Potensi):\n` +
+      `✅ Durasi ${duration} menit dipilih.\n\n` +
+      `Sekarang masukkan jumlah ManPower 👷🏼:\n` +
       `Contoh: 100\n\n` +
-      `Ketik "cancel" untuk membatalkan.`,
-      { parse_mode: "HTML" }
+      `Tekan "cancel" untuk membatalkan.`,
+      { 
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "❌ Cancel", callback_data: "cancel" }]
+          ]
+        }
+      }
     );
+
+    const currentState = await stateService.getState(telegram_id);
+    await stateService.setState(telegram_id, "awaiting_total_manpower_refcode", {
+      duration: duration,
+      ...(currentState.data || {})
+    });
   } catch (error) {
     console.error("Error in generateRefCommandStep1:", error);
     await ctx.reply("❌ Error. Silakan coba lagi dengan /generate_ref");
@@ -132,91 +155,114 @@ async function generateRefCommandStep1(ctx) {
 /**
  * STEP 2: Handle durasi 60 menit (1 jam)
  */
-async function generateRefCommandStep2(ctx) {
+async function setManpower(ctx, totalMP) {
   try {
     const telegram_id = ctx.state.telegram_id;
-    
-    // Simpan durasi ke state
     const currentState = await stateService.getState(telegram_id);
-    await stateService.setState(telegram_id, "awaiting_mp_amount", {
-      duration: 60, // 60 minutes
-      ...(currentState.data || {})
-    });
-    
+    const duration = currentState.context_data.duration;
+
+    const queryresult = await referenceService.generateReferenceCode(duration, totalMP);
+    if (!queryresult) {
+      return ctx.reply("❌ Gagal membuat reference code. Silakan coba lagi.");
+    }
+
     await ctx.reply(
-      `✅ Durasi 1 jam dipilih.\n\n` +
-      `Sekarang masukkan jumlah MP (Minat & Potensi):\n` +
-      `Contoh: 100\n\n` +
-      `Ketik "cancel" untuk membatalkan.`,
+      `✅ Berhasil Menambah Reference Code baru!\n\n` +
+      `⏰ Durasi ${duration} menit dipilih.\n\n` +
+      `👷🏼 Jumlah ManPower: ${totalMP}\n` +
+      `🗝️ User dapat menggunakan:\n` +
+      `<code>/start_${queryresult.referenceCode}</code>\n\n` +
+      `Expired Time: ${queryresult.expirationTime}`,
       { parse_mode: "HTML" }
     );
+    
+    await stateService.clearState(telegram_id);
+
+    // await stateService.clearState(telegram_id);
   } catch (error) {
-    console.error("Error in generateRefCommandStep2:", error);
+    console.error("Error in setManPowwer:", error);
     await ctx.reply("❌ Error. Silakan coba lagi dengan /generate_ref");
   }
 }
 
+async function storeReferenceCodeData(){
+
+  referenceService.generateReferenceCode({
+    jumlahMP: 100,
+    duration: 20
+  });
+    // const taskData = {
+    //   task_description: context.task_description,
+    //   checkpoint_time: context.checkpoint_time,
+    //   target: targetNum,
+    //   interval: context.interval  // Now dynamic!
+    // };
+
+
+}
+
+// 👷🏼
+
 /**
  * STEP 3: Handle input jumlah MP dari text message
  */
-async function generateRefCommandStep3(ctx) {
-  try {
-    const telegram_id = ctx.state.telegram_id;
-    const userState = await stateService.getState(telegram_id);
+// async function generateRefCommandStep3(ctx) {
+//   try {
+//     const telegram_id = ctx.state.telegram_id;
+//     const userState = await stateService.getState(telegram_id);
     
-    // Validasi state
-    if (userState.state !== "awaiting_mp_amount") {
-      return ctx.reply("❌ Tidak dalam proses generate reference code. Gunakan /generate_ref untuk memulai.");
-    }
+//     // Validasi state
+//     if (userState.state !== "awaiting_mp_amount") {
+//       return ctx.reply("❌ Tidak dalam proses generate reference code. Gunakan /generate_ref untuk memulai.");
+//     }
     
-    const mpAmount = parseInt(ctx.message.text);
+//     const mpAmount = parseInt(ctx.message.text);
     
-    // Validate MP amount
-    if (isNaN(mpAmount) || mpAmount <= 0) {
-      return ctx.reply(
-        "❌ Jumlah MP tidak valid.\n\n" +
-        "Masukkan angka positif.\n" +
-        "Contoh: 100\n\n" +
-        "Ketik 'cancel' untuk membatalkan."
-      );
-    }
+//     // Validate MP amount
+//     if (isNaN(mpAmount) || mpAmount <= 0) {
+//       return ctx.reply(
+//         "❌ Jumlah MP tidak valid.\n\n" +
+//         "Masukkan angka positif.\n" +
+//         "Contoh: 100\n\n" +
+//         "Ketik 'cancel' untuk membatalkan."
+//       );
+//     }
 
-    // Generate reference code
-    const referenceCode = await referenceService.generateReferenceCode({
-      jumlahMP: mpAmount,
-      duration: userState.data.duration
-    });
+//     // Generate reference code
+//     const referenceCode = await referenceService.generateReferenceCode({
+//       jumlahMP: mpAmount,
+//       duration: userState.data.duration
+//     });
     
-    // Clear state setelah sukses
-    await stateService.setState(telegram_id, null, {});
+//     // Clear state setelah sukses
+//     await stateService.setState(telegram_id, null, {});
     
-    await ctx.reply(
-      `✅ <b>Reference code berhasil dibuat!</b>\n\n` +
-      `Code: <code>${referenceCode.referenceCode}</code>\n` +
-      `Jumlah MP: ${mpAmount}\n` +
-      `Durasi: ${userState.data.duration} menit\n\n` +
-      `User dapat menggunakan:\n` +
-      `<code>/start_${referenceCode.referenceCode}</code>\n\n` +
-      `Expired: ${referenceCode.expirationTime}`,
-      { parse_mode: "HTML" }
-    );
-  } catch (error) {
-    if (error.code === "DUPLICATE_REFERENCE_CODE") {
-      return ctx.reply(`❌ ${error.message}`);
-    }
+//     await ctx.reply(
+//       `✅ <b>Reference code berhasil dibuat!</b>\n\n` +
+//       `Code: <code>${referenceCode.referenceCode}</code>\n` +
+//       `Jumlah MP: ${mpAmount}\n` +
+//       `Durasi: ${userState.data.duration} menit\n\n` +
+//       `User dapat menggunakan:\n` +
+//       `<code>/start_${referenceCode.referenceCode}</code>\n\n` +
+//       `Expired: ${referenceCode.expirationTime}`,
+//       { parse_mode: "HTML" }
+//     );
+//   } catch (error) {
+//     if (error.code === "DUPLICATE_REFERENCE_CODE") {
+//       return ctx.reply(`❌ ${error.message}`);
+//     }
     
-    console.error("Error in generateRefCommandStep3:", error);
-    await ctx.reply("❌ Error saat membuat reference code. Silakan coba lagi.");
+//     console.error("Error in generateRefCommandStep3:", error);
+//     await ctx.reply("❌ Error saat membuat reference code. Silakan coba lagi.");
     
-    // Reset state on error
-    await stateService.setState(ctx.state.telegram_id, null, {});
-  }
-}
+//     // Reset state on error
+//     await stateService.setState(ctx.state.telegram_id, null, {});
+//   }
+// }
 
 
 module.exports = {
   generateRefCommand,
-  generateRefCommandStep1,
-  generateRefCommandStep2,
-  generateRefCommandStep3
+  setDuration,
+  setManpower
 };
