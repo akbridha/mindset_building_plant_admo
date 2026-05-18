@@ -54,13 +54,12 @@ async function getReferenceCodeStatus(referenceCode) {
  */
 async function generateReferenceCode(durationMinutes = 20, jumlahMP = 1) {
   try {
-    // 1. Generate 13 digit random (huruf + angka)
-    const randomPart = Math.random().toString(36).substring(2, 15).toUpperCase();
-    // substring(2,15) menghasilkan 13 karakter karena 15-2 = 13
-        // 2. Format jumlahMP menjadi 2 digit dengan ditambahkan nol umpanya kurang dari sepuluh jumlah mp nya zero jika perlu
-    const mpFormatted = formatJumlahMP(jumlahMP);
-    // 3. Gabungkan menjadi 15 digit
-    const referenceCode = randomPart + mpFormatted;
+    console.log("durationMinutes received:", durationMinutes);
+
+
+  const randomPart = generateRandomPart(13);            // fix agar selalu 13 chars
+  const mpFormatted = formatJumlahMP(jumlahMP);         // fixed selalu 2 digits
+  const referenceCode = `${mpFormatted}${randomPart}`;  // Totoal mesti 15 chars total
     const timestampGeneration = new Date();
     const expirationTime = new Date(timestampGeneration.getTime() + durationMinutes * 60000); // Set expiration time
     // cek dulu if code asudah ada
@@ -93,21 +92,19 @@ async function generateReferenceCode(durationMinutes = 20, jumlahMP = 1) {
 
 
 function formatJumlahMP(jumlahMP) {
-  // Konversi ke integer (ambil angka depan, bulatkan ke bawah)
   let mpInteger = Math.floor(jumlahMP);
-  
-  // Jika kurang dari 0, set ke 0
-  if (mpInteger < 0) {
-    mpInteger = 0;
+  if (mpInteger < 0) mpInteger = 0;
+  if (mpInteger > 99) mpInteger = 99;
+  return mpInteger.toString().padStart(2, '0');  // ✅ this already works
+}
+
+function generateRandomPart(length = 13) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  
-  // Jika lebih dari 99, batasi ke 99
-  if (mpInteger > 99) {
-    mpInteger = 99;
-  }
-  
-  // Format menjadi 2 digit dengan leading zero
-  return mpInteger.toString().padStart(2, '0');
+  return result;
 }
 
 // /**
