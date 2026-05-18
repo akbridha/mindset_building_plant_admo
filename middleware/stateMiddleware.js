@@ -50,7 +50,7 @@ async function stateMiddleware(ctx, next) {
     const sql = "SELECT reference_code FROM ms_user WHERE telegram_id = ?";
     const [rows] = await db.execute(sql, [telegram_id]);
     
-    if (rows.length > 0 && rows[0].reference_code) {
+    if (ctx.state.isAdmin === false && rows.length > 0 && rows[0].reference_code) {
       const referenceCode = rows[0].reference_code;
       ctx.state.referenceCode = referenceCode;
 
