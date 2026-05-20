@@ -9,9 +9,8 @@ module.exports = async (ctx) => {
     // Only admin can use /start (without reference code)
     if (!isAdmin) {
       return ctx.reply(
-        "❌ Anda tidak authorized untuk menggunakan /start.\n\n" +
-        "Gunakan /start_[REFERENCE_CODE] untuk registrasi.\n" +
-        "Contoh: /start_ABC123"
+        "Gunakan /start_[REFERENCE_CODE] yang diberikan untuk memulai.\n" +
+        "Contoh: /start_A4BIJDDIF4XC123"
       );
     }
 

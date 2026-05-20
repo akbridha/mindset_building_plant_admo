@@ -28,7 +28,7 @@ async function listTaskCommand(ctx) {
 
     // Format task list with emoji numbers
     const emojiNumbers = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
-    let taskList = "📋 <b>Your Tasks:</b>\n\n";
+    let taskList = "📋 <b> Tasks Anda:</b>\n\n";
 
     tasks.forEach((task, index) => {
       const emoji = emojiNumbers[index] || `${index + 1}.`;
