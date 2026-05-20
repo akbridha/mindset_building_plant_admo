@@ -43,7 +43,8 @@ async function setState(telegram_id, state_name, context_data = {}) {
         context_data = VALUES(context_data),
         updated_at = CURRENT_TIMESTAMP
     `;
-    await db.execute(sql, [telegram_id, state_name, contextJson]);
+    const result = await db.execute(sql, [telegram_id, state_name, contextJson]);
+    // console.log("State set result:", result); 
   } catch (error) {
     console.error("Error setting state:", error);
     throw error;

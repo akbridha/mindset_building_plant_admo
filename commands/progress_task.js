@@ -1,4 +1,4 @@
-const taskUpdaterService = require("../services/taskService");
+const taskUpdaterService = require("../services/progressService");
 
 
 

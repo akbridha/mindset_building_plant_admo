@@ -6,6 +6,7 @@ const { Bot } = require("grammy");
 
 const stateService = require("../services/stateService");
 
+
 console
 
 async function startCron() {
@@ -46,8 +47,20 @@ async function startCron() {
         checkpoint_time: reminder.checkpoint_time,
         task_description: reminder.task_description,
       });
-          await bot.api.sendMessage( reminder.telegram_id,reminder.task_description);
+
+      const decoratedReminder = `⏰ *Reminder:*\n${reminder.task_description}\n\n_Checkpoint Time: ${new Date(reminder.checkpoint_time).toLocaleString()}_ Apakah Task Dikerjakan?`;
+      const inlineKeyboard = {
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "✅ dikerjakan", callback_data: "task_done" }],
+            [{ text: "❌ tidak dikerjakan", callback_data: "task_miss" }]
+          ]
+        }
+      }
+          await bot.api.sendMessage( reminder.telegram_id, decoratedReminder, inlineKeyboard);
           await stateService.setState(reminder.telegram_id, "awaiting_checkpoint_response", { });
+            console.log("State set successfully");
     }
   // run every minute
     // await checkReminderService();

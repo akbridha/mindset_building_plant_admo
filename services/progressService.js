@@ -2,9 +2,9 @@ const { db } = require("../db");
 
 async function progressCreate(ctx, userInput) {
   try {
-    const {
+    // const {
 
-    } = progressData;
+    // } = progressData;
 
     const sql = `
       INSERT INTO progress_history 
