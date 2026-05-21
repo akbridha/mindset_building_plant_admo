@@ -1,16 +1,41 @@
 const taskUpdaterService = require("../services/progressService");
+const stateService = require("../services/stateService");
 
 
 
 async function createProgress(ctx, userInput) {
+
+  console.log(ctx.state.telegram_id, userInput);
+
+  const userState = await stateService.getState(ctx.state.telegram_id);
+
+  const isUserResponseAwaited = userState.current_state === "awaiting_checkpoint_response" ? true : false; 
+
+  var textBalasan = "";
+  console.log("Is user response awaited?", isUserResponseAwaited);
+  // console.log("Current user state:", userState.current_state);
+
+
+  // cegah aksi diluar jam permintaan checkpoint
+  if(!isUserResponseAwaited){
+    ctx.reply("Anda tidak sedang dalam proses Perekaman Checkpoint");
+    return true;
+  }
   try {
     await taskUpdaterService.progressCreate(ctx, userInput);
-    return ctx.reply("✅ Progress recorded. Terima kasih atas update-nya!");
-
+    textBalasan = "✅ Progress recorded. Terima kasih atas update-nya!";
   } catch (error) {
+    textBalasan = "❌ Error in update tasks Command. Mohon Coba lagi.";
     console.error("Error in updateTaskCommand:", error);
-    return ctx.reply("❌ Error in update tasks Command. Mohon Coba lagi.");
   }
+
+
+
+  // console.log("Clearing state for user:", ctx.state.telegram_id);
+  return ctx.reply(textBalasan);
+  await stateService.clearState(ctx.state.telegram_id);
+
+
 }
 
 module.exports = createProgress;

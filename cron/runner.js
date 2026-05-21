@@ -36,6 +36,7 @@ async function startCron() {
     const allScheduleInRange =   await checkReminderService(timeRange);
     if(!allScheduleInRange || allScheduleInRange.length === 0) {
       console.log("No reminders to process.");
+      console.log(new Date().toLocaleString());
       return;
     }
     
@@ -60,7 +61,7 @@ async function startCron() {
       }
           await bot.api.sendMessage( reminder.telegram_id, decoratedReminder, inlineKeyboard);
           await stateService.setState(reminder.telegram_id, "awaiting_checkpoint_response", { });
-            console.log("State set successfully");
+            console.log("State set to awaiting_checkpoint_response");
     }
   // run every minute
     // await checkReminderService();
