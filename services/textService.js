@@ -12,6 +12,21 @@ Gunakan untuk :
 Silakan pilih menu untuk memulai.
 `;
 }
+
+function getLastReminderText(){
+
+
+return `
+ 🚧 <b>Mindset Building</b> 🚧 
+ ❇️<b>Tracking System</b> ❇️
+
+
+ Anda sudah berapa di akhir Sesi
+ Tambah durasi??
+`;
+
+
+}
 // 📌 Kedisiplinan merupakan bagian dari standar profesional kerja.
 // 👷🏼
 // ⛑️
@@ -24,4 +39,5 @@ Silakan pilih menu untuk memulai.
 
 module.exports = {
   getTeksBalasan,
+  getLastReminderText
 };

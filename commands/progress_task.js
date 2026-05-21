@@ -1,14 +1,14 @@
 const taskUpdaterService = require("../services/progressService");
 const stateService = require("../services/stateService");
+const checkReminderService = require("../services/check_reminder_service");
+const textService = require("../services/textService");
 
 
 
 async function createProgress(ctx, userInput, taskId) {
 
   console.log(ctx.state.telegram_id, userInput, taskId);
-
   const userState = await stateService.getState(ctx.state.telegram_id);
-
   const isUserResponseAwaited = userState.current_state === "awaiting_checkpoint_response" ? true : false; 
 
   var textBalasan = "";
@@ -29,12 +29,18 @@ async function createProgress(ctx, userInput, taskId) {
     console.error("Error in updateTaskCommand:", error);
   }
 
-
-
   // console.log("Clearing state for user:", ctx.state.telegram_id);
   await stateService.clearState(ctx.state.telegram_id);
-  return ctx.reply(textBalasan);
+   
+  const lastReminderTarget = checkReminderService.checkIsLastReminder(taskId); 
+  if(lastReminderTarget){
+    textBalasan = `${textBalasan}${textService.getLastReminderText()}`;
+    stateService.setState(ctx.state.telegram_id,"awaited_on_last_target_response")
+  }
 
+
+  // console.log(textBalasan);
+  return ctx.reply(textBalasan);
 
 }
 
