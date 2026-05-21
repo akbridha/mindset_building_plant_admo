@@ -17,10 +17,10 @@ async function createProgress(ctx, userInput, taskId) {
 
 
   // cegah aksi diluar jam permintaan checkpoint
-  if(!isUserResponseAwaited){
-    ctx.reply("Anda tidak sedang dalam proses Perekaman Checkpoint");
-    return true;
-  }
+  // if(!isUserResponseAwaited){
+  //   ctx.reply("Anda tidak sedang dalam proses Perekaman Checkpoint");
+  //   return true;
+  // }
   try {
     await taskUpdaterService.progressCreate(ctx, userInput, taskId);
     textBalasan = "✅ Progress recorded. Terima kasih atas update-nya!";
@@ -40,12 +40,22 @@ async function createProgress(ctx, userInput, taskId) {
 
 
   // console.log(textBalasan);
-  return ctx.reply(textBalasan);
+  return ctx.reply(textBalasan, {
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "✨ Extend", callback_data: `extend_phase:${taskId}` }],
+            [{ text: "✅ Selesai", callback_data: `done_phase:${taskId}` }]
+          ]
+        }
+      });
 
 }
 
 module.exports = createProgress;
 
+// ✨
+// ❇️
 
     // return ctx.reply(
     //   "✅ Task description saved: <b>" + taskDescription.trim() + "</b>\n\n" +

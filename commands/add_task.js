@@ -360,6 +360,18 @@ async function addTaskStep5(ctx, target) {
   }
 }
 
+
+async function extendTask(ctx, params) {
+  
+  return ctx.reply(`Extend ===== ${params}`)
+}
+
+
+async function doneTask(ctx, params) {
+  
+  return ctx.reply(`done ===== ${params}`)
+}
+
 module.exports = {
   addTaskCommand,
   addTaskStep2,
@@ -367,5 +379,7 @@ module.exports = {
   addTaskStep4aDaily,
   addTaskStep4bCustom,
   addTaskStep4bInterval,
-  addTaskStep5
+  addTaskStep5,
+  extendTask,
+  doneTask
 };

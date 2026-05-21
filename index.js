@@ -20,7 +20,7 @@ const {
 } = require("./commands/generate_ref");
 const listUserCommand = require("./commands/list_user");
 const listTaskCommand = require("./commands/list_task");
-const { addTaskCommand, addTaskStep4aDaily, addTaskStep4bCustom } = require("./commands/add_task");
+const { addTaskCommand, addTaskStep4aDaily, addTaskStep4bCustom, extendTask, doneTask } = require("./commands/add_task");
 const { removeTaskCommand, removeTaskConfirm } = require("./commands/remove_task");
 const cancelCommand = require("./commands/cancel");
 
@@ -134,6 +134,14 @@ bot.on("callback_query:data", async (ctx) => {
         break;
       case "task_miss":
         await createProgress(ctx, 0, params[0]);
+        break;
+
+      case "extend_phase":
+        await extendTask(ctx, params[0]);
+        break;
+
+      case "done_phase":
+        await doneTask(ctx , params[0]);
         break;
 
       default:
