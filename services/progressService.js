@@ -1,6 +1,6 @@
 const { db } = require("../db");
 
-async function progressCreate(ctx, userInput) {
+async function progressCreate(ctx, userInput, task_id) {
   try {
     // const {
 
@@ -8,8 +8,8 @@ async function progressCreate(ctx, userInput) {
 
     const sql = `
       INSERT INTO progress_history 
-      (telegram_id, answer_yes_no)
-      VALUES (?, ?)
+      (telegram_id,reminder_id, answer_yes_no)
+      VALUES (?, ?, ?)
     `;
 
     // const [result] = await db.execute(sql, [
@@ -24,6 +24,7 @@ async function progressCreate(ctx, userInput) {
 
     await db.execute(sql, [
       ctx.state.telegram_id,
+      task_id,
       userInput
     ]);
 

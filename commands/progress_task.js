@@ -22,7 +22,7 @@ async function createProgress(ctx, userInput, taskId) {
     return true;
   }
   try {
-    await taskUpdaterService.progressCreate(ctx, userInput);
+    await taskUpdaterService.progressCreate(ctx, userInput, taskId);
     textBalasan = "✅ Progress recorded. Terima kasih atas update-nya!";
   } catch (error) {
     textBalasan = "❌ Error in update tasks Command. Mohon Coba lagi.";

@@ -130,10 +130,10 @@ bot.on("callback_query:data", async (ctx) => {
         await setDuration(ctx, "60");
         break;
       case "task_done":
-        await createProgress(ctx, 1, params);
+        await createProgress(ctx, 1, params[0]);
         break;
       case "task_miss":
-        await createProgress(ctx, 0, params);
+        await createProgress(ctx, 0, params[0]);
         break;
 
       default:
