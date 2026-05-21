@@ -8,6 +8,7 @@ async function checkReminderService(timeRange = 5) {
       SELECT
         telegram_id,
         checkpoint_time,
+        task_id,
         task_description
       FROM reminders
       WHERE

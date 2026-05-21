@@ -46,16 +46,17 @@ async function startCron() {
       console.log({
         telegram_id: reminder.telegram_id,
         checkpoint_time: reminder.checkpoint_time,
+        task_id: reminder.task_id,
         task_description: reminder.task_description,
       });
 
-      const decoratedReminder = `⏰ *Reminder:*\n${reminder.task_description}\n\n_Checkpoint Time: ${new Date(reminder.checkpoint_time).toLocaleString()}_ Apakah Task Dikerjakan?`;
+      const decoratedReminder = `⏰ *Reminder:*\n${reminder.task_description}\n\nTask ID: ${reminder.task_id}\nCheckpoint Time: ${new Date(reminder.checkpoint_time).toLocaleString()}\nApakah Task Dikerjakan?`;
       const inlineKeyboard = {
         parse_mode: "HTML",
         reply_markup: {
           inline_keyboard: [
-            [{ text: "✅ dikerjakan", callback_data: "task_done" }],
-            [{ text: "❌ tidak dikerjakan", callback_data: "task_miss" }]
+            [{ text: "✅ dikerjakan", callback_data: `task_done:${reminder.task_id}` }],
+            [{ text: "❌ tidak dikerjakan", callback_data: `task_miss:${reminder.task_id}` }]
           ]
         }
       }
