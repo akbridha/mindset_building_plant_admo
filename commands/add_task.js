@@ -46,7 +46,7 @@ async function addTaskCommand(ctx) {
 
     return ctx.reply(
       "📝 <b>Menambahkan task baru</b>\n\n" +
-      "Buat Nama Task ?\n" +
+      "Buat Nama Task \n" +
       "<i>Kirim deskripsi teks</i>\n\n" +
       "Contoh: \n<code> - Belajar Membuat umpan pancing imitasi</code>\n <code>- Persiapan Ujian Kompetensi</code> ",
       {
