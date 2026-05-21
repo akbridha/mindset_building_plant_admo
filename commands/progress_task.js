@@ -32,8 +32,8 @@ async function createProgress(ctx, userInput) {
 
 
   // console.log("Clearing state for user:", ctx.state.telegram_id);
-  return ctx.reply(textBalasan);
   await stateService.clearState(ctx.state.telegram_id);
+  return ctx.reply(textBalasan);
 
 
 }
