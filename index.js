@@ -63,12 +63,28 @@ bot.command("cancel", cancelCommand);
 
 // ========== HANDLE CALLBACK QUERIES (Button Clicks) ==========
 bot.on("callback_query:data", async (ctx) => {
+
+  console.log(ctx.callbackQuery.data);
   try {
-    const data = ctx.callbackQuery.data;
+    const callbackData = ctx.callbackQuery.data;
     const telegram_id = ctx.state.telegram_id;
 
+    // ====extraksi untuk call back yang ada argument 
+    // ====Idetifikasi dengan dilimiter `:`
+    let action = callbackData;
+    let params; //ini array apabila nanti mau passing banyak argument
+    
+    if (action.includes(':')) {
+      const bagianData = callbackData.split(':');
+      action = bagianData[0];
+      params =  bagianData.slice(1);
+     
+    } 
+
+
+
     // Route callback data to handlers
-    switch (data) {
+    switch (action) {
       case "cancel":
         await cancelCommand(ctx);
         break;
@@ -114,10 +130,10 @@ bot.on("callback_query:data", async (ctx) => {
         await setDuration(ctx, "60");
         break;
       case "task_done":
-        await createProgress(ctx, 1);
+        await createProgress(ctx, 1, params);
         break;
       case "task_miss":
-        await createProgress(ctx, 0);
+        await createProgress(ctx, 0, params);
         break;
 
       default:

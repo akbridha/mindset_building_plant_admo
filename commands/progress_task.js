@@ -3,9 +3,9 @@ const stateService = require("../services/stateService");
 
 
 
-async function createProgress(ctx, userInput) {
+async function createProgress(ctx, userInput, taskId) {
 
-  console.log(ctx.state.telegram_id, userInput);
+  console.log(ctx.state.telegram_id, userInput, taskId);
 
   const userState = await stateService.getState(ctx.state.telegram_id);
 
