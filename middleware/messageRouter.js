@@ -1,4 +1,4 @@
-const { addTaskStep2, addTaskStep3, addTaskStep4bInterval, addTaskStep5 } = require("../commands/add_task");
+const { addTaskStep2, addTaskStep3, addTaskStep4bInterval, addTaskStep5, setExtendedTarget } = require("../commands/add_task");
 const { removeTaskStep2, removeTaskConfirm } = require("../commands/remove_task");
 
 const { setDuration,// fungsi urutan 2  
@@ -49,6 +49,9 @@ async function messageRouter(ctx) {
         case "awaiting_total_manpower_refcode":
           return setManpower(ctx, userInput);
 
+        case "waiting_frequency_extender":
+          return setExtendedTarget(ctx, 4, userInput,);
+          
       default:
         // Unknown state - reset and inform user
         return ctx.reply(

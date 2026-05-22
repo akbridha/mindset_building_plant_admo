@@ -188,7 +188,7 @@ async function addTaskStep4aDaily(ctx) {
 
     return ctx.reply(
       "✅ Tipe Reminder: <b>Harian (24 jam)</b>\n\n" +
-      "🎯 <b>Berapa kali reminder akan dikirimkan?</b>\n" +
+      " <b>Berapa kali reminder akan dikirimkan?</b>\n" +
       "Kirim dalam bentuk angka\n\n" +
       "Contoh: <code>3</code> artinya 3 total reminder",
       {
@@ -362,8 +362,31 @@ async function addTaskStep5(ctx, target) {
 
 
 async function extendTask(ctx, params) {
+
+
+
+  await stateService.setState(ctx.state.telegram_id, "waiting_frequency_extender");
+
+
   
-  return ctx.reply(`Extend ===== ${params}`)
+  
+  // return ctx.reply(`Extend ===== ${params}`)
+  return ctx.reply(`Masukkan Target yang ingin anda tambahkan ===== ${params}`)
+}
+
+
+async function setExtendedTarget(ctx, taskId, param) {
+    
+  var textBalasan = "";
+  try{
+
+    await taskService.updateTask(taskId , {  target: param });
+    textBalasan = "Penambahan Durasi berhasil";
+  }catch(e){
+    textBalasan = `Gagal menambahkan durasi ${e}`
+  }
+
+  return ctx.reply(textBalasan)
 }
 
 
@@ -381,5 +404,6 @@ module.exports = {
   addTaskStep4bInterval,
   addTaskStep5,
   extendTask,
-  doneTask
+  setExtendedTarget,
+  doneTask,
 };

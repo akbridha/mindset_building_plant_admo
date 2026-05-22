@@ -107,7 +107,7 @@ async function deleteTask(task_id) {
  */
 async function updateTask(task_id, updates) {
   try {
-    const allowedFields = ['progress', 'status', 'last_date'];
+    const allowedFields = ['checkpoint_time', 'target', 'status'];
     const updateParts = [];
     const values = [];
 
