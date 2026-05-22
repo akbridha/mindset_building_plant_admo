@@ -365,28 +365,31 @@ async function extendTask(ctx, params) {
 
 
 
-  await stateService.setState(ctx.state.telegram_id, "waiting_frequency_extender");
-
-
-  
-  
-  // return ctx.reply(`Extend ===== ${params}`)
-  return ctx.reply(`Masukkan Target yang ingin anda tambahkan ===== ${params}`)
+  await stateService.setState(ctx.state.telegram_id, "waiting_frequency_extender", {id_task: params});
+  //todo. fix flow utama duls
+  // judul task ambil nant
+  // const judulTask = await taskService.getTaskById();
+    // return ctx.reply(`Extend ===== ${params}`)
+  return ctx.reply(`Masukkan Target yang ingin anda tambahkan untuk Task ini.. id => ${params} ===`)
 }
 
 
-async function setExtendedTarget(ctx, taskId, param) {
+async function setExtendedTarget(ctx, target) {
     
   var textBalasan = "";
   try{
-
-    await taskService.updateTask(taskId , {  target: param });
+    await taskService.updateTask(ctx.state.userContext.id_task , {  target: target });
     textBalasan = "Penambahan Durasi berhasil";
   }catch(e){
     textBalasan = `Gagal menambahkan durasi ${e}`
   }
 
+    await stateService.clearState(ctx.state.telegram_id);
+
+
   return ctx.reply(textBalasan)
+  // return ctx.reply(ctx);
+
 }
 
 

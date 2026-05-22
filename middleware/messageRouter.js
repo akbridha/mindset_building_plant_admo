@@ -50,7 +50,7 @@ async function messageRouter(ctx) {
           return setManpower(ctx, userInput);
 
         case "waiting_frequency_extender":
-          return setExtendedTarget(ctx, 4, userInput,);
+          return setExtendedTarget(ctx, userInput,);
           
       default:
         // Unknown state - reset and inform user
