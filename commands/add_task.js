@@ -361,16 +361,16 @@ async function addTaskStep5(ctx, target) {
 }
 
 
-async function extendTask(ctx, params) {
+async function extendTask(ctx) {
 
+const task_id = ctx.state.userContext.task_id
 
-
-  await stateService.setState(ctx.state.telegram_id, "waiting_frequency_extender", {id_task: params});
+  await stateService.setState(ctx.state.telegram_id, "waiting_frequency_extender", {id_task: task_id});
   //todo. fix flow utama duls
   // judul task ambil nant
   // const judulTask = await taskService.getTaskById();
     // return ctx.reply(`Extend ===== ${params}`)
-  return ctx.reply(`Masukkan Target yang ingin anda tambahkan untuk Task ini.. id => ${params} ===`)
+  return ctx.reply(`Masukkan Target yang ingin anda tambahkan untuk Task ini.. id => ${task_id} ===`)
 }
 
 

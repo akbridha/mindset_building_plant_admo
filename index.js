@@ -137,11 +137,11 @@ bot.on("callback_query:data", async (ctx) => {
         break;
 
       case "extend_phase":
-        await extendTask(ctx, params[0]);
+        await extendTask(ctx);
         break;
 
       case "done_phase":
-        await doneTask(ctx , params[0]);
+        await doneTask(ctx );
         break;
 
       default:

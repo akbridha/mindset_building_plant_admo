@@ -35,7 +35,7 @@ async function createProgress(ctx, userInput, taskId) {
   const lastReminderTarget = checkReminderService.checkIsLastReminder(taskId); 
   if(lastReminderTarget){
     textBalasan = `${textBalasan}${textService.getLastReminderText()}`;
-    stateService.setState(ctx.state.telegram_id,"awaited_on_last_target_response")
+    stateService.setState(ctx.state.telegram_id,"awaited_on_last_target_response",{task_id: taskId})
   }
 
 
