@@ -107,12 +107,11 @@ async function doneTask(ctx) {
       const simbolJawaban = item.answer_yes_no === 1 ? "✅ Yes" : "❌ No";
 
       // Gabungkan ke dalam satu baris string
-      pesanResponse += `${index + 1}. 📅 ${formatWaktu} : ${simbolJawaban}\n`;
+      pesanResponse += `Progress Anda ${presentasi} ${index + 1}. 📅 ${formatWaktu} : ${simbolJawaban}\n`;
     });
 
     // 4. Kirim teks yang sudah didekorasi ke user menggunakan Markdown agar teks bold/emoji rapi
-    // return await ctx.reply(pesanResponse);
-    return await ctx.reply(presentasi);
+    return await ctx.reply(pesanResponse);
 
   } catch (error) {
     console.error("Error di doneTask:", error);
