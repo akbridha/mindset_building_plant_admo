@@ -63,6 +63,45 @@ async function getProgress(taskId) {
   }
 }
 
+async function getProgressPercentage(taskId, dataRiwayat) {
+  var targetReminder = 0;
+  var totalSukses = 0;
+  try {
+ 
+    const sqlForGetFrequencyTotal = `
+    SELECT target FROM reminders WHERE task_id = ?
+      
+    `;
+
+    
+    const [rows] = await db.execute(sqlForGetFrequencyTotal, [taskId]);
+    
+    if (rows.length > 0) {
+      targetReminder = rows[0].target; 
+      console.log(`Target Reminder ${targetReminder}`);
+      
+    }
+    
+    for (const row of dataRiwayat) {
+      if (row.answer_yes_no === 1) {
+        totalSukses++;
+
+      }
+    }
+    
+    console.log(`Total Sukses ${totalSukses}`);
+    
+
+    
+    
+  } catch (error) {
+    
+    console.error("Error Mengambil Semua progress berdasarkan ID Task:", error.message);
+    throw error;
+  }
+  const hasilAverage = targetReminder > 0 ? (totalSukses / targetReminder) * 100 : 0;
+  return `${hasilAverage}%`;
+}
 
 
 
@@ -70,7 +109,9 @@ module.exports = {
 //   getAllTasks,
 //   getTaskById,
     progressCreate,
-    getProgress
+    getProgress,
+    getProgressPercentage
+
 //   deleteTask,
 //   updateTask
 };

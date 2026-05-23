@@ -74,18 +74,21 @@ async function createProgress(ctx, userInput, taskId) {
 async function doneTask(ctx) {
   try {
     const taskId = ctx.state.userContext.task_id;
-    const data = await progresService.getProgress(taskId);
+    const dataRiwayat = await progresService.getProgress(taskId);
     
-    // 1. Validasi jika data kosong atau tidak ditemukan
-    if (!data || data.length === 0) {
+    // 1. Validasi jika dataRiwayat kosong atau tidak ditemukan
+    if (!dataRiwayat || dataRiwayat.length === 0) {
       return await ctx.reply("❌ Belum ada riwayat progress untuk task ini.");
     }
+
+
+    const presentasi = await progresService.getProgressPercentage(taskId, dataRiwayat)
 
     // 2. Judul pesan
     let pesanResponse = `📊 *Riwayat Progress Task ID: ${taskId}*\n\n`;
 
-    // 3. Looping data untuk mendekorasi teks
-    data.forEach((item, index) => {
+    // 3. Looping dataRiwayat untuk mendekorasi teks
+    dataRiwayat.forEach((item, index) => {
       // Mengubah string date UTC ke objek Date Javascript
       const tanggalAsli = new Date(item.recorded_at);
       
@@ -108,7 +111,8 @@ async function doneTask(ctx) {
     });
 
     // 4. Kirim teks yang sudah didekorasi ke user menggunakan Markdown agar teks bold/emoji rapi
-    return await ctx.reply(pesanResponse);
+    // return await ctx.reply(pesanResponse);
+    return await ctx.reply(presentasi);
 
   } catch (error) {
     console.error("Error di doneTask:", error);
