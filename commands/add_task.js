@@ -379,7 +379,7 @@ async function setExtendedTarget(ctx, target) {
   var textBalasan = "";
   try{
     await taskService.updateTask(ctx.state.userContext.id_task , {  target: target });
-    textBalasan = "Penambahan Durasi berhasil";
+    textBalasan = "✅ Penambahan Durasi berhasil";
   }catch(e){
     textBalasan = `Gagal menambahkan durasi ${e}`
   }

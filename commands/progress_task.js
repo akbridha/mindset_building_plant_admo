@@ -32,7 +32,7 @@ async function createProgress(ctx, userInput, taskId) {
   // console.log("Clearing state for user:", ctx.state.telegram_id);
   await stateService.clearState(ctx.state.telegram_id);
    
-  const lastReminderTarget = checkReminderService.checkIsLastReminder(taskId); 
+  const lastReminderTarget = await checkReminderService.checkIsLastReminder(taskId); 
   if(lastReminderTarget){
     textBalasan = `${textBalasan}${textService.getLastReminderText()}`;
     stateService.setState(ctx.state.telegram_id,"awaited_on_last_target_response",{task_id: taskId})
