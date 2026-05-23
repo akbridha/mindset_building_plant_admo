@@ -9,10 +9,13 @@ async function createProgress(ctx, userInput, taskId) {
 
   console.log(ctx.state.telegram_id, userInput, taskId);
   const userState = await stateService.getState(ctx.state.telegram_id);
+  // cek status apakah memang sedang ditunggui atau alur ilegal(di luar dugaan) 
   const isUserResponseAwaited = userState.current_state === "awaiting_checkpoint_response" ? true : false; 
+  console.log("Is user response awaited?", isUserResponseAwaited);
 
   var textBalasan = "";
-  console.log("Is user response awaited?", isUserResponseAwaited);
+  var  replyMarkup = null;
+
   // console.log("Current user state:", userState.current_state);
 
 
@@ -21,6 +24,8 @@ async function createProgress(ctx, userInput, taskId) {
     ctx.reply("Anda tidak sedang dalam proses Perekaman Checkpoint");
     return true;
   }
+
+  
   try {
     await taskUpdaterService.progressCreate(ctx, userInput, taskId);
     textBalasan = "✅ Progress recorded. Terima kasih atas update-nya!";
@@ -35,20 +40,22 @@ async function createProgress(ctx, userInput, taskId) {
   const lastReminderTarget = await checkReminderService.checkIsLastReminder(taskId); 
   if(lastReminderTarget){
     textBalasan = `${textBalasan}${textService.getLastReminderText()}`;
-    stateService.setState(ctx.state.telegram_id,"awaited_on_last_target_response",{task_id: taskId})
-  }
-
-
-  // console.log(textBalasan);
-  return ctx.reply(textBalasan, {
-        parse_mode: "HTML",
-        reply_markup: {
+    replyMarkup =  {
           inline_keyboard: [
             [{ text: "✨ Extend", callback_data: `extend_phase` }],
             [{ text: "✅ Selesai", callback_data: `done_phase` }]
           ]
         }
-      });
+    stateService.setState(ctx.state.telegram_id,"awaited_on_last_target_response",{task_id: taskId})
+  }
+
+
+  // Kirim pesan dengan atau tanpa keyboard
+  const replyOptions = { parse_mode: "HTML" };
+  if (replyMarkup) replyOptions.reply_markup = replyMarkup;
+
+  // console.log(textBalasan);
+  return ctx.reply(textBalasan, replyOptions);
 
 }
 

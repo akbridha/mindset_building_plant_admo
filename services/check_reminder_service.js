@@ -97,7 +97,7 @@ async function checkIsLastReminder(reminderId){
 
       const jumlahReminder = rowProgress[0].total;
 
-      console.log("hasil Query:", jumlahReminder);
+      console.log("Total Semua progress tercatat:", jumlahReminder);
       console.log("Reminder untuk cek last reminder:", );
 
       return jumlahReminder >= targetReminder ? true :false;
