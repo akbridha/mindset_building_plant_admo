@@ -304,6 +304,8 @@ async function addTaskStep4bInterval(ctx, intervalTime) {
  * Step 5 (Final): Handle target (frequency) input and finalize task creation
  */
 async function addTaskStep5(ctx, target) {
+
+  
   try {
     const telegram_id = ctx.state.telegram_id;
     const context = ctx.state.userContext;
@@ -393,10 +395,7 @@ async function setExtendedTarget(ctx, target) {
 }
 
 
-async function doneTask(ctx, params) {
-  
-  return ctx.reply(`done ===== ${params}`)
-}
+
 
 module.exports = {
   addTaskCommand,
@@ -407,6 +406,5 @@ module.exports = {
   addTaskStep4bInterval,
   addTaskStep5,
   extendTask,
-  setExtendedTarget,
-  doneTask,
+  setExtendedTarget
 };

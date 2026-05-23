@@ -20,14 +20,14 @@ const {
 } = require("./commands/generate_ref");
 const listUserCommand = require("./commands/list_user");
 const listTaskCommand = require("./commands/list_task");
-const { addTaskCommand, addTaskStep4aDaily, addTaskStep4bCustom, extendTask, doneTask } = require("./commands/add_task");
+const { addTaskCommand, addTaskStep4aDaily, addTaskStep4bCustom, extendTask } = require("./commands/add_task");
 const { removeTaskCommand, removeTaskConfirm } = require("./commands/remove_task");
 const cancelCommand = require("./commands/cancel");
 
 // ========== IMPORT MIDDLEWARE ==========
 const stateMiddleware = require("./middleware/stateMiddleware");
 const messageRouter = require("./middleware/messageRouter");
-const createProgress = require("./commands/progress_task");
+const {createProgress, doneTask} = require("./commands/progress_task");
 
 // ========== APPLY MIDDLEWARE ==========
 // State middleware must be applied BEFORE command handlers to attach state to context

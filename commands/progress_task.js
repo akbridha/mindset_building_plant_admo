@@ -2,6 +2,7 @@ const taskUpdaterService = require("../services/progressService");
 const stateService = require("../services/stateService");
 const checkReminderService = require("../services/check_reminder_service");
 const textService = require("../services/textService");
+const progresService = require("../services/progressService")
 
 
 
@@ -59,7 +60,66 @@ async function createProgress(ctx, userInput, taskId) {
 
 }
 
-module.exports = createProgress;
+// async function doneTask(ctx) {
+
+
+
+
+//   const taskId = ctx.state.userContext.task_id
+//   const data = await progresService.getProgress(taskId);
+  
+//   return ctx.reply(data);
+// }
+
+async function doneTask(ctx) {
+  try {
+    const taskId = ctx.state.userContext.task_id;
+    const data = await progresService.getProgress(taskId);
+    
+    // 1. Validasi jika data kosong atau tidak ditemukan
+    if (!data || data.length === 0) {
+      return await ctx.reply("❌ Belum ada riwayat progress untuk task ini.");
+    }
+
+    // 2. Judul pesan
+    let pesanResponse = `📊 *Riwayat Progress Task ID: ${taskId}*\n\n`;
+
+    // 3. Looping data untuk mendekorasi teks
+    data.forEach((item, index) => {
+      // Mengubah string date UTC ke objek Date Javascript
+      const tanggalAsli = new Date(item.recorded_at);
+      
+      // Ambil komponen tanggal, jam, dan menit (ditambah padStart agar selalu 2 digit, misal: 05)
+      const tgl = String(tanggalAsli.getDate()).padStart(2, '0');
+      const bln = String(tanggalAsli.getMonth() + 1).padStart(2, '0'); // bulan dimulai dari 0
+      const thn = tanggalAsli.getFullYear();
+      const jam = String(tanggalAsli.getHours()).padStart(2, '0');
+      const menit = String(tanggalAsli.getMinutes()).padStart(2, '0');
+
+      // Format gabungan: DD/MM/YYYY - HH:mm
+      const formatWaktu = `${tgl}/${bln}/${thn} - ${jam}:${menit}`;
+
+      // Mengubah angka jawaban (1 atau 0) menjadi emoji simbol
+      // (Asumsi: 1 = Yes [✅], selain itu = No [❌])
+      const simbolJawaban = item.answer_yes_no === 1 ? "✅ Yes" : "❌ No";
+
+      // Gabungkan ke dalam satu baris string
+      pesanResponse += `${index + 1}. 📅 ${formatWaktu} : ${simbolJawaban}\n`;
+    });
+
+    // 4. Kirim teks yang sudah didekorasi ke user menggunakan Markdown agar teks bold/emoji rapi
+    return await ctx.reply(pesanResponse);
+
+  } catch (error) {
+    console.error("Error di doneTask:", error);
+    return await ctx.reply("⚠️ Terjadi kesalahan saat memproses riwayat progress.");
+  }
+}
+
+module.exports ={ 
+  createProgress,
+  doneTask
+};
 
 // ✨
 // ❇️

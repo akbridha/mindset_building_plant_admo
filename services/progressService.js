@@ -36,11 +36,41 @@ async function progressCreate(ctx, userInput, task_id) {
 }
 
 
+async function getProgress(taskId) {
+  try {
+    // 1. Perbaikan: 'ORDER BY' dipisah spasi, dan taskId diganti dengan placeholder '?'
+    const sql = `
+      SELECT * FROM progress_history
+      WHERE reminder_id = ? 
+      ORDER BY recorded_at ASC
+    `;
+
+    // 2. Perbaikan: Masukkan taskId ke dalam array sebagai parameter kedua db.execute()
+    const [rows] = await db.execute(sql, [taskId]);
+
+    if (rows.length > 0) {
+      return rows; 
+      // Catatan: Karena menggunakan ORDER BY ASC, ini akan mengembalikan progress yang PALING LAMA/AWAL.
+      // Jika Anda ingin mengambil progress TERBARU, ganti ASC menjadi DESC.
+    }
+
+    return null;
+    
+  } catch (error) {
+    // 3. Perbaikan: Cetak juga error aslinya agar Anda mudah melakukan debugging jika ada masalah database
+    console.error("Error Mengambil Semua progress berdasarkan ID Task:", error.message);
+    throw error;
+  }
+}
+
+
+
 
 module.exports = {
 //   getAllTasks,
 //   getTaskById,
-    progressCreate
+    progressCreate,
+    getProgress
 //   deleteTask,
 //   updateTask
 };
