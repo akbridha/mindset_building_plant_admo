@@ -7,9 +7,10 @@ async function checkReminderService(timeRange = 5) {
     const [rows] = await db.execute(`
       SELECT
         telegram_id,
-        checkpoint_time,
         task_id,
-        task_description
+        task_description,
+        checkpoint_time,
+        target
       FROM reminders
       WHERE
         checkpoint_time >= NOW()
@@ -48,7 +49,7 @@ async function checkReminderService(timeRange = 5) {
 
 }
 
-async function checkIsLastReminder(reminderId){
+  async function checkIsLastReminder(reminderId){
 
     var  targetReminder  = 0;
 
@@ -60,10 +61,10 @@ async function checkIsLastReminder(reminderId){
         
 
         SELECT task_id,
-         target
+        target
           FROM reminders
         WHERE
-         task_id = ?
+        task_id = ?
         
         
         `,[reminderId]);
@@ -80,27 +81,27 @@ async function checkIsLastReminder(reminderId){
       console.log('Nilai Target:', targetReminder);
 
 
-    } else {
-      // Jika masuk ke sini, berarti di database memat tidak ada task_id yang dicari
-      console.log(`Data TIDAK DITEMUKAN di database untuk task_id: ${reminderId}`);
-    }
+      } else {
+        // Jika masuk ke sini, berarti di database memat tidak ada task_id yang dicari
+        console.log(`Data TIDAK DITEMUKAN di database untuk task_id: ${reminderId}`);
+      }
 
-      // format sql2 untuk node.js selalu mengembalikan dua Array jari perlu deconstruk untuk variable hasil querynya
-      const [rowProgress] = await db.execute(`
-        SELECT COUNT(*) AS total
-        FROM progress_history
-        WHERE
-        reminder_id = ?
-        
-        `,[reminderId]
-      );
+    // format sql2 untuk node.js selalu mengembalikan dua Array jari perlu deconstruk untuk variable hasil querynya
+    const [rowProgress] = await db.execute(`
+      SELECT COUNT(*) AS total
+      FROM progress_history
+      WHERE
+      reminder_id = ?
+      
+      `,[reminderId]
+    );
 
-      const jumlahReminder = rowProgress[0].total;
+    const jumlahReminder = rowProgress[0].total;
 
-      console.log("Total Semua progress tercatat:", jumlahReminder);
-      console.log("Reminder untuk cek last reminder:", );
+    console.log("Total Semua progress tercatat:", jumlahReminder);
+    console.log("Reminder untuk cek last reminder:", );
 
-      return jumlahReminder >= targetReminder ? true :false;
+    return jumlahReminder >= targetReminder ? true :false;
 
 
     } catch (error) {
@@ -109,8 +110,59 @@ async function checkIsLastReminder(reminderId){
 
   }
 
+  async function filterReminderWithProgressLessThanTarget(reminders) {
+    if (!reminders || reminders.length === 0) {
+      return [];
+    }
+
+    var filteredReminders = [];
+
+    for (const reminder of reminders) {
+
+
+      console.log({
+        data_in_main_command: "data insised",
+        telegram_id: reminder.telegram_id,
+        task_id: reminder.task_id,
+        task_description: reminder.task_description,
+        checkpoint_time: reminder.checkpoint_time,
+        target: reminder.target
+      });
+
+
+      try {
+        // Get current progress count for this reminder
+        const [rowProgress] = await db.execute(
+          `SELECT COUNT(*) AS total
+          FROM progress_history
+          WHERE reminder_id = ?`,
+          [reminder.task_id] 
+        );
+
+        const currentProgress = rowProgress[0]?.total || 0;
+        const target = parseInt(reminder.target);
+
+        // Only keep reminders where progress is less than target
+        if (currentProgress < target) {
+          filteredReminders.push(reminder);
+          console.log(`Reminder ${reminder.task_id}: Progress ${currentProgress} < Target ${target} - INCLUDED`);
+        } else {
+          console.log(`Reminder ${reminder.task_id}: Progress ${currentProgress} >= Target ${target} - FILTERED OUT`);
+        }
+      } catch (error) {
+        console.error(`Error checking progress for reminder ${reminder.reminder_id || reminder.id}:`, error);
+        // Optionally include reminders that cause errors, or skip them
+        // filteredReminders.push(reminder);
+      }
+    }
+
+    return filteredReminders;
+  }
+
+
 module.exports = {
   checkReminderService,
   checkDataCheckpointTime,
-  checkIsLastReminder
+  checkIsLastReminder,
+  filterReminderWithProgressLessThanTarget
 };

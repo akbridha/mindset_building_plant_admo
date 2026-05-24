@@ -1,0 +1,41 @@
+{
+    "update":
+    {
+        "update_id":310083774,
+        "message":{
+            "message_id":1761,
+            "from":{"id":6103145555,"is_bot":false,"first_name":"Eko Budianto","username":"ekobudi17","language_code":"en"},
+            "chat":{"id":6103145555,"first_name":"Eko Budianto","username":"ekobudi17","type":"private"},
+            "date":1779420386,"text":"11"
+        }
+    },
+    "api":
+    {
+        "token":"7985978623:AAEM9Z-RlEbfX1lEYdAGzmNSPv5sNHbUA3k",
+        "raw":{},
+        "config":{}
+    },
+    "me":
+    {
+        "id":7985978623,
+        "is_bot":true,
+        "first_name":"Mindset Pro",
+        "username":"mindsetproject_bot",
+        "can_join_groups":true,
+        "can_read_all_group_messages":false,
+        "supports_inline_queries":false,
+        "supports_guest_queries":false,
+        "can_connect_to_business":false,
+        "has_main_web_app":false,
+        "has_topics_enabled":false,
+        "allows_users_to_create_topics":false,
+        "can_manage_bots":false
+    },
+    "state":
+    {
+        "isAdmin":true,
+        "userState":"waiting_frequency_extender",
+        "userContext":{},
+        "telegram_id":6103145555
+    }
+}
