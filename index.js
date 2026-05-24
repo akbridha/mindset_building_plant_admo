@@ -36,8 +36,14 @@ bot.use(stateMiddleware);
 // ========== HANDLE DYNAMIC COMMANDS (before messageRouter) ==========
 // Handle /start_CODE123 and /generate_ref_CODE123 commands
 bot.on("message:text", async (ctx, next) => {
-  const messageText = ctx.message.text || "";
+  let messageText = ctx.message.text || "";
 
+  // TAMBAHKAN INI: Normalisasi format spasi dari link Telegram menjadi underscore
+  if (messageText.startsWith("/start ")) {
+    messageText = messageText.replace("/start ", "/start_");
+    // Update juga ctx.message.text agar fungsi startWithCodeCommand menerima teks yang sudah rapi
+    ctx.message.text = messageText; 
+  }
   // Handle /start_CODE123
   if (/^\/start_/.test(messageText)) {
     return await startWithCodeCommand(ctx);

@@ -10,7 +10,12 @@ const { db } = require("../db");
 module.exports = async (ctx) => {
   try {
     const telegram_id = ctx.state.telegram_id;
-    const messageText = ctx.message.text || "";
+    let messageText = ctx.message.text || ""; // Gunakan 'let' ajaa. bisa diubah
+
+    // handle format umpamanye pakay spasi, ubah menjadi underscore
+    if (messageText.startsWith("/start ")) {
+      messageText = messageText.replace("/start ", "/start_");
+    }
 
     // Extract reference code from command (e.g., "/start_ABC123" -> "ABC123")
     const commandMatch = messageText.match(/^\/start_(.+)$/);

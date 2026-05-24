@@ -166,16 +166,18 @@ async function setManpower(ctx, totalMP) {
       return ctx.reply("❌ Gagal membuat reference code. Silakan coba lagi.");
     }
 
-    await ctx.reply(
-      `✅ Berhasil Menambah Reference Code baru!\n\n` +
-      `⏰ Durasi ${duration} menit dipilih.\n\n` +
-      `👷🏼 Jumlah ManPower: ${totalMP}\n` +
-      `🗝️ User dapat menggunakan:\n` +
-      `<code>t.me/mindsetproject_bot</code>\n\n` +
-      `<code>/start_${queryresult.referenceCode}</code>\n\n` +
-      `Expired Time: ${queryresult.expirationTime}`,
-      { parse_mode: "HTML" }
-    );
+await ctx.reply(
+  `✅ Berhasil Menambah Reference Code baru!\n\n` +
+  `⏰ Durasi ${duration} menit dipilih.\n\n` +
+  `👷🏼 Jumlah ManPower: ${totalMP}\n` +
+  `🗝️ User dapat menggunakan:\n\n` +
+  `🔗 **Link Tautan:**\n` +
+  `<a href="https://t.me/mindsetproject_bot?start=${queryresult.referenceCode}">Klik di sini untuk memulai</a>\n\n` +
+  `💻 **Kode Perintah (Salin):**\n` +
+  `<code>/start_${queryresult.referenceCode}</code>\n\n` +
+  `Expired Time: ${queryresult.expirationTime}`,
+  { parse_mode: "HTML" }
+);
     
     await stateService.clearState(telegram_id);
 
