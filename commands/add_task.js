@@ -139,25 +139,45 @@ async function addTaskStep3(ctx, checkpointTime) {
     // Move to step 4: Ask for interval type
     await stateService.setState(
       telegram_id,
-      "awaiting_interval_type",
+      // "awaiting_interval_type",
+      "awaiting_target",
       { ...context, checkpoint_time: checkpointTime }
     );
 
     return ctx.reply(
-      "✅ Waktu mulai reminder: <b>" + checkpointTime + "</b>\n\n" +
-      "📅 <b>Kapan User hendak diberikan Reminder?</b>\n" +
-      "Pilih salah satu:",
+
+
+
+      "✅ Tipe Reminder: <b>Harian (24 jam)</b>\n\n" +
+      " <b>Berapa kali reminder akan dikirimkan?</b>\n" +
+      "Kirim dalam bentuk angka\n\n" +
+      "Contoh: <code>3</code> artinya 3 total reminder",
       {
         parse_mode: "HTML",
         reply_markup: {
           inline_keyboard: [
-            [
-              { text: "🗓️ Harian (24:00:00)", callback_data: "interval_daily" },
-              { text: "⏰ Per Jam:Menit", callback_data: "interval_custom" }
-            ]
+            [{ text: "❌ Batal", callback_data: "cancel" }]
           ]
         }
       }
+
+
+
+
+      // "✅ Waktu mulai reminder: <b>" + checkpointTime + "</b>\n\n" +
+      // "📅 <b>Kapan User hendak diberikan Reminder?</b>\n" +
+      // "Pilih salah satu:",
+      // {
+      //   parse_mode: "HTML",
+      //   reply_markup: {
+      //     inline_keyboard: [
+      //       [
+      //         { text: "🗓️ Harian (24:00:00)", callback_data: "interval_daily" },
+      //         { text: "⏰ Per Jam:Menit", callback_data: "interval_custom" }
+      //       ]
+      //     ]
+      //   }
+      // }
     );
   } catch (error) {
     console.error("Error in addTaskStep3:", error);
@@ -326,7 +346,7 @@ async function addTaskStep5(ctx, target) {
       task_description: context.task_description,
       checkpoint_time: context.checkpoint_time,
       target: targetNum,
-      interval: context.interval  // Now dynamic!
+      // interval: context.interval 
     };
 
     const taskId = await taskService.createTask(telegram_id, taskData);
@@ -342,7 +362,7 @@ async function addTaskStep5(ctx, target) {
       "✅ <b>Task Berhasil Dibuat !</b>\n\n" +
       "📝 " + context.task_description + "\n" +
       "⏰ Checkpoint: " + context.checkpoint_time + "\n" +
-      "📅 Interval: " + intervalDisplay + "\n" +
+      // "📅 Interval: " + intervalDisplay + "\n" +
       "🎯 " + targetNum + " reminder(s)\n\n" +
       "Gunakan /list_task untuk melihat semua task.",
       {

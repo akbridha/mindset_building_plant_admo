@@ -42,33 +42,33 @@ async function startCron() {
 
 
     //  allScheduleInRange = await filterReminderWithProgressLessThanTarget(allScheduleInRange);
-     allScheduleInRange =  await filterReminderWithProgressLessThanTarget(allScheduleInRange);
+    //  allScheduleInRange =  await filterReminderWithProgressLessThanTarget(allScheduleInRange);
     
     for (const reminder of allScheduleInRange) {
 
       // sendM
-      console.log({
-        data_in_main_command: "data_outside",
-        telegram_id: reminder.telegram_id,
-        task_id: reminder.task_id,
-        task_description: reminder.task_description,
-        checkpoint_time: reminder.checkpoint_time,
-        target: reminder.target
-      });
+      // console.log({
+      //   data_in_main_command: "data_outside",
+      //   telegram_id: reminder.telegram_id,
+      //   task_id: reminder.task_id,*
+      //   task_description: reminder.task_description,
+      //   checkpoint_time: reminder.checkpoint_time,
+      //   target: reminder.target
+      // });
 
-      // const decoratedReminder = `⏰ *Reminder:*\n${reminder.task_description}\n\nTask ID: ${reminder.task_id}\nCheckpoint Time: ${new Date(reminder.checkpoint_time).toLocaleString()}\nApakah Task Dikerjakan?`;
-      // const inlineKeyboard = {
-      //   parse_mode: "HTML",
-      //   reply_markup: {
-      //     inline_keyboard: [
-      //       [{ text: "✅ dikerjakan", callback_data: `task_done:${reminder.task_id}` }],
-      //       [{ text: "❌ tidak dikerjakan", callback_data: `task_miss:${reminder.task_id}` }]
-      //     ]
-      //   }
-      // }
-      //     await bot.api.sendMessage( reminder.telegram_id, decoratedReminder, inlineKeyboard);
-      //     await stateService.setState(reminder.telegram_id, "awaiting_checkpoint_response", { });
-      //       console.log("State set to awaiting_checkpoint_response");
+      const decoratedReminder = `⏰ *Reminder:*\n${reminder.task_description}\n\nTask ID: ${reminder.task_id}\nCheckpoint Time: ${new Date(reminder.checkpoint_time).toLocaleString()}\nApakah Task Dikerjakan?`;
+      const inlineKeyboard = {
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "✅ dikerjakan", callback_data: `task_done:${reminder.task_id}` }],
+            [{ text: "❌ tidak dikerjakan", callback_data: `task_miss:${reminder.task_id}` }]
+          ]
+        }
+      }
+          await bot.api.sendMessage( reminder.telegram_id, decoratedReminder, inlineKeyboard);
+          await stateService.setState(reminder.telegram_id, "awaiting_checkpoint_response", { });
+            console.log("State set to awaiting_checkpoint_response");
     }
   // run every minute
     // await checkReminderService();
