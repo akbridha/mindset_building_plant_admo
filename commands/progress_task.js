@@ -29,7 +29,10 @@ async function createProgress(ctx, userInput, taskId) {
   
   try {
     await taskUpdaterService.progressCreate(ctx, userInput, taskId);
-    textBalasan = "✅ Progress recorded. Terima kasih atas update-nya!";
+      const dataRiwayat = await progresService.getProgress(taskId);
+      const progressPrecentage = await taskUpdaterService.getProgressPercentage(taskId, dataRiwayat);
+       textBalasan = `✅ Progress diterima. \n Progress anda ${progressPrecentage} \n Terima kasih atas update-nya!`;
+
   } catch (error) {
     textBalasan = "❌ Error in update tasks Command. Mohon Coba lagi.";
     console.error("Error in updateTaskCommand:", error);
@@ -61,13 +64,8 @@ async function createProgress(ctx, userInput, taskId) {
 }
 
 // async function doneTask(ctx) {
-
-
-
-
 //   const taskId = ctx.state.userContext.task_id
 //   const data = await progresService.getProgress(taskId);
-  
 //   return ctx.reply(data);
 // }
 
@@ -85,7 +83,7 @@ async function doneTask(ctx) {
     const presentasi = await progresService.getProgressPercentage(taskId, dataRiwayat)
 
     // 2. Judul pesan
-    let pesanResponse = `📊 *Riwayat Progress Task ID: ${taskId}*\n\n`;
+    let pesanResponse = `📊 *Riwayat Progress Task ID: ${taskId}*\n\n Progress Anda ${presentasi}\n`;
 
     // 3. Looping dataRiwayat untuk mendekorasi teks
     dataRiwayat.forEach((item, index) => {
@@ -107,7 +105,7 @@ async function doneTask(ctx) {
       const simbolJawaban = item.answer_yes_no === 1 ? "✅ Yes" : "❌ No";
 
       // Gabungkan ke dalam satu baris string
-      pesanResponse += `Progress Anda ${presentasi} ${index + 1}. 📅 ${formatWaktu} : ${simbolJawaban}\n`;
+      pesanResponse += `${index + 1}. 📅 ${formatWaktu} : ${simbolJawaban}\n`;
     });
 
     // 4. Kirim teks yang sudah didekorasi ke user menggunakan Markdown agar teks bold/emoji rapi
