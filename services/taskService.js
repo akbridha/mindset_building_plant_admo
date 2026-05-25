@@ -57,24 +57,26 @@ async function getTaskById(task_id) {
  */
 async function createTask(telegram_id, taskData) {
   try {
+    // const {
+    //   task_description,
+    //   checkpoint_time,
+    //   target,
+    //   interval = "once"
+    // } = taskData;
     const {
       task_description,
-      checkpoint_time,
-      target,
-      interval = "once"
+      target
     } = taskData;
 
     const sql = `
       INSERT INTO reminders 
-      (telegram_id, task_description, checkpoint_time, \`interval\`, target, status)
-      VALUES (?, ?, ?, ?, ?, 'OPEN')
+      (telegram_id, task_description, target )
+      VALUES (?, ?, ?)
     `;
 
     const [result] = await db.execute(sql, [
       telegram_id,
       task_description,
-      checkpoint_time,
-      interval,
       target
     ]);
 

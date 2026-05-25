@@ -87,15 +87,20 @@ async function addTaskStep2(ctx, taskDescription) {
     // Move to step 3
     await stateService.setState(
       telegram_id,
-      "awaiting_checkpoint_time",
+      // "awaiting_checkpoint_time",
+      "awaiting_target",
       { task_description: taskDescription.trim() }
     );
 
     return ctx.reply(
       "✅ Task description saved: <b>" + taskDescription.trim() + "</b>\n\n" +
-      "⏰ <b>Jam berapa reminder pertama kali dikirimkan?</b>\n" +
-      "Kirim dalam format <code>HH:MM</code> (24-hour)\n\n" +
-      "Contoh: <code>14:30</code> untuk Jam 2:30 sore",
+      // "⏰ <b>Jam berapa reminder pertama kali dikirimkan?</b>\n" +
+      // "Kirim dalam format <code>HH:MM</code> (24-hour)\n\n" +
+      // "Contoh: <code>14:30</code> untuk Jam 2:30 sore",
+
+      " <b>Berapa hari target ketercapaian ?</b>\n" +
+      "Kirim dalam bentuk angka\n\n" +
+      "Contoh: <code>3</code>  maka target 3 hari",
       {
         parse_mode: "HTML",
         reply_markup: {
@@ -139,8 +144,8 @@ async function addTaskStep3(ctx, checkpointTime) {
     // Move to step 4: Ask for interval type
     await stateService.setState(
       telegram_id,
-      // "awaiting_interval_type",
-      "awaiting_target",
+      "awaiting_interval_type",
+   
       { ...context, checkpoint_time: checkpointTime }
     );
 
@@ -344,9 +349,9 @@ async function addTaskStep5(ctx, target) {
     // Create task in database with dynamic interval
     const taskData = {
       task_description: context.task_description,
-      checkpoint_time: context.checkpoint_time,
+      // checkpoint_time: context.checkpoint_time,  /**disable karena tidak sesuai permintaan */
       target: targetNum,
-      // interval: context.interval 
+      // interval: context.interval   /**disable karena tidak sesuai permintaan */
     };
 
     const taskId = await taskService.createTask(telegram_id, taskData);
@@ -361,7 +366,7 @@ async function addTaskStep5(ctx, target) {
     return ctx.reply(
       "✅ <b>Task Berhasil Dibuat !</b>\n\n" +
       "📝 " + context.task_description + "\n" +
-      "⏰ Checkpoint: " + context.checkpoint_time + "\n" +
+      // "⏰ Checkpoint: " + context.checkpoint_time + "\n" +
       // "📅 Interval: " + intervalDisplay + "\n" +
       "🎯 " + targetNum + " reminder(s)\n\n" +
       "Gunakan /list_task untuk melihat semua task.",
