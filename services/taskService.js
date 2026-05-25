@@ -8,10 +8,9 @@ const { db } = require("../db");
 async function getAllTasks(telegram_id) {
   try {
     const sql = `
-      SELECT task_id, telegram_id, task_description, checkpoint_time, 
-             \`interval\`, target, last_date, progress, status, created_at, updated_at
+      SELECT task_id, telegram_id, task_description, target, created_at
       FROM reminders
-      WHERE telegram_id = ? AND status = 'OPEN'
+      WHERE telegram_id = ?
       ORDER BY created_at DESC
     `;
     const [rows] = await db.execute(sql, [telegram_id]);
