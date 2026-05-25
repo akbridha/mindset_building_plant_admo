@@ -61,7 +61,7 @@ async function removeTaskCommand(ctx) {
 
     tasks.forEach((task, index) => {
       const emoji = emojiNumbers[index] || `${index + 1}.`;
-      taskList += `${emoji} <b>${task.task_description}</b> (${task.checkpoint_time})\n`;
+      taskList += `${emoji} <b>${task.task_description}</b>\n`;
     });
 
     taskList += "\n<i>Send the task number or tap the button</i>";
