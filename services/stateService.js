@@ -32,19 +32,27 @@ async function getState(telegram_id) {
  * @param {Object} context_data - JSON context data to store (optional)
  * @returns {Promise<void>}
  */
-async function setState(telegram_id, state_name, context_data = {}) {
+
+
+// Langsung pasang default value "18:00:00" pada parameter reminder_time
+async function setState(telegram_id, state_name, context_data = {}, reminder_time = "18:00:00") {
   try {
     const contextJson = JSON.stringify(context_data);
+    
+    // Validasi tambahan: jika user sengaja mengirim string kosong "", kita paksa balik ke "18:00:00"
+    const dbReminderTime = reminder_time === "" ? "18:00:00" : reminder_time;
+
     const sql = `
-      INSERT INTO ms_user (telegram_id, current_state, context_data)
-      VALUES (?, ?, ?)
+      INSERT INTO ms_user (telegram_id, current_state, context_data, reminder_time)
+      VALUES (?, ?, ?, ?)
       ON DUPLICATE KEY UPDATE
         current_state = VALUES(current_state),
         context_data = VALUES(context_data),
+        reminder_time = VALUES(reminder_time), 
         updated_at = CURRENT_TIMESTAMP
     `;
-    const result = await db.execute(sql, [telegram_id, state_name, contextJson]);
-    // console.log("State set result:", result); 
+    
+    const result = await db.execute(sql, [telegram_id, state_name, contextJson, dbReminderTime]);
   } catch (error) {
     console.error("Error setting state:", error);
     throw error;
