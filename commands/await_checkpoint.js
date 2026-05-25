@@ -1,7 +1,8 @@
 const taskService = require ("../services/taskService");
 const stateService = require("../services/stateService");
 // const { removeTaskConfirm } = require("./remove_task");
-
+const {createProgress, doneTask} = require("../commands/progress_task");
+const referenceService = require("../services/referenceService");
 
 
 
@@ -10,7 +11,7 @@ const stateService = require("../services/stateService");
 
 // const db = require
 
-async function testCheckpoint(ctx) {
+async function testCheckpoint(ctx, userInput) {
     // const telegram_id = ctx.state.telegram_id;
 
     // await stateService.setState(telegram_id, "await_user_checkpoint_response");

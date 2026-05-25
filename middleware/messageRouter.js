@@ -1,5 +1,6 @@
 const { addTaskStep2, addTaskStep3, addTaskStep4bInterval, addTaskStep5, setExtendedTarget } = require("../commands/add_task");
 const { removeTaskStep2, removeTaskConfirm } = require("../commands/remove_task");
+const {createProgress, doneTask, confirmProgress, updateProgress} = require("../commands/progress_task");
 
 const { setDuration,// fungsi urutan 2  
         setManpower // fungsi urutan 3
@@ -55,8 +56,10 @@ async function messageRouter(ctx) {
         
         
       case "awaiting_task_selection_for_update_progress":
-        return updateProgress(ctx, userInput,); /*belum dikerjakan*/
-
+        return confirmProgress(ctx, userInput,);
+        
+        case "awaiting_update_response":
+          return updateProgress(ctx, userInput,);
 
           
       default:

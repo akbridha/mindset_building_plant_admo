@@ -28,7 +28,7 @@ const cancelCommand = require("./commands/cancel");
 // ========== IMPORT MIDDLEWARE ==========
 const stateMiddleware = require("./middleware/stateMiddleware");
 const messageRouter = require("./middleware/messageRouter");
-const {createProgress, doneTask} = require("./commands/progress_task");
+const {updateProgress, createProgress, doneTask} = require("./commands/progress_task");
 
 // ========== APPLY MIDDLEWARE ==========
 // State middleware must be applied BEFORE command handlers to attach state to context
@@ -142,6 +142,10 @@ bot.on("callback_query:data", async (ctx) => {
         break;
       case "task_miss":
         await createProgress(ctx, 0, params[0]);
+        break;
+
+      case "progress":
+        await updateProgress(ctx, params[0]);
         break;
 
       case "extend_phase":
