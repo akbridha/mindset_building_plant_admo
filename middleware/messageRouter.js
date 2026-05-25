@@ -43,14 +43,21 @@ async function messageRouter(ctx) {
       case "awaiting_task_selection_for_removal":
         return removeTaskStep2(ctx, userInput);
 
-        case "awaiting_duration_refcode":
-          return setDuration(ctx, userInput);
+      case "awaiting_duration_refcode":
+        return setDuration(ctx, userInput);
 
-        case "awaiting_total_manpower_refcode":
-          return setManpower(ctx, userInput);
+      case "awaiting_total_manpower_refcode":
+        return setManpower(ctx, userInput);
 
-        case "waiting_frequency_extender":
-          return setExtendedTarget(ctx, userInput,);
+      case "waiting_frequency_extender":
+        return setExtendedTarget(ctx, userInput,);
+        
+        
+        
+      case "awaiting_task_selection_for_update_progress":
+        return updateProgress(ctx, userInput,); /*belum dikerjakan*/
+
+
           
       default:
         // Unknown state - reset and inform user

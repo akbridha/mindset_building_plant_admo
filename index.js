@@ -18,6 +18,7 @@ const {
   setDuration,// fungsi urutan 2  
   setManpower // fungsi urutan 3
 } = require("./commands/generate_ref");
+const {testCheckpoint} = require("./commands/await_checkpoint");
 const listUserCommand = require("./commands/list_user");
 const listTaskCommand = require("./commands/list_task");
 const { addTaskCommand, addTaskStep4aDaily, addTaskStep4bCustom, extendTask } = require("./commands/add_task");
@@ -65,6 +66,7 @@ bot.command("list_user", listUserCommand);
 bot.command("list_task", listTaskCommand);
 bot.command("add_task", addTaskCommand);
 bot.command("remove_task", removeTaskCommand);
+bot.command("test",testCheckpoint );
 bot.command("cancel", cancelCommand);
 
 // ========== HANDLE CALLBACK QUERIES (Button Clicks) ==========
