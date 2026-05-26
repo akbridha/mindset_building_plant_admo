@@ -174,9 +174,10 @@ async function updateProgress(ctx, userInput) {
   const taskId = ctx.state.userContext.selected_task_id;
 
     // return ctx.reply(ctx.state.userContext.selected_task_id);
-    // return ctx.reply("ID " + taskId + "\n Deskripsi Task Yang diupdate \n" + ctx.state.userContext.selected_task_description + "->"+ userInput+"%");
-  // var textBalasan = "";
-  // var  replyMarkup = null;
+    // return ctx.reply("ID " + 
+    // taskId + "\n Deskripsi Task Yang diupdate \n" + ctx.state.userContext.selected_task_description + "->"+ userInput+"%");
+  var textBalasan = "";
+  var  replyMarkup = null;
   
   try {
     await taskUpdaterService.progressCreate(ctx, userInput, taskId);
