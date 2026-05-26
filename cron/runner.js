@@ -2,8 +2,10 @@ const {
   checkReminderService,
   checkDataCheckpointTime,
   filterReminderWithProgressLessThanTarget,
-  checkUserScheduleReminder,
-  getRemindersByUsers
+  getUsersInReminderWindow,
+  getRemindersByUsers,
+  groupByTelegramId,
+  buildMessage
 } = require("../services/check_reminder_service");
 const { Bot } = require("grammy");
 
@@ -35,16 +37,47 @@ async function startCron() {
   
   setInterval(async () => {
 
-    var userToReceiveReminder = await checkUserScheduleReminder(2)
 
-    console.log(userToReceiveReminder);
+      try {
+    // 1. ambil user yang masuk window cron
+    const users = await getUsersInReminderWindow(5);
 
-    for (const userTelegram of userToReceiveReminder) {
+    if (!users.length) return;
 
-       await bot.api.sendMessage( userTelegram.telegram_id,"reminder");
+    const telegramIds = users.map(u => u.telegram_id);
+    
+    // 2. ambil semua reminder user tsb
+    const reminders = await getRemindersByUsers(telegramIds);
+    console.log(reminders);
+
+    if (!reminders.length) return;
+
+    // 3. group per user
+    const grouped = groupByTelegramId(reminders);
+
+    // 4. send per user
+    for (const telegramId in grouped) {
+      const userReminders = grouped[telegramId];
+
+      const message = buildMessage(userReminders);
+
+       await bot.api.sendMessage(telegramId, message);
     }
 
-    
+  } catch (err) {
+    console.error("cron error:", err);
+  }
+
+    // var userToReceiveReminder = await checkUserScheduleReminder(2)
+
+    // console.log(userToReceiveReminder);
+
+    // for (const userTelegram of userToReceiveReminder) {
+
+    //    await bot.api.sendMessage( userTelegram.telegram_id,"reminder");
+    // }
+
+    // =======================================
   //   var allScheduleInRange =   await checkReminderService(timeRange);
   //   if(!allScheduleInRange || allScheduleInRange.length === 0) {
   //     console.log("No reminders to process.");
