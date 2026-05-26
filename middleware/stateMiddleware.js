@@ -21,29 +21,56 @@ async function stateMiddleware(ctx, next) {
     }
 
     // Set admin flag based on TELEGRAM_ID_OWNER
-    ctx.state.isAdmin = telegram_id === parseInt(TELEGRAM_ID_OWNER);
+    // ctx.state.isAdmin = telegram_id === parseInt(TELEGRAM_ID_OWNER);
+
+
 
     // Check if state has timed out
-    const isTimedOut = await stateService.isStateTimedOut(telegram_id);
+    // const isTimedOut = await stateService.isStateTimedOut(telegram_id);
     
-    if (isTimedOut) {
-      // Clear the timed-out state
-      await stateService.clearState(telegram_id);
+    // if (isTimedOut) {
+    //   // Clear the timed-out state
+    //   await stateService.clearState(telegram_id);
       
-      // Notify user of timeout
-      await ctx.reply(
-        "⏱️ Sesi Anda telah kedaluwarsa (5 menit ketidakaktifan).\n\n" +
-        "Ketik /start untuk memulai lagi."
-      );
+    //   // Notify user of timeout
+    //   await ctx.reply(
+    //     "⏱️ Sesi Anda telah kedaluwarsa (5 menit ketidakaktifan).\n\n" +
+    //     "Ketik /start untuk memulai lagi."
+    //   );
       
-      // Still process the command, but state is now cleared
-    }
+    //   // Still process the command, but state is now cleared
+    // }
 
     // Get current state and attach to context for use in handlers
     const state = await stateService.getState(telegram_id);
     ctx.state.userState = state.current_state;
     ctx.state.userContext = state.context_data || {};
     ctx.state.telegram_id = telegram_id;
+
+
+
+        // ========== PRIORITAS DEMO ROLE ==========
+    let isAdmin = false;
+    const demoRole = ctx.state.userContext.demo_role;
+
+    if (demoRole === "admin") {
+      isAdmin = true;
+    } else if (demoRole === "user") {
+      isAdmin = false;
+    } else {
+      // Fallback ke hardcoded owner
+      isAdmin = (telegram_id === parseInt(TELEGRAM_ID_OWNER));
+    }
+
+    ctx.state.isAdmin = isAdmin;
+    
+    // Optional: Log untuk debugging
+    if (demoRole) {
+      console.log(`User ${telegram_id} in demo mode: ${demoRole}, isAdmin: ${isAdmin}`);
+    }
+    // ========================================
+
+
 
     // Get user's reference code from database
     const { db } = require("../db");

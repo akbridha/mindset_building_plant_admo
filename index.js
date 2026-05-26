@@ -23,6 +23,7 @@ const listTaskCommand = require("./commands/list_task");
 const { addTaskCommand, addTaskStep4aDaily, addTaskStep4bCustom, extendTask } = require("./commands/add_task");
 const { removeTaskCommand, removeTaskConfirm } = require("./commands/remove_task");
 const cancelCommand = require("./commands/cancel");
+const demoRouter = require("./commands/demo");
 
 // ========== IMPORT MIDDLEWARE ==========
 const stateMiddleware = require("./middleware/stateMiddleware");
@@ -32,6 +33,7 @@ const {createProgress, doneTask} = require("./commands/progress_task");
 // ========== APPLY MIDDLEWARE ==========
 // State middleware must be applied BEFORE command handlers to attach state to context
 bot.use(stateMiddleware);
+bot.use(demoRouter);
 
 // ========== HANDLE DYNAMIC COMMANDS (before messageRouter) ==========
 // Handle /start_CODE123 and /generate_ref_CODE123 commands
