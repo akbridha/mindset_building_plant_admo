@@ -159,10 +159,91 @@ async function checkReminderService(timeRange = 5) {
     return filteredReminders;
   }
 
+  async function getUsersInReminderWindow(timeRange = 5) {
+  try {
+
+    const sql = `
+      SELECT 
+        telegram_id,
+        current_state,
+        reminder_time
+      FROM ms_user
+      WHERE reminder_time BETWEEN CURTIME()
+      AND ADDTIME(
+        CURTIME(),
+        SEC_TO_TIME(? * 60)
+      )
+    `;
+
+    const [rows] = await db.execute(sql, [timeRange]);
+
+    return rows;
+
+  } catch (error) {getRemindersByUsers
+    console.error(error);
+  }
+}
+
+
+async function getRemindersByUsers(telegramIds) {
+  if (!telegramIds.length) return [];
+
+  const placeholders = telegramIds.map(() => '?').join(',');
+
+  console.log("Placeholsdr :" +placeholders);
+
+  const sql = `
+    SELECT 
+      telegram_id,
+      task_id,
+      task_description,
+
+      target,
+      progress,
+      status
+    FROM reminders
+    WHERE telegram_id IN (${placeholders})
+    
+  `;
+
+  const [rows] = await db.execute(sql, telegramIds);
+
+console.log(sql);
+console.log(telegramIds);
+  return rows;
+}
+
+function groupByTelegramId(rows) {
+  return rows.reduce((acc, row) => {
+    if (!acc[row.telegram_id]) {
+      acc[row.telegram_id] = [];
+    }
+    acc[row.telegram_id].push(row);
+    return acc;
+  }, {});
+}
+
+function buildMessage(reminders) {
+  let msg = `🔔 *Reminder Kamu*\n\n`;
+
+  reminders.forEach((r, i) => {
+    msg += `${i + 1}. ${r.task_description}\n`;
+    msg += `📌 target: ${r.target}\n\n`;
+  });
+
+
+  msg += "\n Update Progress?"
+
+  return msg;
+}
 
 module.exports = {
   checkReminderService,
   checkDataCheckpointTime,
   checkIsLastReminder,
-  filterReminderWithProgressLessThanTarget
+  filterReminderWithProgressLessThanTarget,
+  getUsersInReminderWindow,
+  getRemindersByUsers,
+  groupByTelegramId,
+  buildMessage
 };

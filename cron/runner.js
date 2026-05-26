@@ -1,7 +1,11 @@
 const {
   checkReminderService,
   checkDataCheckpointTime,
-  filterReminderWithProgressLessThanTarget
+  filterReminderWithProgressLessThanTarget,
+  getUsersInReminderWindow,
+  getRemindersByUsers,
+  groupByTelegramId,
+  buildMessage
 } = require("../services/check_reminder_service");
 const { Bot } = require("grammy");
 
@@ -32,19 +36,70 @@ async function startCron() {
   
   
   setInterval(async () => {
+
+
+      const inlineKeyboard = {
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "✅ Update", callback_data: `update_via_reminder` }],
+            [{ text: "❌ skip", callback_data: `skip_update` }]
+          ]
+        }
+      }
+
+      try {
+    // 1. ambil user yang masuk window cron
+    const users = await getUsersInReminderWindow(5);
+
+    if (!users.length) return;
+
+    const telegramIds = users.map(u => u.telegram_id);
     
-    var allScheduleInRange =   await checkReminderService(timeRange);
-    if(!allScheduleInRange || allScheduleInRange.length === 0) {
-      console.log("No reminders to process.");
-      console.log(new Date().toLocaleString());
-      return;
+    // 2. ambil semua reminder user tsb
+    const reminders = await getRemindersByUsers(telegramIds);
+    console.log(reminders);
+
+    if (!reminders.length) return;
+
+    // 3. group per user
+    const grouped = groupByTelegramId(reminders);
+
+    // 4. send per user
+    for (const telegramId in grouped) {
+      const userReminders = grouped[telegramId];
+
+      const message = buildMessage(userReminders);
+
+       await bot.api.sendMessage(telegramId, message,  inlineKeyboard);
     }
 
+  } catch (err) {
+    console.error("cron error:", err);
+  }
 
-    //  allScheduleInRange = await filterReminderWithProgressLessThanTarget(allScheduleInRange);
-    //  allScheduleInRange =  await filterReminderWithProgressLessThanTarget(allScheduleInRange);
+    // var userToReceiveReminder = await checkUserScheduleReminder(2)
+
+    // console.log(userToReceiveReminder);
+
+    // for (const userTelegram of userToReceiveReminder) {
+
+    //    await bot.api.sendMessage( userTelegram.telegram_id,"reminder");
+    // }
+
+    // =======================================
+  //   var allScheduleInRange =   await checkReminderService(timeRange);
+  //   if(!allScheduleInRange || allScheduleInRange.length === 0) {
+  //     console.log("No reminders to process.");
+  //     console.log(new Date().toLocaleString());
+  //     return;
+  //   }
+
+
+  //   //  allScheduleInRange = await filterReminderWithProgressLessThanTarget(allScheduleInRange);
+  //   //  allScheduleInRange =  await filterReminderWithProgressLessThanTarget(allScheduleInRange);
     
-    for (const reminder of allScheduleInRange) {
+  //   for (const reminder of allScheduleInRange) {
 
       // sendM
       // console.log({
@@ -56,22 +111,22 @@ async function startCron() {
       //   target: reminder.target
       // });
 
-      const decoratedReminder = `⏰ *Reminder:*\n${reminder.task_description}\n\nTask ID: ${reminder.task_id}\nCheckpoint Time: ${new Date(reminder.checkpoint_time).toLocaleString()}\nApakah Task Dikerjakan?`;
-      const inlineKeyboard = {
-        parse_mode: "HTML",
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: "✅ dikerjakan", callback_data: `task_done:${reminder.task_id}` }],
-            [{ text: "❌ tidak dikerjakan", callback_data: `task_miss:${reminder.task_id}` }]
-          ]
-        }
-      }
-          await bot.api.sendMessage( reminder.telegram_id, decoratedReminder, inlineKeyboard);
-          await stateService.setState(reminder.telegram_id, "awaiting_checkpoint_response", { });
-            console.log("State set to awaiting_checkpoint_response");
-    }
+  //     const decoratedReminder = `⏰ *Reminder:*\n${reminder.task_description}\n\nTask ID: ${reminder.task_id}\nCheckpoint Time: ${new Date(reminder.checkpoint_time).toLocaleString()}\nApakah Task Dikerjakan?`;
+  //     const inlineKeyboard = {
+  //       parse_mode: "HTML",
+  //       reply_markup: {
+  //         inline_keyboard: [
+  //           [{ text: "✅ dikerjakan", callback_data: `task_done:${reminder.task_id}` }],
+  //           [{ text: "❌ tidak dikerjakan", callback_data: `task_miss:${reminder.task_id}` }]
+  //         ]
+  //       }
+  //     }
+  //         await bot.api.sendMessage( reminder.telegram_id, decoratedReminder, inlineKeyboard);
+  //         await stateService.setState(reminder.telegram_id, "awaiting_checkpoint_response", { });
+  //           console.log("State set to awaiting_checkpoint_response");
+  //   }
   // run every minute
-    // await checkReminderService();
+  //   await checkReminderService();
   }, 30 * 1000);
 
 

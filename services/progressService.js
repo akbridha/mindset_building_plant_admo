@@ -8,7 +8,7 @@ async function progressCreate(ctx, userInput, task_id) {
 
     const sql = `
       INSERT INTO progress_history 
-      (telegram_id,reminder_id, answer_yes_no)
+      (telegram_id,reminder_id, progress)
       VALUES (?, ?, ?)
     `;
 
@@ -83,7 +83,7 @@ async function getProgressPercentage(taskId, dataRiwayat) {
     }
     
     for (const row of dataRiwayat) {
-      if (row.answer_yes_no === 1) {
+      if (row.answer_yes_or_no === 1) {
         totalSukses++;
 
       }

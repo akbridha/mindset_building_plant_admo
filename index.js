@@ -18,6 +18,8 @@ const {
   setDuration,// fungsi urutan 2  
   setManpower // fungsi urutan 3
 } = require("./commands/generate_ref");
+const {testCheckpoint} = require("./commands/await_checkpoint");
+const {skipCheckpoint} = require("./commands/await_checkpoint");
 const listUserCommand = require("./commands/list_user");
 const listTaskCommand = require("./commands/list_task");
 const { addTaskCommand, addTaskStep4aDaily, addTaskStep4bCustom, extendTask } = require("./commands/add_task");
@@ -28,7 +30,7 @@ const demoRouter = require("./commands/demo");
 // ========== IMPORT MIDDLEWARE ==========
 const stateMiddleware = require("./middleware/stateMiddleware");
 const messageRouter = require("./middleware/messageRouter");
-const {createProgress, doneTask} = require("./commands/progress_task");
+const {updateProgress, createProgress, doneTask} = require("./commands/progress_task");
 
 // ========== APPLY MIDDLEWARE ==========
 // State middleware must be applied BEFORE command handlers to attach state to context
@@ -67,6 +69,7 @@ bot.command("list_user", listUserCommand);
 bot.command("list_task", listTaskCommand);
 bot.command("add_task", addTaskCommand);
 bot.command("remove_task", removeTaskCommand);
+bot.command("test",testCheckpoint );
 bot.command("cancel", cancelCommand);
 
 // ========== HANDLE CALLBACK QUERIES (Button Clicks) ==========
@@ -144,12 +147,23 @@ bot.on("callback_query:data", async (ctx) => {
         await createProgress(ctx, 0, params[0]);
         break;
 
+      case "progress":
+        await updateProgress(ctx, params[0]);
+        break;
+
       case "extend_phase":
         await extendTask(ctx);
         break;
 
       case "done_phase":
         await doneTask(ctx );
+        break;
+      case "update_via_reminder":
+        await testCheckpoint(ctx);
+        break;
+
+      case "skip_update":
+        await skipCheckpoint(ctx);
         break;
 
       default:
