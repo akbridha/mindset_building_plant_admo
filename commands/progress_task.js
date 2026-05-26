@@ -169,47 +169,61 @@ async function updateProgress(ctx, userInput) {
     ctx.reply("Anda tidak sedang dalam proses Perekaman Checkpoint");
     return true;
   }
-    // ============cegah aksi diluar jam permintaan checkpoint==============
+  //============cegah aksi diluar jam permintaan checkpoint==============
 
+  const taskId = ctx.state.userContext.selected_task_id;
 
     // return ctx.reply(ctx.state.userContext.selected_task_id);
-    return ctx.reply(ctx.state.userContext.selected_task_description + "->"+ userInput+"%");
+    // return ctx.reply("ID " + taskId + "\n Deskripsi Task Yang diupdate \n" + ctx.state.userContext.selected_task_description + "->"+ userInput+"%");
   // var textBalasan = "";
   // var  replyMarkup = null;
   
-  // try {
-  //   await taskUpdaterService.progressCreate(ctx, userInput, taskId);
-  //   const dataRiwayat = await progresService.getProgress(taskId);
-  //   const progressPrecentage = await taskUpdaterService.getProgressPercentage(taskId, dataRiwayat);
-  //   textBalasan = `✅ Progress diterima. \n Progress anda ${progressPrecentage} \n Terima kasih atas update-nya!`;
+  try {
+    await taskUpdaterService.progressCreate(ctx, userInput, taskId);
+    const dataRiwayat = await progresService.getProgress(taskId);
+    const riwayatFiltered = [];
+    const bulanNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 
+                    'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 
-  // } catch (error) {
-  //   textBalasan = "❌ Error in update tasks Command. Mohon Coba lagi.";
-  //   console.error("Error in updateTaskCommand:", error);
-  // }
+    for(const row of dataRiwayat){
+      const date = new Date(row.recorded_at);
+      const bulan = bulanNames[date.getMonth()];
+      const tanggal = date.getDate();
+      const formattedDate = `${bulan}/${tanggal}`; // Format: 5/24 atau 5/26
+      
+      riwayatFiltered.push(`${formattedDate} : ${row.progress}%`);
+    }
 
-  // // console.log("Clearing state for user:", ctx.state.telegram_id);
-  // await stateService.clearState(ctx.state.telegram_id);
+    const printRiwayat = riwayatFiltered.join('\n');
+    textBalasan = `✅ Progress diterima. \n Progress anda \n ${printRiwayat} \n Terima kasih atas update-nya!`;
+
+  } catch (error) {
+    textBalasan = "❌ Error in update tasks Command. Mohon Coba lagi.";
+    console.error("Error in updateTaskCommand:", error);
+  }
+
+  // console.log("Clearing state for user:", ctx.state.telegram_id);
+  await stateService.clearState(ctx.state.telegram_id);
    
-  // const lastReminderTarget = await checkReminderService.checkIsLastReminder(taskId); 
-  // if(lastReminderTarget){
-  //   textBalasan = `${textBalasan}${textService.getLastReminderText()}`;
-  //   replyMarkup =  {
-  //         inline_keyboard: [
-  //           [{ text: "✨ Extend", callback_data: `extend_phase` }],
-  //           [{ text: "✅ Selesai", callback_data: `done_phase` }]
-  //         ]
-  //       }
-  //   stateService.setState(ctx.state.telegram_id,"awaited_on_last_target_response",{task_id: taskId})
-  // }
+  const lastReminderTarget = await checkReminderService.checkIsLastReminder(taskId); 
+  if(lastReminderTarget){
+    textBalasan = `${textBalasan}${textService.getLastReminderText()}`;
+    replyMarkup =  {
+          inline_keyboard: [
+            [{ text: "✨ Extend", callback_data: `extend_phase` }],
+            [{ text: "✅ Selesai", callback_data: `done_phase` }]
+          ]
+        }
+    stateService.setState(ctx.state.telegram_id,"awaited_on_last_target_response",{task_id: taskId})
+  }
 
 
-  // // Kirim pesan dengan atau tanpa keyboard
-  // const replyOptions = { parse_mode: "HTML" };
-  // if (replyMarkup) replyOptions.reply_markup = replyMarkup;
+  // Kirim pesan dengan atau tanpa keyboard
+  const replyOptions = { parse_mode: "HTML" };
+  if (replyMarkup) replyOptions.reply_markup = replyMarkup;
 
-  // // console.log(textBalasan);
-  // return ctx.reply(textBalasan, replyOptions);
+  // console.log(textBalasan);
+  return ctx.reply(textBalasan, replyOptions);
   
 }
 
