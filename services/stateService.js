@@ -35,29 +35,63 @@ async function getState(telegram_id) {
 
 
 // Langsung pasang default value "18:00:00" pada parameter reminder_time
-async function setState(telegram_id, state_name, context_data = {}, reminder_time = "18:00:00") {
+
+
+async function setState(
+  telegram_id,
+  state_name,
+  context_data = {},
+  reminder_time = "18:00:00"
+) {
   try {
-    const contextJson = JSON.stringify(context_data);
-    
-    // Validasi tambahan: jika user sengaja mengirim string kosong "", kita paksa balik ke "18:00:00"
-    const dbReminderTime = reminder_time === "" ? "18:00:00" : reminder_time;
+    // cek apakah object kosong
+    const isEmptyContext =
+      !context_data || Object.keys(context_data).length === 0;
+
+    // kalau kosong -> kirim null
+    const contextJson = isEmptyContext
+      ? null
+      : JSON.stringify(context_data);
+
+    // fallback reminder time
+    const dbReminderTime =
+      reminder_time === "" ? "18:00:00" : reminder_time;
 
     const sql = `
-      INSERT INTO ms_user (telegram_id, current_state, context_data, reminder_time)
+      INSERT INTO ms_user (
+        telegram_id,
+        current_state,
+        context_data,
+        reminder_time
+      )
       VALUES (?, ?, ?, ?)
+
       ON DUPLICATE KEY UPDATE
         current_state = VALUES(current_state),
-        context_data = VALUES(context_data),
-        reminder_time = VALUES(reminder_time), 
+
+        -- hanya update jika context_data baru tidak null
+        context_data = COALESCE(
+          VALUES(context_data),
+          context_data
+        ),
+
+        reminder_time = VALUES(reminder_time),
         updated_at = CURRENT_TIMESTAMP
     `;
-    
-    const result = await db.execute(sql, [telegram_id, state_name, contextJson, dbReminderTime]);
+
+    await db.execute(sql, [
+      telegram_id,
+      state_name,
+      contextJson,
+      dbReminderTime,
+    ]);
+
   } catch (error) {
     console.error("Error setting state:", error);
     throw error;
   }
 }
+
 
 /**
  * Clear user's state (set to null)

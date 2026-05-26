@@ -180,7 +180,8 @@ async function setManpower(ctx, totalMP) {
         `👷🏼 Jumlah ManPower: ${totalMP}\n` +
         `🗝️ User dapat menggunakan:\n\n` +
         `🔗 <b>Link Tautan:</b>\n` +
-        `<a href="${link}">Klik di sini untuk memulai</a>\n\n` +
+        `<a href="${link}">Klik di sini untuk memulai</a>\n` +
+        `<code>https://t.me/mindsetproject_bot?start=${queryresult.referenceCode}</code>\n\n` +
         `💻 <b>Kode Perintah (Salin):</b>\n` +
         `<code>/start_${queryresult.referenceCode}</code>\n\n` +
         `Expired Time: ${queryresult.expirationTime}`,
