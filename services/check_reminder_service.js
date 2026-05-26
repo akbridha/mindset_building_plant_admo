@@ -159,10 +159,35 @@ async function checkReminderService(timeRange = 5) {
     return filteredReminders;
   }
 
+  async function checkUserScheduleReminder(timeRange = 5) {
+  try {
+
+    const sql = `
+      SELECT 
+        telegram_id,
+        current_state,
+        reminder_time
+      FROM ms_user
+      WHERE reminder_time BETWEEN CURTIME()
+      AND ADDTIME(
+        CURTIME(),
+        SEC_TO_TIME(? * 60)
+      )
+    `;
+
+    const [rows] = await db.execute(sql, [timeRange]);
+
+    return rows;
+
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 module.exports = {
   checkReminderService,
   checkDataCheckpointTime,
   checkIsLastReminder,
+  checkUserScheduleReminder,
   filterReminderWithProgressLessThanTarget
 };
