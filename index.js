@@ -3,6 +3,9 @@ const cron = require("node-cron");
 const dotenv = require("dotenv");
 const { startCron } = require("./cron/runner");
 
+const QRCode = require("qrcode");
+const { InputFile } = require("grammy");
+
 dotenv.config();
 
 const bot = new Bot(process.env.BOT_TOKEN);
@@ -68,6 +71,20 @@ bot.command("list_task", listTaskCommand);
 bot.command("add_task", addTaskCommand);
 bot.command("remove_task", removeTaskCommand);
 bot.command("cancel", cancelCommand);
+
+
+
+
+bot.command("qr", async (ctx) => {
+  const text = ctx.match || "default data dari backend";
+
+  const buffer = await QRCode.toBuffer(text);
+
+  await ctx.replyWithPhoto(new InputFile(buffer, "qr.png"), {
+    caption: "Ini QR code kamu",
+  });
+});
+
 
 // ========== HANDLE CALLBACK QUERIES (Button Clicks) ==========
 bot.on("callback_query:data", async (ctx) => {
