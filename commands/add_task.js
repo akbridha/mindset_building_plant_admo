@@ -391,6 +391,15 @@ async function addTaskStep5(ctx, target) {
 async function extendTask(ctx) {
 
 const task_id = ctx.state.userContext.task_id
+const userState = ctx.state.currentState;
+
+
+
+  const isUserResponseAwaited = userState === "awaited_on_last_target_response" ? true : false; 
+  if(!isUserResponseAwaited){
+    ctx.reply(" ❌ Anda tidak sedang di akhir sesi");
+    return true;
+  }
 
   await stateService.setState(ctx.state.telegram_id, "waiting_frequency_extender", {id_task: task_id});
   //todo. fix flow utama duls

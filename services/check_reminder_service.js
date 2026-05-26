@@ -231,6 +231,9 @@ function buildMessage(reminders) {
     msg += `📌 target: ${r.target}\n\n`;
   });
 
+
+  msg += "\n Update Progress?"
+
   return msg;
 }
 

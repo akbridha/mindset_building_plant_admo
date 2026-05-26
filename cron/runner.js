@@ -38,6 +38,16 @@ async function startCron() {
   setInterval(async () => {
 
 
+      const inlineKeyboard = {
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "✅ Update", callback_data: `update_via_reminder` }],
+            [{ text: "❌ skip", callback_data: `skip_update` }]
+          ]
+        }
+      }
+
       try {
     // 1. ambil user yang masuk window cron
     const users = await getUsersInReminderWindow(5);
@@ -61,7 +71,7 @@ async function startCron() {
 
       const message = buildMessage(userReminders);
 
-       await bot.api.sendMessage(telegramId, message);
+       await bot.api.sendMessage(telegramId, message,  inlineKeyboard);
     }
 
   } catch (err) {

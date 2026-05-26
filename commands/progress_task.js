@@ -268,6 +268,8 @@ async function doneTask(ctx) {
       pesanResponse += `${index + 1}. 📅 ${formatWaktu} : ${simbolJawaban}\n`;
     });
 
+    await stateService.clearState(ctx.state.telegram_id);
+
     // 4. Kirim teks yang sudah didekorasi ke user menggunakan Markdown agar teks bold/emoji rapi
     return await ctx.reply(pesanResponse);
 

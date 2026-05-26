@@ -19,6 +19,7 @@ const {
   setManpower // fungsi urutan 3
 } = require("./commands/generate_ref");
 const {testCheckpoint} = require("./commands/await_checkpoint");
+const {skipCheckpoint} = require("./commands/await_checkpoint");
 const listUserCommand = require("./commands/list_user");
 const listTaskCommand = require("./commands/list_task");
 const { addTaskCommand, addTaskStep4aDaily, addTaskStep4bCustom, extendTask } = require("./commands/add_task");
@@ -154,6 +155,13 @@ bot.on("callback_query:data", async (ctx) => {
 
       case "done_phase":
         await doneTask(ctx );
+        break;
+      case "update_via_reminder":
+        await testCheckpoint(ctx);
+        break;
+
+      case "skip_update":
+        await skipCheckpoint(ctx);
         break;
 
       default:

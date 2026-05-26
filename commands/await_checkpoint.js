@@ -11,7 +11,7 @@ const referenceService = require("../services/referenceService");
 
 // const db = require
 
-async function testCheckpoint(ctx, userInput) {
+async function testCheckpoint(ctx) {
     // const telegram_id = ctx.state.telegram_id;
 
     // await stateService.setState(telegram_id, "await_user_checkpoint_response");
@@ -105,4 +105,15 @@ async function testCheckpoint(ctx, userInput) {
     
 }
 
-module.exports = {testCheckpoint}
+async function  skipCheckpoint(ctx) {
+
+
+  return ctx.reply("Update checkpoint dilewati",{});
+  
+}
+
+
+module.exports = {
+  testCheckpoint,
+  skipCheckpoint}
+
