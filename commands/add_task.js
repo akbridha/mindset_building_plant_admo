@@ -41,8 +41,8 @@ async function addTaskCommand(ctx) {
       );
     }
 
-    // Set state to awaiting task description
-    await stateService.setState(telegram_id, "awaiting_task_description", {});
+    // Set state to awaiting task description (preserves existing context like demo_role)
+    await stateService.setStateOnly(telegram_id, "awaiting_task_description");
 
     return ctx.reply(
       "📝 <b>Menambahkan task baru</b>\n\n" +

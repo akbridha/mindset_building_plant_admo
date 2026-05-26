@@ -14,8 +14,8 @@ module.exports = async (ctx) => {
       );
     }
 
-    // Initialize admin in database (without reference_code)
-    await stateService.setState(telegram_id, null );
+    // Initialize admin in database (without reference_code, preserves context)
+    await stateService.setStateOnly(telegram_id, null);
 
     // Show main menu
     ctx.reply(getTeksBalasan(), {

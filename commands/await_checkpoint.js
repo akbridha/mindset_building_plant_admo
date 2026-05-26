@@ -70,8 +70,8 @@ async function testCheckpoint(ctx) {
         // Set state to awaiting task selection for removal
         await stateService.setState(
           telegram_id,
-          "awaiting_task_selection_for_update_progress",
-          {}
+          "awaiting_task_selection_for_update_progress"
+          
         );
     
         // Format task list with emoji numbers

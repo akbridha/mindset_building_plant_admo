@@ -31,7 +31,8 @@ async function generateRefCommand(ctx){
       );
     }
 
-    await stateService.setState(telegram_id, "awaiting_duration_refcode", {  });
+    // Set state while preserving existing context (like demo_role)
+    await stateService.setStateOnly(telegram_id, "awaiting_duration_refcode");
 
 
 

@@ -70,8 +70,8 @@ module.exports = async (ctx) => {
       await db.execute(insertSql, [telegram_id, referenceCode]);
     }
 
-    // Initialize state (clear any previous state)
-    await stateService.setState(telegram_id, null, {});
+    // Initialize state while preserving existing context (like demo_role)
+    await stateService.setStateOnly(telegram_id, null);
 
     // Update context to reflect reference code
     ctx.state.referenceCode = referenceCode;

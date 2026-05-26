@@ -175,11 +175,33 @@ async function isStateTimedOut(telegram_id) {
   }
 }
 
+/**
+ * Set state WITHOUT changing context data (preserves existing context)
+ * Safe to use when you only want to change the state
+ * @param {number} telegram_id - Telegram user ID
+ * @param {string} state_name - New state name
+ * @param {string} reminder_time - Reminder time (optional)
+ * @returns {Promise<void>}
+ */
+async function setStateOnly(telegram_id, state_name, reminder_time = "18:00:00") {
+  try {
+    const currentState = await getState(telegram_id);
+    const currentContext = currentState.context_data || {};
+    
+    // Call setState with existing context to preserve it
+    await setState(telegram_id, state_name, currentContext, reminder_time);
+  } catch (error) {
+    console.error("Error setting state only:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   getState,
   setState,
   clearState,
   getContext,
   updateContext,
-  isStateTimedOut
+  isStateTimedOut,
+  setStateOnly
 };
