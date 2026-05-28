@@ -137,6 +137,10 @@ async function updateContext(telegram_id, contextUpdates) {
   try {
     const currentContext = await getContext(telegram_id);
     const mergedContext = { ...currentContext, ...contextUpdates };
+    //sudah aman.. tidak akan tertimpa
+    //vulnearable karena ada kemungkinan context tidak hilang hilnag.
+    // kita dibiarkan tanpa overwrite context karena kita butuh kontext 'demo = on' untuk menyimpan status Admin
+    //sekrang semua bisa jadi admin dengan perintah khusus(/actAsAdmin). untuk keperluan demo
     
     const sql = `
       UPDATE ms_user

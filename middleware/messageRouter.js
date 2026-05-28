@@ -1,6 +1,7 @@
 const { addTaskStep2, addTaskStep3, addTaskStep4bInterval, addTaskStep5, setExtendedTarget } = require("../commands/add_task");
 const { removeTaskStep2, removeTaskConfirm } = require("../commands/remove_task");
 const {createProgress, doneTask, confirmProgress, updateProgress} = require("../commands/progress_task");
+const {processUserInput} = require("../commands/set_user_reminder_time");
 
 const { setDuration,// fungsi urutan 2  
         setManpower // fungsi urutan 3
@@ -53,13 +54,14 @@ async function messageRouter(ctx) {
       case "waiting_frequency_extender":
         return setExtendedTarget(ctx, userInput,);
         
-        
-        
       case "awaiting_task_selection_for_update_progress":
-        return confirmProgress(ctx, userInput,);
+        return confirmProgress(ctx, userInput);
         
-        case "awaiting_update_response":
-          return updateProgress(ctx, userInput,);
+      case "awaiting_update_response":
+        return updateProgress(ctx, userInput);
+
+      case "awaiting_reminder_time":
+        return processUserInput(ctx, userInput);
 
           
       default:
