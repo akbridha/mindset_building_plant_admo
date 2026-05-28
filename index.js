@@ -27,6 +27,7 @@ const listUserCommand = require("./commands/list_user");
 const listTaskCommand = require("./commands/list_task");
 const { addTaskCommand, addTaskStep4aDaily, addTaskStep4bCustom, extendTask } = require("./commands/add_task");
 const { removeTaskCommand, removeTaskConfirm } = require("./commands/remove_task");
+const userReminder = require("./commands/set_user_reminder_time");
 const cancelCommand = require("./commands/cancel");
 const demoRouter = require("./commands/demo");
 
@@ -74,10 +75,6 @@ bot.command("add_task", addTaskCommand);
 bot.command("remove_task", removeTaskCommand);
 bot.command("test",testCheckpoint );
 bot.command("cancel", cancelCommand);
-
-
-
-
 bot.command("qr", async (ctx) => {
   const text = ctx.match || "default data dari backend";
 
@@ -183,8 +180,16 @@ bot.on("callback_query:data", async (ctx) => {
         await skipCheckpoint(ctx);
         break;
 
+      case "edit_task":
+        ctx.reply("Menu Edit Task",{});
+        break;
+
+      case "set_reminder_time":
+        await userReminder.settingReminderMenu(ctx)
+        break;
+
       default:
-        await ctx.answerCallbackQuery("Unknown action");
+        await ctx.answerCallbackQuery("Tombol aksi tidak dikenali");
     }
 
     // Answer callback query to remove "loading" state from button

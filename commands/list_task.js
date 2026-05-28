@@ -45,7 +45,9 @@ async function listTaskCommand(ctx) {
       reply_markup: {
         inline_keyboard: [
           [{ text: "➕ Tambah Task", callback_data: "add_task" }],
-          [{ text: "🗑️ Hapus Task", callback_data: "remove_task" }]
+          [{ text: "📝 Edit Task", callback_data: "edit_task" }],
+          [{ text: "🗑️ Hapus Task", callback_data: "remove_task" }],
+          [{ text: "⏰ Set Reminder Time", callback_data: "set_reminder_time" }],
         ]
       }
     });
