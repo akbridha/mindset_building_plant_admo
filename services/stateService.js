@@ -196,6 +196,54 @@ async function setStateOnly(telegram_id, state_name, reminder_time = "18:00:00")
   }
 }
 
+/**
+ * Validate that user is NOT in any active state flow
+ * Prevents old inline keyboard buttons from executing commands in wrong state
+ * @param {number} telegram_id - Telegram user ID
+ * @returns {Promise<boolean>} True if user has NO active state (state is null)
+ * @throws {Error} If user is in an active state
+ */
+async function assertStateIsNull(telegram_id) {
+  try {
+    const userState = await getState(telegram_id);
+    
+    if (userState.current_state !== null) {
+      throw new Error(
+        `USER_IN_ACTIVE_STATE:${userState.current_state}`
+      );
+    }
+    
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
+/**
+ * Validate that user is in one of the expected states
+ * Used in multi-step flows to ensure step callbacks are triggered in correct state
+ * @param {number} telegram_id - Telegram user ID
+ * @param {string|string[]} expectedStates - Single state name or array of valid state names
+ * @returns {Promise<string>} Current state if valid
+ * @throws {Error} If user is not in one of the expected states
+ */
+async function assertState(telegram_id, expectedStates) {
+  try {
+    const userState = await getState(telegram_id);
+    const statesArray = Array.isArray(expectedStates) ? expectedStates : [expectedStates];
+    
+    if (!statesArray.includes(userState.current_state)) {
+      throw new Error(
+        `INVALID_STATE:Expected ${statesArray.join('|')} but got ${userState.current_state}`
+      );
+    }
+    
+    return userState.current_state;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   getState,
   setState,
@@ -203,5 +251,7 @@ module.exports = {
   getContext,
   updateContext,
   isStateTimedOut,
-  setStateOnly
+  setStateOnly,
+  assertStateIsNull,
+  assertState
 };
