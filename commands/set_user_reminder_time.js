@@ -34,40 +34,40 @@ async function settingReminderMenu(ctx) {
 
 async function processUserInput(ctx, checkPointTimeRaw) {
     const telegram_id = ctx.state.telegram_id;
-    const context = ctx.state.userContext;
-
-    // Validate time format HH:MM, HH.MM, or HH MM
-    let checkPointTime = checkPointTimeRaw; // asumsi input user ada di variabel ini
-
-    // Replace dot (.) or space ( ) with colon (:)
-    checkPointTime = checkPointTime.replace(/[. ]/, ':');
-
-    const timeRegex = /^([0-1]\d|2[0-3]):[0-5]\d$/;
-    if (!timeRegex.test(checkPointTime)) {
-    return ctx.reply(
-        "❌ Format Waktu Invalid.\n\n" +
-        "Gunakan format 24-hour dengan pemisah:\n" +
-        "• <code>HH:MM</code> (titik dua)\n" +
-        "• <code>HH.MM</code> (titik)\n" +
-        "• <code>HH MM</code> (spasi)\n\n" +
-        "Contoh: <code>14:30</code>, <code>14.30</code>, atau <code>14 30</code>\n\n" +
-        "Coba lagi:",
-        { parse_mode: "HTML" }
-    );
-    }
-
-    try{
-    // proses update
-    await userService.updateTimeReminder(telegram_id, checkPointTime);
     
-    return ctx.reply(`Berhasil set Reminder Time ${checkPointTime}`);
-    }catch(error){
-        return ctx.reply(`Gagal set Reminder Time. error  ${error.message}`);
-        
+    // Validasi format waktu
+    let checkPointTime = checkPointTimeRaw.replace(/[. ]/, ':');
+    const timeRegex = /^([0-1]\d|2[0-3]):[0-5]\d$/;
+    
+    if (!timeRegex.test(checkPointTime)) {
+        return ctx.reply(
+            "❌ Format Waktu Invalid.\n\n" +
+            "Gunakan format 24-hour:\n" +
+            "• HH:MM (titik dua)\n" +
+            "• HH.MM (titik)\n" +
+            "• HH MM (spasi)\n\n" +
+            "Contoh: 14:30, 14.30, atau 14 30",
+            { parse_mode: "HTML" }
+        );
     }
-
-    await stateService.clearState(telegram_id);
-
+    
+    try {
+        await userService.updateTimeReminder(telegram_id, checkPointTime);
+        
+        await stateService.clearState(telegram_id);
+        return ctx.reply(`✅ Berhasil set Reminder Time ${checkPointTime}`);
+        
+    } catch (error) {
+        console.error("Error in processUserInput:", error);
+        
+        // Jangan clear state, biar user bisa coba lagi
+        return ctx.reply(
+            `❌ Gagal set Reminder Time.\n\n` +
+            `Error: ${error.message}\n\n` +
+            `Silakan coba lagi atau hubungi administrator.`
+        );
+        await stateService.clearState(telegram_id);
+    }
 }
 
 module.exports = {

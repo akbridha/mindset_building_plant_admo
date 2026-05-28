@@ -11,19 +11,32 @@ const { db } = require("../db");
 
 
 async function updateTimeReminder(telegram_id, reminder_time) {
-  try {
-
     const sql = `
-      UPDATE ms_user
-      SET reminder_time = ?, 
-      updated_at = CURRENT_TIMESTAMP
-      WHERE telegram_id = ?
+        UPDATE ms_user
+        SET reminder_time = ?, 
+        updated_at = CURRENT_TIMESTAMP
+        WHERE telegram_id = ?
     `;
-    await db.execute(sql, [reminder_time, telegram_id]);
-  } catch (error) {
-    console.error("Error updating time Reminder:", error);
-    throw error;
-  }
+    
+    try {
+        // const [result] = await db.execute(sql, [reminder_time, telegram_id]);
+        const [result] = await db.execute(sql, [reminder_time, telegram_id]);
+        
+        // VALIDASI: Pastikan ada data yang berubah
+        if (result.affectedRows === 0) {
+            throw new Error(`User dengan ID ${telegram_id} tidak ditemukan di database`);
+        }
+        
+        if (result.affectedRows > 1) {
+            console.warn(`Warning: Update affected ${result.affectedRows} rows for telegram_id ${telegram_id}`);
+        }
+        
+        return true;
+        
+    } catch (error) {
+        console.error("Error updating time reminder:", error);
+        throw error; // Re-throw agar ditangkap oleh controller
+    }
 }
 
 module.exports ={
