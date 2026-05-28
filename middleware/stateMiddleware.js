@@ -74,8 +74,9 @@ async function stateMiddleware(ctx, next) {
 
     // Get user's reference code from database
     const { db } = require("../db");
-    const sql = "SELECT reference_code FROM ms_user WHERE telegram_id = ?";
+    const sql = "SELECT reference_code, reminder_time FROM ms_user WHERE telegram_id = ?";
     const [rows] = await db.execute(sql, [telegram_id]);
+    ctx.state.reminder_time = rows[0].reminder_time; 
     
     if (ctx.state.isAdmin === false && rows.length > 0 && rows[0].reference_code) {
       const referenceCode = rows[0].reference_code;

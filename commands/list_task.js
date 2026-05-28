@@ -5,8 +5,11 @@ const taskService = require("../services/taskService");
  * Lists all open tasks for the user
  */
 async function listTaskCommand(ctx) {
+
+  // return ctx.reply(ctx);
   try {
     const telegram_id = ctx.state.telegram_id;
+    
 
     // Fetch all tasks for user
     const tasks = await taskService.getAllTasks(telegram_id);
@@ -28,7 +31,8 @@ async function listTaskCommand(ctx) {
 
     // Format task list with emoji numbers
     const emojiNumbers = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
-    let taskList = "📋 <b> Tasks Anda:</b>\n\n";
+    let taskList = "📋 <b> Your Tasks:</b>\n";
+    // taskList += `Reminder Time⏰ ${task.checkpoint_time}\n\n`;
 
     tasks.forEach((task, index) => {
       const emoji = emojiNumbers[index] || `${index + 1}.`;
