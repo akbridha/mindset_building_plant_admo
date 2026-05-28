@@ -9,6 +9,7 @@ async function listTaskCommand(ctx) {
   // return ctx.reply(ctx);
   try {
     const telegram_id = ctx.state.telegram_id;
+    const reminder_time = ctx.state.reminder_time;
     
 
     // Fetch all tasks for user
@@ -32,7 +33,7 @@ async function listTaskCommand(ctx) {
     // Format task list with emoji numbers
     const emojiNumbers = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
     let taskList = "📋 <b> Your Tasks:</b>\n";
-    // taskList += `Reminder Time⏰ ${task.checkpoint_time}\n\n`;
+    taskList += `Reminder Time⏰ ${reminder_time}\n\n`;
 
     tasks.forEach((task, index) => {
       const emoji = emojiNumbers[index] || `${index + 1}.`;
