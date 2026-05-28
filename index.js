@@ -73,7 +73,7 @@ bot.command("list_user", listUserCommand);
 bot.command("list_task", listTaskCommand);
 bot.command("add_task", addTaskCommand);
 bot.command("remove_task", removeTaskCommand);
-bot.command("test",testCheckpoint );
+bot.command("update",testCheckpoint );
 bot.command("cancel", cancelCommand);
 bot.command("qr", async (ctx) => {
   const text = ctx.match || "default data dari backend";
