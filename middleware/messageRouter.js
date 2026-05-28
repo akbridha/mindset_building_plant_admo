@@ -54,8 +54,6 @@ async function messageRouter(ctx) {
       case "waiting_frequency_extender":
         return setExtendedTarget(ctx, userInput,);
         
-        
-        
       case "awaiting_task_selection_for_update_progress":
         return confirmProgress(ctx, userInput);
         
