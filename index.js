@@ -25,6 +25,7 @@ const {testCheckpoint} = require("./commands/await_checkpoint");
 const {skipCheckpoint} = require("./commands/await_checkpoint");
 const listUserCommand = require("./commands/list_user");
 const listTaskCommand = require("./commands/list_task");
+const {editTaskMenu, proceedTaskEdit } = require("./commands/edit_task");
 const { addTaskCommand, addTaskStep4aDaily, addTaskStep4bCustom, extendTask } = require("./commands/add_task");
 const { removeTaskCommand, removeTaskConfirm } = require("./commands/remove_task");
 const userReminder = require("./commands/set_user_reminder_time");
@@ -181,7 +182,7 @@ bot.on("callback_query:data", async (ctx) => {
         break;
 
       case "edit_task":
-        ctx.reply("Menu Edit Task",{});
+        await editTaskMenu(ctx);
         break;
 
       case "set_reminder_time":
