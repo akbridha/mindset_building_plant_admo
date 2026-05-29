@@ -25,7 +25,7 @@ const {testCheckpoint} = require("./commands/await_checkpoint");
 const {skipCheckpoint} = require("./commands/await_checkpoint");
 const listUserCommand = require("./commands/list_user");
 const listTaskCommand = require("./commands/list_task");
-const {editTaskMenu, proceedTaskEdit, targetDescriptionQuestion, descriptionQuestion, descriptionEdit } = require("./commands/edit_task");
+const {editTaskMenu, proceedTaskEdit, targetQuestion, descriptionQuestion, descriptionEdit } = require("./commands/edit_task");
 const { addTaskCommand, addTaskStep4aDaily, addTaskStep4bCustom, extendTask } = require("./commands/add_task");
 const { removeTaskCommand, removeTaskConfirm } = require("./commands/remove_task");
 const userReminder = require("./commands/set_user_reminder_time");
@@ -195,7 +195,7 @@ bot.on("callback_query:data", async (ctx) => {
         break;
 
       case "skip_edit_description_name":
-       await targetDescriptionQuestion(ctx);
+       await targetQuestion(ctx);
         break;
 
       default:

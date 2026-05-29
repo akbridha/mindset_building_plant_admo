@@ -3,19 +3,29 @@ const stateService = require("../services/stateService");
 
 async function  editTaskMenu(ctx) {
 
-
-
-    
-
     const telegram_id = ctx.state.telegram_id;
-    //TODO check state
-    //TODO ambil data semua task berdsarkan user terkadit kemudian masukkan dalam user Context di ms_user untuk diambil di proceed
-   var dummy = [] ;
-    for(var i=1; i<=5; i++){
-        dummy.push(` ${i}. Task ke - ${i} \n `)
+
+    try{
+        //TODO check state
+        await stateService.assertStateIsNull(telegram_id);
+        //TODO ambil data semua task berdsarkan user terkadit kemudian masukkan dalam user Context di ms_user untuk diambil di proceed
+
+        
+
+    var dummy = [] ;
+        for(var i=1; i<=5; i++){
+            dummy.push(` ${i}. Task ke - ${i} \n `)
+        }
+        ctx.reply(`Pilih task Yang hendak diedit.\n Your task list : \n ${dummy.join('')} \n Masukkan dalam format angka berdasarkna data yang ditampilkan`,{});
+        await stateService.setState(telegram_id, "awaiting_task_number_to_edit")
+    } catch (error) {
+
+        return ctx.reply(
+            "⚠️ Anda tengah berada di dalam suatu alur fitur.\n\n" +
+            "Gunakan /cancel untuk memulai ulang, atau selesaikan flow saat ini."
+        );
+  
     }
-    ctx.reply(`Pilih task Yang hendak diedit.\n Your task list : \n ${dummy.join('')} \n Masukkan dalam format angka berdasarkna data yang ditampilkan`,{});
-    await stateService.setState(telegram_id, "awaiting_task_number_to_edit")
 }
 
 
@@ -25,7 +35,11 @@ async function descriptionQuestion(ctx, userInput){
     //sudah punya id task
     //reply USER INPUT DAN INLINE KEYBOARD edit nama atau tidak [A/B]?
 
-    const textBalasan = `Anda Memilih ${userInput}. edit task description?`
+    
+
+    const textBalasan = `Anda Memilih ${userInput}. edit task description?`;
+
+    await stateService.setState(ctx.state.telegram_id, "awaiting_edit_task_option")
 
     const atributBalasan = {
                             inline_keyboard:[
@@ -52,14 +66,53 @@ async function descriptionQuestion(ctx, userInput){
 }
 async function descriptionEdit(ctx){
 
-     return ctx.reply("Edit Nama Task \n ketik ae");
+
+    const telegram_id = ctx.state.telegram_id;
+
+    try{
+        //TODO check state
+        await stateService.assertState(telegram_id, "awaiting_edit_task_option");
+        
+        return ctx.reply("Edit Nama Task \n ketik ae");
+    } catch (error) {
+  
+        return ctx.reply(
+            "⚠️ Anda menekan tombol di luar alur seharusnya.\n\n" +
+            "Tombol ini hanya digunakan sesuai urutan."
+        );
+
+    }
+    
+
+
+
+
+        //Todo pengecekan status
+        //TODO check state
+
 }
 
-async function targetDescriptionQuestion(ctx){
-    //TODO check state
+async function targetQuestion(ctx){
 
-    await stateService.setState(ctx.state.telegram_id, "awaiting_number_of_target_edit");
-    return ctx.reply("✅ Skip Edit Nama Task \n ==Edit Target==  Masukkan Target ");
+    const telegram_id = ctx.state.telegram_id;
+
+    try{
+        //TODO check state
+        await stateService.assertState(telegram_id, ["awaiting_edit_task_option", ]);
+        await stateService.setState(ctx.state.telegram_id, "awaiting_number_of_target_edit");
+        return ctx.reply("✅ Skip Edit Nama Task \n ==Edit Target==  Masukkan Target ");
+      
+    } catch (error) {
+       
+        return ctx.reply(
+            "⚠️ Anda menekan tombol di luar alur seharusnya.\n\n" +
+            "Tombol ini hanya digunakan sesuai urutan."
+        );
+
+    }
+
+        //TODO check state
+
 
 }
 
@@ -77,6 +130,6 @@ module.exports ={
     editTaskMenu,
     descriptionQuestion,
     descriptionEdit,
-    targetDescriptionQuestion,
+    targetQuestion,
     proceedTaskEdit
 };
