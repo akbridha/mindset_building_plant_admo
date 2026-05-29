@@ -243,7 +243,7 @@ async function doneTask(ctx) {
     const presentasi = await progresService.getProgressPercentage(taskId, dataRiwayat)
 
     // 2. Judul pesan
-    let pesanResponse = `📊 *Riwayat Progress Task ID: ${taskId}*\n\n Progress Anda ${presentasi}\n`;
+    let pesanResponse = `📊 *Riwayat Progress Anda \n\n`;
 
     // 3. Looping dataRiwayat untuk mendekorasi teks
     dataRiwayat.forEach((item, index) => {
@@ -262,7 +262,7 @@ async function doneTask(ctx) {
 
       // Mengubah angka jawaban (1 atau 0) menjadi emoji simbol
       // (Asumsi: 1 = Yes [✅], selain itu = No [❌])
-      const simbolJawaban = item.answer_yes_no === 1 ? "✅ Yes" : "❌ No";
+      const simbolJawaban =  `${item.progress} % ✅`;
 
       // Gabungkan ke dalam satu baris string
       pesanResponse += `${index + 1}. 📅 ${formatWaktu} : ${simbolJawaban}\n`;

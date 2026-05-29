@@ -69,9 +69,9 @@ bot.on("message:text", async (ctx, next) => {
 // ========== REGISTER COMMANDS ==========
 bot.command("start", startCommand);
 bot.command("newref", generateRefCommand);
-bot.command("list_user", listUserCommand);
+// bot.command("list_user", listUserCommand);
 bot.command("list_task", listTaskCommand);
-bot.command("add_task", addTaskCommand);
+bot.command("new_task", addTaskCommand);
 bot.command("remove_task", removeTaskCommand);
 bot.command("update",testCheckpoint );
 bot.command("cancel", cancelCommand);
