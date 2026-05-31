@@ -137,7 +137,7 @@ async function removeTaskStep2(ctx, userInput) {
     return ctx.reply(
       "❓ <b>Apakah anda yakin??</b>\n\n" +
       "Delete task: <b>" + selectedTaskInfo.description + "</b>\n\n" +
-      "This action cannot be undone.",
+      "Aksi ini tidak bisa dikembalikan.",
       {
         parse_mode: "HTML",
         reply_markup: {

@@ -46,9 +46,8 @@ async function addTaskCommand(ctx) {
 
     return ctx.reply(
       "📝 <b>Menambahkan task baru</b>\n\n" +
-      "Buat Nama Task \n" +
-      "<i>Kirim deskripsi teks</i>\n\n" +
-      "Contoh: \n<code> - Belajar Membuat umpan pancing imitasi</code>\n <code>- Persiapan Ujian Kompetensi</code> ",
+      "Masukkan Nama Task \n\n" +
+      "Contoh: \n<code>- Menemani anak belajar</code>\n<code>- Ibadah tepat waktu</code>\n<code>- Melakukan Quality Control setiap akhir pekerjaan</code> ",
       {
         parse_mode: "HTML",
         reply_markup: {
@@ -93,14 +92,13 @@ async function addTaskStep2(ctx, taskDescription) {
     );
 
     return ctx.reply(
-      "✅ Task description saved: <b>" + taskDescription.trim() + "</b>\n\n" +
+      "✅ Judul Task : <b>" + taskDescription.trim() + "</b>\n\n" +
       // "⏰ <b>Jam berapa reminder pertama kali dikirimkan?</b>\n" +
       // "Kirim dalam format <code>HH:MM</code> (24-hour)\n\n" +
       // "Contoh: <code>14:30</code> untuk Jam 2:30 sore",
 
-      " <b>Berapa hari target ketercapaian ?</b>\n" +
-      "Kirim dalam bentuk angka\n\n" +
-      "Contoh: <code>3</code>  maka target 3 hari",
+      "<b>Tuliskan target yang akan dicapai dalam hari ?</b>\n" +
+      "Contoh: Target 3 hari maka cukup ditulis <code>3</code>",
       {
         parse_mode: "HTML",
         reply_markup: {

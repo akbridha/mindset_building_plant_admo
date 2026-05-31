@@ -203,7 +203,7 @@ async function updateProgress(ctx, userInput) {
       `📝 <b>Tambahkan Keterangan Progress</b>\n\n` +
       `Deskripsi Task: <b>${taskDescription}</b>\n` +
       `Progress: <b>${progressValue}%</b>\n\n` +
-      `<i>Anda bisa tuliskan konsisten atau belum konsisten (atau keterangan lainnya)</i>`,
+      `<i>Tambahan keterangan progress</i>`,
       {
         parse_mode: "HTML",
         reply_markup: {

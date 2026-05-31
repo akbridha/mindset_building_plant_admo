@@ -127,7 +127,7 @@ async function startCron() {
   //   }
   // run every minute
   //   await checkReminderService();
-  }, 30 * 1000);
+  }, 60 * 1000);
 
 
 }
