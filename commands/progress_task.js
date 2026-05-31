@@ -172,15 +172,75 @@ async function updateProgress(ctx, userInput) {
   //============cegah aksi diluar jam permintaan checkpoint==============
 
   const taskId = ctx.state.userContext.selected_task_id;
+  const taskDescription = ctx.state.userContext.selected_task_description;
 
-    // return ctx.reply(ctx.state.userContext.selected_task_id);
-    // return ctx.reply("ID " + 
-    // taskId + "\n Deskripsi Task Yang diupdate \n" + ctx.state.userContext.selected_task_description + "->"+ userInput+"%");
+  // Validate progress input
+  const progressValue = parseInt(userInput, 10);
+  if (isNaN(progressValue) || progressValue < 0 || progressValue > 100) {
+    return ctx.reply(
+      "❌ Progress harus berupa angka antara 0-100.\n\n" +
+      "Coba lagi atau /cancel"
+    );
+  }
+
+  try {
+    // Store progress value in context for next step
+    await stateService.updateContext(ctx.state.telegram_id, {
+      selected_task_id: taskId,
+      selected_task_description: taskDescription,
+      progress_value: progressValue
+    });
+
+    // Move to next state: awaiting progress note
+    await stateService.setState(
+      ctx.state.telegram_id,
+      "awaiting_progress_note",
+      { selected_task_id: taskId, selected_task_description: taskDescription, progress_value: progressValue }
+    );
+
+    // Ask for note/description
+    return ctx.reply(
+      `📝 <b>Tambahkan Keterangan Progress</b>\n\n` +
+      `Deskripsi Task: <b>${taskDescription}</b>\n` +
+      `Progress: <b>${progressValue}%</b>\n\n` +
+      `<i>Anda bisa tuliskan konsisten atau belum konsisten (atau keterangan lainnya)</i>`,
+      {
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "❌ Batal", callback_data: "cancel" }]
+          ]
+        }
+      }
+    );
+
+  } catch (error) {
+    console.error("Error in updateProgress:", error);
+    return ctx.reply("❌ Error memproses update progress. Mohon coba lagi.");
+  }
+}
+
+async function askProgressNote(ctx, userInput) {
+
+  // ============cegah aksi diluar jam permintaan checkpoint==============
+  const userState = await stateService.getState(ctx.state.telegram_id);
+  const isUserResponseAwaited = userState.current_state === "awaiting_progress_note" ? true : false; 
+  if(!isUserResponseAwaited){
+    ctx.reply("Anda tidak sedang dalam proses Perekaman Keterangan Progress");
+    return true;
+  }
+  //============cegah aksi diluar jam permintaan checkpoint==============
+
+  const taskId = ctx.state.userContext.selected_task_id;
+  const progressValue = ctx.state.userContext.progress_value;
+  const taskDescription = ctx.state.userContext.selected_task_description;
+  
   var textBalasan = "";
-  var  replyMarkup = null;
+  var replyMarkup = null;
   
   try {
-    await taskUpdaterService.progressCreate(ctx, userInput, taskId);
+    // Insert progress dengan note
+    await taskUpdaterService.progressCreate(ctx, progressValue, taskId, userInput);
     const dataRiwayat = await progresService.getProgress(taskId);
     const riwayatFiltered = [];
     const bulanNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 
@@ -196,11 +256,11 @@ async function updateProgress(ctx, userInput) {
     }
 
     const printRiwayat = riwayatFiltered.join('\n');
-    textBalasan = `✅ Progress diterima. \n Progress anda \n ${printRiwayat} \n Terima kasih atas update-nya!`;
+    textBalasan = `✅ Progress dan Keterangan diterima. \n Progress anda \n ${printRiwayat} \n Terima kasih atas update-nya!`;
 
   } catch (error) {
     textBalasan = "❌ Error in update tasks Command. Mohon Coba lagi.";
-    console.error("Error in updateTaskCommand:", error);
+    console.error("Error in askProgressNote:", error);
   }
 
   // console.log("Clearing state for user:", ctx.state.telegram_id);
@@ -283,6 +343,7 @@ module.exports ={
   createProgress,
   confirmProgress,
   updateProgress,
+  askProgressNote,
   doneTask
 };
 
