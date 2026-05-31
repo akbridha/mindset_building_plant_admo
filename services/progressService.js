@@ -106,12 +106,61 @@ async function getProgressPercentage(taskId, dataRiwayat) {
 
 
 
+async function getUserTasksWithProgress(telegramId) {
+  try {
+    // Get all tasks for the user
+    const sqlTasks = `
+      SELECT task_id, task_description, target
+      FROM reminders
+      WHERE telegram_id = ? AND status = 'OPEN'
+      ORDER BY created_at DESC
+    `;
+
+    const [tasks] = await db.execute(sqlTasks, [telegramId]);
+
+    if (tasks.length === 0) {
+      return null;
+    }
+
+    // For each task, get progress count and calculate percentage
+    const tasksWithProgress = await Promise.all(
+      tasks.map(async (task) => {
+        const sqlProgress = `
+          SELECT COUNT(*) as count
+          FROM progress_history
+          WHERE reminder_id = ?
+        `;
+
+        const [progressResult] = await db.execute(sqlProgress, [task.task_id]);
+        const progressCount = progressResult[0].count || 0;
+        const target = parseInt(task.target) || 1;
+        const percentage = Math.min((progressCount / target) * 100, 100);
+
+        return {
+          task_id: task.task_id,
+          task_description: task.task_description,
+          target: target,
+          progress_count: progressCount,
+          percentage: Math.round(percentage)
+        };
+      })
+    );
+
+    return tasksWithProgress;
+
+  } catch (error) {
+    console.error("Error getting user tasks with progress:", error.message);
+    throw error;
+  }
+}
+
 module.exports = {
 //   getAllTasks,
 //   getTaskById,
     progressCreate,
     getProgress,
-    getProgressPercentage
+    getProgressPercentage,
+    getUserTasksWithProgress
 
 //   deleteTask,
 //   updateTask
