@@ -31,6 +31,7 @@ const { removeTaskCommand, removeTaskConfirm } = require("./commands/remove_task
 const userReminder = require("./commands/set_user_reminder_time");
 const cancelCommand = require("./commands/cancel");
 const demoRouter = require("./commands/demo");
+const statusCommand = require("./commands/status");
 
 // ========== IMPORT MIDDLEWARE ==========
 const stateMiddleware = require("./middleware/stateMiddleware");
@@ -75,6 +76,7 @@ bot.command("list_task", listTaskCommand);
 bot.command("new_task", addTaskCommand);
 bot.command("remove_task", removeTaskCommand);
 bot.command("update",testCheckpoint );
+bot.command("status", statusCommand);
 bot.command("cancel", cancelCommand);
 bot.command("qr", async (ctx) => {
   const text = ctx.match || "default data dari backend";
