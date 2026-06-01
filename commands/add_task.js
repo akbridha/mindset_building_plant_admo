@@ -389,13 +389,15 @@ async function addTaskStep5(ctx, target) {
 async function extendTask(ctx) {
 
 const task_id = ctx.state.userContext.task_id
-const userState = ctx.state.currentState;
+const userState = ctx.state.userState;
 
 
 
   const isUserResponseAwaited = userState === "awaited_on_last_target_response" ? true : false; 
   if(!isUserResponseAwaited){
-    ctx.reply(" ❌ Anda tidak sedang di akhir sesi");
+
+    console.log(ctx);
+    ctx.reply(` ❌ Anda tidak sedang di akhir sesi. your state -> ${ctx.state.userState}`);
     return true;
   }
 

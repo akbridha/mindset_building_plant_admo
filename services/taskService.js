@@ -34,7 +34,7 @@ async function getAllTasks(telegram_id) {
 async function getTaskById(task_id) {
   try {
     const sql = `
-      SELECT task_id, telegram_id, task_description, 
+      SELECT task_id, user_id, task_description, 
              target, progress, created_at, updated_at
       FROM reminders
       WHERE task_id = ?

@@ -95,9 +95,10 @@ async function confirmProgress(ctx, userInput) {
       );
     }
 
-    // Verify task exists in database
+    // Verify task exists in database and belongs to current user
     const task = await taskService.getTaskById(selectedTaskInfo.task_id);
-    if (!task || task.telegram_id !== telegram_id) {
+    const user_id = ctx.state.user_id;
+    if (!task || task.user_id !== user_id) {
       return ctx.reply(
         "❌ Task tidak ditemukan atau invalild. mohon coba lagi."
       );
