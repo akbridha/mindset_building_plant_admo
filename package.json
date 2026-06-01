@@ -1,0 +1,28 @@
+{
+  "name": "bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akbridha/mindset_building_plant_admo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/akbridha/mindset_building_plant_admo/issues"
+  },
+  "homepage": "https://github.com/akbridha/mindset_building_plant_admo#readme",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "grammy": "^1.42.0",
+    "mysql2": "^3.22.3",
+    "node-cron": "^4.2.1",
+    "qrcode": "^1.5.4"
+  }
+}
