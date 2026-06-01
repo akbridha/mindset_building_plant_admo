@@ -1,14 +1,17 @@
 const { db } = require("../db");
+const stateService = require("./stateService");
 
 async function progressCreate(ctx, userInput, task_id, note = null) {
   try {
-    // const {
-
-    // } = progressData;
+    const user_id = ctx.state.user_id; // user_id should be attached by middleware
+    
+    if (!user_id) {
+      throw new Error('user_id not found in context state');
+    }
 
     const sql = `
       INSERT INTO progress_history 
-      (telegram_id, reminder_id, progress, note)
+      (user_id, reminder_id, progress, note)
       VALUES (?, ?, ?, ?)
     `;
 
@@ -23,12 +26,11 @@ async function progressCreate(ctx, userInput, task_id, note = null) {
     // return result.insertId;
 
     await db.execute(sql, [
-      ctx.state.telegram_id,
+      user_id,
       task_id,
       userInput,
       note
     ]);
-
 
   } catch (error) {
     console.error("Error creating progress:", error);

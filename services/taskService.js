@@ -1,19 +1,22 @@
 const { db } = require("../db");
+const stateService = require("./stateService");
 
 /**
  * Get all tasks for a user
- * @param {number} telegram_id - Telegram user ID
+ * @param {number} telegram_id - Telegram user ID (plaintext)
  * @returns {Promise<Array>} Array of task objects
  */
 async function getAllTasks(telegram_id) {
   try {
+    const user_id = await stateService.getUserId(telegram_id);
+    
     const sql = `
-      SELECT task_id, telegram_id, task_description, target, created_at
+      SELECT task_id, user_id, task_description, target, created_at
       FROM reminders
-      WHERE telegram_id = ?
+      WHERE user_id = ?
       ORDER BY created_at DESC
     `;
-    const [rows] = await db.execute(sql, [telegram_id]);
+    const [rows] = await db.execute(sql, [user_id]);
     return rows;
   } catch (error) {
     console.error("Error getting all tasks:", error);
@@ -46,22 +49,16 @@ async function getTaskById(task_id) {
 
 /**
  * Create a new task for a user
- * @param {number} telegram_id - Telegram user ID
+ * @param {number} telegram_id - Telegram user ID (plaintext)
  * @param {Object} taskData - Task data object
  *   - task_description: string (required)
- *   - checkpoint_time: string HH:MM format (required)
  *   - target: number or string (required) - frequency/N-times
- *   - interval: string (optional) - default 'once'
  * @returns {Promise<number>} Inserted task_id
  */
 async function createTask(telegram_id, taskData) {
   try {
-    // const {
-    //   task_description,
-    //   checkpoint_time,
-    //   target,
-    //   interval = "once"
-    // } = taskData;
+    const user_id = await stateService.getUserId(telegram_id);
+    
     const {
       task_description,
       target
@@ -69,12 +66,12 @@ async function createTask(telegram_id, taskData) {
 
     const sql = `
       INSERT INTO reminders 
-      (telegram_id, task_description, target )
+      (user_id, task_description, target)
       VALUES (?, ?, ?)
     `;
 
     const [result] = await db.execute(sql, [
-      telegram_id,
+      user_id,
       task_description,
       target
     ]);

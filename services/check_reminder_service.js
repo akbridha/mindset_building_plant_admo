@@ -1,4 +1,5 @@
 const { db } = require("../db");
+const { hashTelegramId } = require("./encryptionService");
 
 async function checkReminderService(timeRange = 5) {
   try {
@@ -6,15 +7,15 @@ async function checkReminderService(timeRange = 5) {
 
     const [rows] = await db.execute(`
       SELECT
-        telegram_id,
-        task_id,
-        task_description,
-        checkpoint_time,
-        target
-      FROM reminders
+        r.user_id,
+        r.task_id,
+        r.task_description,
+        r.checkpoint_time,
+        r.target
+      FROM reminders r
       WHERE
-        checkpoint_time >= NOW()
-        AND checkpoint_time < DATE_ADD(NOW(), INTERVAL ${timeRange} MINUTE)
+        r.checkpoint_time >= NOW()
+        AND r.checkpoint_time < DATE_ADD(NOW(), INTERVAL ${timeRange} MINUTE)
       `);
 
     console.log("Reminder found:", rows.length);
@@ -161,9 +162,9 @@ async function checkReminderService(timeRange = 5) {
 
   async function getUsersInReminderWindow(timeRange = 5) {
   try {
-
     const sql = `
       SELECT 
+        user_id,
         telegram_id,
         current_state,
         reminder_time
@@ -179,7 +180,7 @@ async function checkReminderService(timeRange = 5) {
 
     return rows;
 
-  } catch (error) {getRemindersByUsers
+  } catch (error) {
     console.error(error);
   }
 }
@@ -188,28 +189,45 @@ async function checkReminderService(timeRange = 5) {
 async function getRemindersByUsers(telegramIds) {
   if (!telegramIds.length) return [];
 
-  const placeholders = telegramIds.map(() => '?').join(',');
+  // Convert telegram_ids to user_ids
+  const userIds = [];
+  
+  for (const telegramId of telegramIds) {
+    try {
+      const hash = hashTelegramId(telegramId);
+      const sql = "SELECT user_id FROM ms_user WHERE telegram_id_hash = ?";
+      const [rows] = await db.execute(sql, [hash]);
+      if (rows.length > 0) {
+        userIds.push(rows[0].user_id);
+      }
+    } catch (error) {
+      console.error(`Error converting telegram_id ${telegramId} to user_id:`, error);
+    }
+  }
 
-  console.log("Placeholsdr :" +placeholders);
+  if (!userIds.length) return [];
+
+  const placeholders = userIds.map(() => '?').join(',');
+
+  console.log("Placeholders: " + placeholders);
 
   const sql = `
     SELECT 
-      telegram_id,
-      task_id,
-      task_description,
-
-      target,
-      progress,
-      status
-    FROM reminders
-    WHERE telegram_id IN (${placeholders})
-    
+      u.telegram_id,
+      r.task_id,
+      r.task_description,
+      r.target,
+      r.progress,
+      r.status
+    FROM reminders r
+    JOIN ms_user u ON r.user_id = u.user_id
+    WHERE r.user_id IN (${placeholders})
   `;
 
-  const [rows] = await db.execute(sql, telegramIds);
+  const [rows] = await db.execute(sql, userIds);
 
-console.log(sql);
-console.log(telegramIds);
+  console.log(sql);
+  console.log(userIds);
   return rows;
 }
 

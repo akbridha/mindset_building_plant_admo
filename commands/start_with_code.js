@@ -1,6 +1,7 @@
 const stateService = require("../services/stateService");
 const referenceService = require("../services/referenceService");
 const { getTeksBalasan } = require("../services/textService");
+const { hashTelegramId } = require("../services/encryptionService");
 const { db } = require("../db");
 
 /**
@@ -50,24 +51,25 @@ module.exports = async (ctx) => {
     }
 
     // Check if user already exists in database
+    const hash = hashTelegramId(telegram_id);
     const [existingUser] = await db.execute(
-      "SELECT telegram_id FROM ms_user WHERE telegram_id = ?",
-      [telegram_id]
+      "SELECT user_id FROM ms_user WHERE telegram_id_hash = ?",
+      [hash]
     );
 
     if (existingUser.length > 0) {
       // User already registered, just update reference code if needed
       await db.execute(
-        "UPDATE ms_user SET reference_code = ? WHERE telegram_id = ?",
-        [referenceCode, telegram_id]
+        "UPDATE ms_user SET reference_code = ? WHERE telegram_id_hash = ?",
+        [referenceCode, hash]
       );
     } else {
       // New user - insert into ms_user with reference_code
       const insertSql = `
-        INSERT INTO ms_user (telegram_id, reference_code, current_state, context_data, created_at, updated_at)
-        VALUES (?, ?, NULL, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO ms_user (telegram_id, telegram_id_hash, reference_code, current_state, context_data, created_at, updated_at)
+        VALUES (?, ?, NULL, NULL, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `;
-      await db.execute(insertSql, [telegram_id, referenceCode]);
+      await db.execute(insertSql, [telegram_id, hash, referenceCode]);
     }
 
     // Initialize state while preserving existing context (like demo_role)

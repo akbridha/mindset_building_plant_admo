@@ -1,5 +1,6 @@
 const stateService = require("../services/stateService");
 const referenceService = require("../services/referenceService");
+const { hashTelegramId } = require("../services/encryptionService");
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -46,10 +47,9 @@ async function stateMiddleware(ctx, next) {
     ctx.state.userState = state.current_state;
     ctx.state.userContext = state.context_data || {};
     ctx.state.telegram_id = telegram_id;
+    ctx.state.user_id = state.user_id; // Attach user_id for use by other services
 
-
-
-        // ========== PRIORITAS DEMO ROLE ==========
+    // ========== PRIORITAS DEMO ROLE ==========
     let isAdmin = false;
     const demoRole = ctx.state.userContext.demo_role;
 
@@ -70,30 +70,32 @@ async function stateMiddleware(ctx, next) {
     }
     // ========================================
 
-
-
     // Get user's reference code from database
     const { db } = require("../db");
-    const sql = "SELECT reference_code, reminder_time FROM ms_user WHERE telegram_id = ?";
-    const [rows] = await db.execute(sql, [telegram_id]);
-    ctx.state.reminder_time = rows[0].reminder_time; 
+    const hash = hashTelegramId(telegram_id);
+    const sql = "SELECT reference_code, reminder_time FROM ms_user WHERE telegram_id_hash = ?";
+    const [rows] = await db.execute(sql, [hash]);
     
-    if (ctx.state.isAdmin === false && rows.length > 0 && rows[0].reference_code) {
-      const referenceCode = rows[0].reference_code;
-      ctx.state.referenceCode = referenceCode;
-
-      // Check if reference code status is still OPEN
-      const isValid = await referenceService.isReferenceCodeValid(referenceCode);
+    if (rows.length > 0) {
+      ctx.state.reminder_time = rows[0].reminder_time;
       
-      if (!isValid) {
-        // Reference code has been CLOSED
-        await stateService.clearState(telegram_id);
+      if (ctx.state.isAdmin === false && rows[0].reference_code) {
+        const referenceCode = rows[0].reference_code;
+        ctx.state.referenceCode = referenceCode;
+
+        // Check if reference code status is still OPEN
+        const isValid = await referenceService.isReferenceCodeValid(referenceCode);
         
-        // Notify user that reference code is closed
-        await ctx.reply(
-          "❌ Reference code Anda sudah ditutup oleh admin.\n\n" +
-          "Hubungi admin untuk mendapatkan reference code baru."
-        );
+        if (!isValid) {
+          // Reference code has been CLOSED
+          await stateService.clearState(telegram_id);
+          
+          // Notify user that reference code is closed
+          await ctx.reply(
+            "❌ Reference code Anda sudah ditutup oleh admin.\n\n" +
+            "Hubungi admin untuk mendapatkan reference code baru."
+          );
+        }
       }
     }
 
