@@ -67,7 +67,7 @@ module.exports = async (ctx) => {
       // New user - insert into ms_user with reference_code
       const insertSql = `
         INSERT INTO ms_user (telegram_id, telegram_id_hash, reference_code, current_state, context_data, created_at, updated_at)
-        VALUES (?, ?, NULL, NULL, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        VALUES (?, ?, ?, NULL, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `;
       await db.execute(insertSql, [telegram_id, hash, referenceCode]);
     }
