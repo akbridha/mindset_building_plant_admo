@@ -112,8 +112,8 @@ async function handleMemberRoleCallback(ctx) {
 
     // Cari user di database berdasarkan username
     const [users] = await db.execute(
-      `SELECT id FROM users WHERE username = ? OR encrypted_telegram_id = ?`,
-      [username, username]
+      `SELECT id FROM users WHERE username = ?`,
+      [username]
     );
     
     let userId;

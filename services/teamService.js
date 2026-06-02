@@ -86,17 +86,11 @@ async function removeTeamMember(user_id) {
  * @returns {Promise<string|null>} - Role ('SH', 'PSD') or null if not in team
  */
 async function getTeamRole(user_id) {
-  try {
-    const [rows] = await db.execute(
-      `SELECT role FROM team_members WHERE user_id = ? AND is_active = TRUE`,
-      [user_id]
-    );
-
-    return rows.length > 0 ? rows[0].role : null;
-  } catch (error) {
-    console.error("Error getting team role:", error);
-    throw error;
-  }
+  const [rows] = await db.execute(
+    `SELECT role FROM team_members WHERE user_id = ? AND is_active = TRUE`,
+    [user_id]  // ✅ Ini mencari berdasarkan users.id (bukan Telegram ID)
+  );
+  return rows.length > 0 ? rows[0].role : null;
 }
 
 /**
