@@ -16,8 +16,7 @@ logger.debug(`Log level: ${process.env.LOG_LEVEL || "INFO"}`, {
 
 const bot = new Bot(process.env.BOT_TOKEN);
 
-const TELEGRAM_ID_OWNER = process.env.TELEGRAM_ID_OWNER;
-
+const TELEGRAM_ID_OWNER = process.env.TELEGRAM_ID_OWNER;logger.debug(`Bot initialized with token`);
 
 // ========== IMPORT COMMANDS ==========
 const startCommand = require("./commands/start");
@@ -65,6 +64,16 @@ const {
   handleRemoveMemberCallback, 
   listMemberCommand 
 } = require("./commands/team_management");
+
+
+const  {
+  handleApproveReportCallback,
+  handleRejectReportCallback,
+  handleApproveFeedbackCallback,
+  handleRejectFeedbackCallback,
+  handleApproveUpdateCallback,
+  handleRejectUpdateCallback,
+} = require("./commands/approval_handlers");
 const { summaryCommand } = require("./commands/summary");
 
 // ========== IMPORT MIDDLEWARE ==========
@@ -134,13 +143,13 @@ bot.command("removemember", removeMemberCommand);
 bot.command("listmember", listMemberCommand);
 bot.command("summary", summaryCommand);
 
-logger.debug(`Callback data received`, {});
-
-
 // ========== HANDLE CALLBACK QUERIES (Button Clicks) ==========
 bot.on("callback_query:data", async (ctx) => {
 
-  console.log(ctx.callbackQuery.data);
+  logger.debug(`Callback data received`, {
+    userId: ctx.state.telegram_id,
+    data: ctx.callbackQuery.data,
+  });
   try {
     const callbackData = ctx.callbackQuery.data;
     const telegram_id = ctx.state.telegram_id;
@@ -410,9 +419,6 @@ bot.on("callback_query:data", async (ctx) => {
         }
         break;
     }
-
-    // Answer callback query to remove "loading" state from button
-    await ctx.answerCallbackQuery();
   } catch (error) {
     logger.error("Error handling callback query", {
       userId: ctx.state?.telegram_id,

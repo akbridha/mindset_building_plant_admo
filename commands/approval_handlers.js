@@ -1,5 +1,6 @@
 const laporanService = require("../services/laporanService");
 const notificationService = require("../services/notificationService");
+const logger = require("../services/logger");
 const { db } = require("../db");
 
 /**
@@ -46,9 +47,13 @@ async function handleApproveReportCallback(ctx) {
       { parse_mode: "HTML" }
     );
 
-    await ctx.answerCallbackQuery("✅ Laporan disetujui", { show_alert: false });
+    await ctx.answerCallbackQuery("✅ Laporan disetujui");
   } catch (error) {
-    console.error("Error in handleApproveReportCallback:", error);
+    logger.error("Error in handleApproveReportCallback", {
+      userId: ctx.state?.telegram_id,
+      reportId: report_id,
+      error: error.message,
+    });
     return ctx.answerCallbackQuery("❌ Error menyetujui laporan");
   }
 }
@@ -90,9 +95,13 @@ async function handleRejectReportCallback(ctx) {
       { parse_mode: "HTML" }
     );
 
-    await ctx.answerCallbackQuery("✅ Laporan ditolak", { show_alert: false });
+    await ctx.answerCallbackQuery("✅ Laporan ditolak");
   } catch (error) {
-    console.error("Error in handleRejectReportCallback:", error);
+    logger.error("Error in handleRejectReportCallback", {
+      userId: ctx.state?.telegram_id,
+      reportId: report_id,
+      error: error.message,
+    });
     return ctx.answerCallbackQuery("❌ Error menolak laporan");
   }
 }
@@ -122,9 +131,13 @@ async function handleApproveFeedbackCallback(ctx) {
       { parse_mode: "HTML" }
     );
 
-    await ctx.answerCallbackQuery("✅ Feedback disetujui", { show_alert: false });
+    await ctx.answerCallbackQuery("✅ Feedback disetujui");
   } catch (error) {
-    console.error("Error in handleApproveFeedbackCallback:", error);
+    logger.error("Error in handleApproveFeedbackCallback", {
+      userId: ctx.state?.telegram_id,
+      feedbackId: feedback_id,
+      error: error.message,
+    });
     return ctx.answerCallbackQuery("❌ Error menyetujui feedback");
   }
 }
@@ -166,9 +179,13 @@ async function handleRejectFeedbackCallback(ctx) {
       { parse_mode: "HTML" }
     );
 
-    await ctx.answerCallbackQuery("✅ Feedback ditolak", { show_alert: false });
+    await ctx.answerCallbackQuery("✅ Feedback ditolak");
   } catch (error) {
-    console.error("Error in handleRejectFeedbackCallback:", error);
+    logger.error("Error in handleRejectFeedbackCallback", {
+      userId: ctx.state?.telegram_id,
+      feedbackId: feedback_id,
+      error: error.message,
+    });
     return ctx.answerCallbackQuery("❌ Error menolak feedback");
   }
 }
@@ -198,9 +215,13 @@ async function handleApproveUpdateCallback(ctx) {
       { parse_mode: "HTML" }
     );
 
-    await ctx.answerCallbackQuery("✅ Update disetujui", { show_alert: false });
+    await ctx.answerCallbackQuery("✅ Update disetujui");
   } catch (error) {
-    console.error("Error in handleApproveUpdateCallback:", error);
+    logger.error("Error in handleApproveUpdateCallback", {
+      userId: ctx.state?.telegram_id,
+      updateId: update_id,
+      error: error.message,
+    });
     return ctx.answerCallbackQuery("❌ Error menyetujui update");
   }
 }
@@ -230,9 +251,13 @@ async function handleRejectUpdateCallback(ctx) {
       { parse_mode: "HTML" }
     );
 
-    await ctx.answerCallbackQuery("✅ Update ditolak", { show_alert: false });
+    await ctx.answerCallbackQuery("✅ Update ditolak");
   } catch (error) {
-    console.error("Error in handleRejectUpdateCallback:", error);
+    logger.error("Error in handleRejectUpdateCallback", {
+      userId: ctx.state?.telegram_id,
+      updateId: update_id,
+      error: error.message,
+    });
     return ctx.answerCallbackQuery("❌ Error menolak update");
   }
 }
