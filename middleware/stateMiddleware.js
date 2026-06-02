@@ -1,5 +1,6 @@
 const stateService = require("../services/stateService");
 const referenceService = require("../services/referenceService");
+const logger = require("../services/logger");
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -68,6 +69,11 @@ async function stateMiddleware(ctx, next) {
     if (demoRole) {
       console.log(`User ${telegram_id} in demo mode: ${demoRole}, isAdmin: ${isAdmin}`);
     }
+
+    // iflogger.info(`Demo mode detected`, {
+    //     userId: telegram_id,
+    //     demoRole: demoRole,
+    //     isAdmin: isAdmin,})
     // ========================================
 
     // ========== LAPOR PAK ROLE DETECTION ==========
@@ -100,7 +106,11 @@ async function stateMiddleware(ctx, next) {
     if (ctx.state.isAdmin === false && rows.length > 0 && rows[0].reference_code) {
       const referenceCode = rows[0].reference_code;
       ctx.state.referenceCode = referenceCode;
-
+logger.warn(`Reference code expired`, {
+          userId: telegram_id,
+          referenceCode: referenceCode,
+        });
+        
       // Check if reference code status is still OPEN
       const isValid = await referenceService.isReferenceCodeValid(referenceCode);
       

@@ -2,11 +2,17 @@ const { Bot } = require("grammy");
 const cron = require("node-cron");
 const dotenv = require("dotenv");
 const { startCron } = require("./cron/runner");
+const logger = require("./services/logger");
 
 const QRCode = require("qrcode");
 const { InputFile } = require("grammy");
 
 dotenv.config();
+
+logger.info("🤖 Initializing bot...");
+logger.debug(`Log level: ${process.env.LOG_LEVEL || "INFO"}`, {
+  logsDir: logger.getLogFilePath().replace(/\/[^/]*\.log$/, ""),
+});
 
 const bot = new Bot(process.env.BOT_TOKEN);
 
@@ -127,6 +133,8 @@ bot.command("addmember", addMemberCommand);
 bot.command("removemember", removeMemberCommand);
 bot.command("listmember", listMemberCommand);
 bot.command("summary", summaryCommand);
+
+logger.debug(`Callback data received`, {});
 
 
 // ========== HANDLE CALLBACK QUERIES (Button Clicks) ==========
@@ -406,7 +414,12 @@ bot.on("callback_query:data", async (ctx) => {
     // Answer callback query to remove "loading" state from button
     await ctx.answerCallbackQuery();
   } catch (error) {
-    console.error("Error handling callback query. Location index.js:callback_query:data:", error);
+    logger.error("Error handling callback query", {
+      userId: ctx.state?.telegram_id,
+      callbackData: ctx.callbackQuery?.data,
+      error: error.message,
+      stack: error.stack,
+    });
     await ctx.answerCallbackQuery("Error Recognizing Callback Action.");
   }
 });
@@ -414,6 +427,17 @@ bot.on("callback_query:data", async (ctx) => {
 // ========== HANDLE TEXT MESSAGES ==========
 // Route text messages to step handlers based on user state
 bot.on("message:text", messageRouter);
+
+
+logger.success(" Bot is running successfully!", {
+  botToken: process.env.BOT_TOKEN ? "✓ configured" : "✗ missing",
+  superUserId: process.env.SUPER_USER_ID || "not configured",
+  teamGroupId: process.env.TEAM_GROUP_ID || "not configured",
+  logFile: logger.getLogFilePath(),
+  logsDir: logger.getLogFilePath().replace(/\/[^/]*\.log$/, ""),
+});
+
+logger.info("Ready to accept messages=> setTimeout(r, 5000));");
 
 // ========== START BOT ==========
 bot.start();
