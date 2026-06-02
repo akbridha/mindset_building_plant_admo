@@ -87,45 +87,30 @@ async function notifyPICForApproval(
     console.error(`Error notifying PIC ${pic_user_id}:`, error);
   }
 }
-
 /**
- * Notify reporter about approved update
- * Usage: await notifyReporterAboutUpdate(bot, reporter_user_id, lapor_pak_id, update_text)
- * @param {object} bot - Bot instance
- * @param {number} reporter_user_id - Telegram user ID
+ * Notify group about approved report
+ * @param {object} api - Bot API instance (ctx.api) 
+ * @param {number} group_id - Telegram group ID
  * @param {string} lapor_pak_id - Report ID
- * @param {string} update_text - Update content
+ * @param {string} message_text - Report content
  * @returns {Promise<void>}
  */
-async function notifyReporterAboutUpdate(
-  bot,
-  reporter_user_id,
-  lapor_pak_id,
-  update_text
-) {
+async function notifyGroupAboutApprovedReport(api, group_id, lapor_pak_id, message_text) {
   try {
-    const message = `<b>Update untuk Laporan Anda</b>\n\n` +
-      `<b>Laporan:</b> ${lapor_pak_id}\n\n` +
-      `<b>Update:</b>\n${update_text}\n\n` +
-      `Silakan pilih tindakan di bawah.`;
-
-    const options = {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            { text: "📝 Feedback", callback_data: `feedback_${lapor_pak_id}` },
-            { text: "✅ Selesai", callback_data: `close_${lapor_pak_id}` },
-          ],
-        ],
-      },
-    };
-
-    await notifyUser(bot, reporter_user_id, message, options);
+    const message = `<b>📋 [${lapor_pak_id}] Laporan Baru</b>\n\n${message_text}`;
+    
+    // ✅ Gunakan parameter 'api' langsung (karena kita passing ctx.api)
+    await api.sendMessage(group_id, message, { 
+      parse_mode: "HTML",
+      disable_web_page_preview: true
+    });
+    
+    console.log(`✅ Notifikasi group terkirim: ${lapor_pak_id} ke ${group_id}`);
   } catch (error) {
-    console.error(`Error notifying reporter ${reporter_user_id}:`, error);
+    console.error(`Error notifying group about report:`, error);
+    throw error;
   }
 }
-
 /**
  * Notify PSD about rejected update
  * Usage: await notifyPSDAboutRejection(bot, psd_user_id, lapor_pak_id, update_text)
@@ -209,17 +194,20 @@ async function notifyApprovalQueue(
  * @param {string} message_text - Report content
  * @returns {Promise<void>}
  */
-async function notifyGroupAboutApprovedReport(
-  bot,
-  group_id,
-  lapor_pak_id,
-  message_text
-) {
+async function notifyGroupAboutApprovedReport(api, group_id, lapor_pak_id, message_text) {
   try {
-    const message = `<b>[${lapor_pak_id}] 📋 Laporan Baru</b>\n\n${message_text}`;
-    await notifyGroup(bot, group_id, message);
+    const message = `<b>📋 [${lapor_pak_id}] Laporan Baru</b>\n\n${message_text}`;
+    
+    // ✅ LANGSUNG panggil api.sendMessage (karena api adalah ctx.api)
+    await api.sendMessage(group_id, message, { 
+      parse_mode: "HTML",
+      disable_web_page_preview: true
+    });
+    
+    console.log(`✅ Notifikasi group terkirim: ${lapor_pak_id} ke ${group_id}`);
   } catch (error) {
     console.error(`Error notifying group about report:`, error);
+    throw error;
   }
 }
 
@@ -302,7 +290,7 @@ module.exports = {
   notifyUser,
   notifyGroup,
   notifyPICForApproval,
-  notifyReporterAboutUpdate,
+  // notifyReporterAboutUpdate,
   notifyPSDAboutRejection,
   notifyApprovalQueue,
   notifyGroupAboutApprovedReport,

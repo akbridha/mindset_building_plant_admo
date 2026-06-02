@@ -143,6 +143,27 @@ bot.command("removemember", removeMemberCommand);
 bot.command("listmember", listMemberCommand);
 bot.command("summary", summaryCommand);
 
+
+bot.command("testgroup", async (ctx) => {
+  try {
+    const TEAM_GROUP_ID = process.env.TEAM_GROUP_ID;
+    
+    if (!TEAM_GROUP_ID) {
+      return ctx.reply("❌ TEAM_GROUP_ID tidak diset di environment");
+    }
+    
+    await ctx.api.sendMessage(
+      TEAM_GROUP_ID,
+      "🧪 Test notifikasi dari bot - LAPOR PAK System",
+      { parse_mode: "HTML" }
+    );
+    
+    await ctx.reply("✅ Test notifikasi terkirim ke group!");
+  } catch (error) {
+    console.error("Error testing group:", error);
+    await ctx.reply(`❌ Error: ${error.message}`);
+  }
+});
 // ========== HANDLE CALLBACK QUERIES (Button Clicks) ==========
 bot.on("callback_query:data", async (ctx) => {
 

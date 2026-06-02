@@ -39,6 +39,25 @@ async function handleApproveReportCallback(ctx) {
     // Approve the report
     await laporanService.approveReport(report.lapor_pak_id, ctx.state.telegram_id);
 
+        // ========== KIRIM KE GROUP ==========
+    const TEAM_GROUP_ID = process.env.TEAM_GROUP_ID;
+    if (TEAM_GROUP_ID) {
+      try {
+        await notificationService.notifyGroupAboutApprovedReport(
+          ctx.api,  // ✅ Kirim bot instance (ctx.api)
+          TEAM_GROUP_ID,
+          report.lapor_pak_id,
+          report.message_text
+        );
+        console.log(`✅ Notifikasi terkirim ke group ${TEAM_GROUP_ID}`);
+      } catch (notifError) {
+        console.error("❌ Gagal kirim notifikasi ke group:", notifError.message);
+      }
+    } else {
+      console.warn("⚠️ TEAM_GROUP_ID tidak diset di environment");
+    }
+    // ====================================
+
     // Update message
     await ctx.editMessageText(
       `<b>✅ Laporan Disetujui</b>\n\n` +
