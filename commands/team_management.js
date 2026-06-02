@@ -1,6 +1,8 @@
 const laporanService = require("../services/laporanService");
 const teamService = require("../services/teamService");
 const stateService = require("../services/stateService");
+const { db } = require("../db");
+const { encryptTelegramId } = require("../services/encryptionService");
 
 /**
  * Handler for /addmember command - add user to team
@@ -105,19 +107,54 @@ async function handleMemberRoleCallback(ctx) {
     }
 
     const role = match[1];
-    const telegram_id = ctx.state.telegram_id;
+    const telegram_id = ctx.state.telegram_id;  // Ini Telegram ID (476069358)
     const username = ctx.state.userContext.username;
 
-    // For now, using username as user_id placeholder
-    // In production, this should resolve @username to actual telegram_id
-    const userId = username.hashCode
-      ? username.hashCode()
-      : parseInt(username.split("").map((c) => c.charCodeAt(0)).join(""));
+    // Cari user di database berdasarkan username
+    const [users] = await db.execute(
+      `SELECT id FROM users WHERE username = ? OR encrypted_telegram_id = ?`,
+      [username, username]
+    );
+    
+    let userId;
+    if (users.length === 0) {
+      await ctx.editMessageText(
+        `<b>⚠️ User @${username} belum terdaftar di sistem.</b>\n\n` +
+        `User harus melakukan /start ke bot terlebih dahulu sebelum ditambahkan ke tim.`,
+        { parse_mode: "HTML" }
+      );
+      await ctx.answerCallbackQuery("❌ User belum terdaftar");
+      await stateService.clearState(telegram_id);
+      return;
+    } else {
+      userId = users[0].id;
+    }
 
-    // Add team member
-    await teamService.addTeamMember(userId, role, telegram_id);
+    // ========== TAMBAHKAN: Cari ID Super Admin di tabel users ==========
+    // Jangan langsung pakai telegram_id! Cari dulu di tabel users
+    const encryptedSuperAdminId = encryptTelegramId(telegram_id);
+    const [adminRows] = await db.execute(
+      `SELECT id FROM users WHERE encrypted_telegram_id = ?`,
+      [encryptedSuperAdminId]
+    );
+    
+    if (adminRows.length === 0) {
+      await ctx.editMessageText(
+        `<b>⚠️ Anda (Super Admin) belum terdaftar di sistem.</b>\n\n` +
+        `Silakan lakukan /start terlebih dahulu.`,
+        { parse_mode: "HTML" }
+      );
+      await ctx.answerCallbackQuery("❌ Admin belum terdaftar");
+      await stateService.clearState(telegram_id);
+      return;
+    }
+    
+    const added_by_id = adminRows[0].id;  // ✅ Ini ID dari tabel users (misal: 1, 2, 3...)
+    // ==================================================================
 
-    // Update message
+    // Add team member dengan added_by_id yang benar
+    await teamService.addTeamMember(userId, role, added_by_id);
+
     await ctx.editMessageText(
       `<b>✅ Anggota Ditambahkan</b>\n\n` +
       `Username: @${username}\n` +
@@ -131,7 +168,7 @@ async function handleMemberRoleCallback(ctx) {
   } catch (error) {
     console.error("Error in handleMemberRoleCallback:", error);
     await stateService.clearState(ctx.state.telegram_id);
-    return ctx.answerCallbackQuery("❌ Error menambahkan anggota");
+    await ctx.answerCallbackQuery("❌ Error menambahkan anggota");
   }
 }
 

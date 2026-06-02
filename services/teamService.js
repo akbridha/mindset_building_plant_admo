@@ -19,13 +19,30 @@ async function addTeamMember(user_id, role, added_by_id) {
       throw new Error(`Invalid role: ${role}. Must be SH or PSD`);
     }
 
-    // Check if user exists in users table, if not create
-    await db.execute(
-      `INSERT INTO users (encrypted_telegram_id, created_at)
-       VALUES (?, CURRENT_TIMESTAMP)
-       ON DUPLICATE KEY UPDATE id = id`,
-      [user_id.toString()]
+    // ✅ Pastikan user_id dan added_by_id adalah angka yang valid
+    if (!user_id || isNaN(user_id) || !added_by_id || isNaN(added_by_id)) {
+      throw new Error(`Invalid user_id or added_by_id: user_id=${user_id}, added_by_id=${added_by_id}`);
+    }
+
+    // Check if user exists in users table
+    const [existingUser] = await db.execute(
+      `SELECT id FROM users WHERE id = ?`,
+      [user_id]
     );
+
+    if (existingUser.length === 0) {
+      throw new Error(`User with id ${user_id} does not exist in users table`);
+    }
+
+    // Check if added_by user exists
+    const [existingAdmin] = await db.execute(
+      `SELECT id FROM users WHERE id = ?`,
+      [added_by_id]
+    );
+
+    if (existingAdmin.length === 0) {
+      throw new Error(`Admin with id ${added_by_id} does not exist in users table`);
+    }
 
     // Add to team_members
     const [result] = await db.execute(
