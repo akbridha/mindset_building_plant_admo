@@ -91,7 +91,8 @@ module.exports = async (ctx) => {
       parse_mode: "HTML",
       reply_markup: {
         inline_keyboard: [
-          [{ text: "📋 Daftar Task", callback_data: "list_task" }]
+          [{ text: "📋 Daftar Task", callback_data: "list_task" }],
+          [{ text: "📋 Lapor Pak", callback_data: "lapor_pak_menu" }]
         ]
       }
     });

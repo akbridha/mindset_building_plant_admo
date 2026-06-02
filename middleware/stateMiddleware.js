@@ -70,10 +70,29 @@ async function stateMiddleware(ctx, next) {
     }
     // ========================================
 
+    // ========== LAPOR PAK ROLE DETECTION ==========
+    // Check if user is Super User (hardcoded in environment)
+    const SUPER_USER_ID = process.env.SUPER_USER_ID;
+    ctx.state.isSuperUser = SUPER_USER_ID && telegram_id === parseInt(SUPER_USER_ID);
 
+    // Check if user is a team member (SH/PSD)
+    const { db } = require("../db");
+    const teamService = require("../services/teamService");
+    
+    try {
+      // Note: We'll need to map telegram_id to user_id properly
+      // For now, using telegram_id as user_id placeholder
+      const teamRole = await teamService.getTeamRole(telegram_id);
+      ctx.state.teamRole = teamRole; // 'SH', 'PSD', or null
+      ctx.state.isTeamMember = teamRole !== null;
+    } catch (error) {
+      console.warn(`Error checking team role for user ${telegram_id}:`, error);
+      ctx.state.teamRole = null;
+      ctx.state.isTeamMember = false;
+    }
+    // ============================================
 
     // Get user's reference code from database
-    const { db } = require("../db");
     const sql = "SELECT reference_code, reminder_time FROM ms_user WHERE telegram_id = ?";
     const [rows] = await db.execute(sql, [telegram_id]);
     ctx.state.reminder_time = rows[0].reminder_time; 

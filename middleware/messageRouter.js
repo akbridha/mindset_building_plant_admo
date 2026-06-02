@@ -8,6 +8,13 @@ const { setDuration,// fungsi urutan 2
         setManpower // fungsi urutan 3
       } = require("../commands/generate_ref");
 
+// LAPOR PAK handlers
+const { laporStep2 } = require("../commands/lapor");
+const { feedbackStep2 } = require("../commands/laporan_detail");
+const { assignPICStep2 } = require("../commands/assign_pic");
+const { updateStep2, updateStep3 } = require("../commands/add_update");
+const { addMemberStep2 } = require("../commands/team_management");
+
 /**
  * Message router middleware
  * Routes text messages to appropriate step handlers based on user's current state
@@ -72,6 +79,27 @@ async function messageRouter(ctx) {
         
       case "awaiting_number_of_target_edit":
         return proceedTaskEdit(ctx, userInput);
+
+      // LAPOR PAK - Reporter States
+      case "awaiting_laporan_description":
+        return laporStep2(ctx, userInput);
+
+      case "awaiting_feedback_content":
+        return feedbackStep2(ctx, userInput);
+
+      // LAPOR PAK - Team States
+      case "awaiting_pic_laporan_id":
+        return assignPICStep2(ctx, userInput);
+
+      case "awaiting_update_laporan_id":
+        return updateStep2(ctx, userInput);
+
+      case "awaiting_update_content":
+        return updateStep3(ctx, userInput);
+
+      // LAPOR PAK - Super User States
+      case "awaiting_addmember_username":
+        return addMemberStep2(ctx, userInput);
           
       default:
         // Unknown state - reset and inform user

@@ -23,7 +23,7 @@ module.exports = async (ctx) => {
       reply_markup: {
         inline_keyboard: [
           [{ text: "📋 Daftar Task", callback_data: "list_task" }],
-
+          [{ text: "📋 Lapor Pak", callback_data: "lapor_pak_menu" }],
           [{ text: "🗝️ Generate Reference Code", callback_data: "generate_key" }],
           // [{ text: "⛑️ Belajar Contoh Get-Users", callback_data: "list_user" }]
         ]

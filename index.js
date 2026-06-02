@@ -32,6 +32,34 @@ const userReminder = require("./commands/set_user_reminder_time");
 const cancelCommand = require("./commands/cancel");
 const demoRouter = require("./commands/demo");
 const statusCommand = require("./commands/status");
+const { getTeksBalasan } = require("./services/textService");
+
+// LAPOR PAK Commands
+const { laporCommand } = require("./commands/lapor");
+const { laporansayaCommand } = require("./commands/laporansaya");
+const { 
+  handleDetailLaporanCallback, 
+  handleAddFeedbackCallback, 
+  handleCloseReportCallback 
+} = require("./commands/laporan_detail");
+const { 
+  assignPICCommand, 
+  handleSelectPICCallback 
+} = require("./commands/assign_pic");
+const { 
+  addUpdateCommand, 
+  handleSelectPICCallback: handleUpdateSelectCallback 
+} = require("./commands/add_update");
+const { listTugasCommand } = require("./commands/list_tugas");
+const { approveCommand } = require("./commands/approve");
+const { 
+  addMemberCommand, 
+  handleMemberRoleCallback, 
+  removeMemberCommand, 
+  handleRemoveMemberCallback, 
+  listMemberCommand 
+} = require("./commands/team_management");
+const { summaryCommand } = require("./commands/summary");
 
 // ========== IMPORT MIDDLEWARE ==========
 const stateMiddleware = require("./middleware/stateMiddleware");
@@ -87,6 +115,18 @@ bot.command("qr", async (ctx) => {
     caption: "Ini QR code kamu",
   });
 });
+
+// LAPOR PAK Commands
+bot.command("lapor", laporCommand);
+bot.command("laporansaya", laporansayaCommand);
+bot.command("pic", assignPICCommand);
+bot.command("update", addUpdateCommand);
+bot.command("listtugas", listTugasCommand);
+bot.command("approve", approveCommand);
+bot.command("addmember", addMemberCommand);
+bot.command("removemember", removeMemberCommand);
+bot.command("listmember", listMemberCommand);
+bot.command("summary", summaryCommand);
 
 
 // ========== HANDLE CALLBACK QUERIES (Button Clicks) ==========
@@ -200,8 +240,167 @@ bot.on("callback_query:data", async (ctx) => {
        await targetQuestion(ctx);
         break;
 
+      // LAPOR PAK Callbacks
+      case "lapor_pak_menu":
+        // Show LAPOR PAK menu based on user role
+        if (ctx.state.isSuperUser) {
+          await ctx.editMessageText(
+            "<b>🔑 Menu Super User</b>\n\n" +
+            "Pilih aksi:",
+            {
+              parse_mode: "HTML",
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: "📬 Antrian Persetujuan", callback_data: "show_approve" }],
+                  [{ text: "📋 Semua Laporan", callback_data: "show_listall" }],
+                  [{ text: "👥 Kelola Anggota", callback_data: "show_manage_team" }],
+                  [{ text: "📊 Summary", callback_data: "show_summary" }],
+                  [{ text: "⬅️ Kembali", callback_data: "back_to_menu" }],
+                ]
+              }
+            }
+          );
+        } else if (ctx.state.isTeamMember) {
+          await ctx.editMessageText(
+            "<b>🏢 Menu Tim Follow-up</b>\n\n" +
+            "Pilih aksi:",
+            {
+              parse_mode: "HTML",
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: "📋 Daftar Laporan", callback_data: "show_listlaporan" }],
+                  [{ text: "👤 Tunjuk PIC", callback_data: "show_pic" }],
+                  [{ text: "📝 Tambah Update", callback_data: "show_update" }],
+                  [{ text: "📋 Tugas Saya", callback_data: "show_tugas" }],
+                  [{ text: "⬅️ Kembali", callback_data: "back_to_menu" }],
+                ]
+              }
+            }
+          );
+        } else {
+          await ctx.editMessageText(
+            "<b>📋 Menu Lapor Pak</b>\n\n" +
+            "Pilih aksi:",
+            {
+              parse_mode: "HTML",
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: "📝 Laporan Baru", callback_data: "new_laporan" }],
+                  [{ text: "📋 Laporan Saya", callback_data: "my_laporan" }],
+                  [{ text: "⬅️ Kembali", callback_data: "back_to_menu" }],
+                ]
+              }
+            }
+          );
+        }
+        break;
+
+      case "new_laporan":
+        await laporCommand(ctx);
+        break;
+
+      case "my_laporan":
+        await laporansayaCommand(ctx);
+        break;
+
+      case "back_to_laporansaya":
+        await laporansayaCommand(ctx);
+        break;
+
+      case "show_approve":
+        await approveCommand(ctx);
+        break;
+
+      case "show_manage_team":
+        await ctx.editMessageText(
+          "<b>👥 Kelola Anggota Tim</b>\n\n" +
+          "Pilih aksi:",
+          {
+            parse_mode: "HTML",
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: "➕ Tambah Anggota", callback_data: "add_member_start" }],
+                [{ text: "➖ Hapus Anggota", callback_data: "remove_member_start" }],
+                [{ text: "📋 Daftar Anggota", callback_data: "list_member_show" }],
+                [{ text: "⬅️ Kembali", callback_data: "lapor_pak_menu" }],
+              ]
+            }
+          }
+        );
+        break;
+
+      case "add_member_start":
+        await addMemberCommand(ctx);
+        break;
+
+      case "remove_member_start":
+        await removeMemberCommand(ctx);
+        break;
+
+      case "list_member_show":
+        await listMemberCommand(ctx);
+        break;
+
+      case "show_pic":
+        await assignPICCommand(ctx);
+        break;
+
+      case "show_update":
+        await addUpdateCommand(ctx);
+        break;
+
+      case "show_tugas":
+        await listTugasCommand(ctx);
+        break;
+
+      case "show_summary":
+        await summaryCommand(ctx);
+        break;
+
+      case "back_to_menu":
+        // Back to start menu
+        await ctx.editMessageText(getTeksBalasan(), {
+          parse_mode: "HTML",
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "📋 Daftar Task", callback_data: "list_task" }],
+              [{ text: "📋 Lapor Pak", callback_data: "lapor_pak_menu" }],
+              [{ text: "🗝️ Generate Reference Code", callback_data: "generate_key" }],
+            ]
+          }
+        });
+        break;
+
+      // LAPOR PAK Report Detail Callbacks
       default:
-        await ctx.answerCallbackQuery("Tombol aksi tidak dikenali");
+        if (callbackData.startsWith("detail_laporan_")) {
+          await handleDetailLaporanCallback(ctx);
+        } else if (callbackData.startsWith("add_feedback_")) {
+          await handleAddFeedbackCallback(ctx);
+        } else if (callbackData.startsWith("close_laporan_")) {
+          await handleCloseReportCallback(ctx);
+        } else if (callbackData.startsWith("select_pic_")) {
+          await handleSelectPICCallback(ctx);
+        } else if (callbackData.startsWith("member_role_")) {
+          await handleMemberRoleCallback(ctx);
+        } else if (callbackData.startsWith("remove_member_")) {
+          await handleRemoveMemberCallback(ctx);
+        } else if (callbackData.startsWith("approve_report_")) {
+          await handleApproveReportCallback(ctx);
+        } else if (callbackData.startsWith("reject_report_")) {
+          await handleRejectReportCallback(ctx);
+        } else if (callbackData.startsWith("approve_feedback_")) {
+          await handleApproveFeedbackCallback(ctx);
+        } else if (callbackData.startsWith("reject_feedback_")) {
+          await handleRejectFeedbackCallback(ctx);
+        } else if (callbackData.startsWith("approve_update_")) {
+          await handleApproveUpdateCallback(ctx);
+        } else if (callbackData.startsWith("reject_update_")) {
+          await handleRejectUpdateCallback(ctx);
+        } else {
+          await ctx.answerCallbackQuery("Tombol aksi tidak dikenali");
+        }
+        break;
     }
 
     // Answer callback query to remove "loading" state from button
