@@ -435,6 +435,72 @@ bot.on("callback_query:data", async (ctx) => {
 bot.on("message:text", messageRouter);
 
 
+// ========== DETEKSI BOT DITAMBAHKAN KE GROUP ==========
+bot.on("my_chat_member", async (ctx) => {
+  try {
+    const chat = ctx.myChatMember.chat;
+    const newStatus = ctx.myChatMember.new_chat_member.status;
+    const oldStatus = ctx.myChatMember.old_chat_member?.status;
+    
+    // Bot baru ditambahkan ke chat (group/supergroup/channel)
+    if (newStatus === "member" || newStatus === "administrator") {
+      const chatId = chat.id;
+      const chatTitle = chat.title || "Unnamed";
+      const chatType = chat.type; // "group", "supergroup", "channel"
+      
+      // Log ke console dengan warna
+      console.log("\x1b[32m%s\x1b[0m", `✅ Bot ditambahkan ke ${chatType}:`);
+      console.log(`   📝 Nama Group: ${chatTitle}`);
+      console.log(`   🆔 ID Group: ${chatId}`);
+      console.log(`   📊 Type: ${chatType}`);
+      console.log(`   👤 Status: ${newStatus}`);
+      
+      // Log ke file logger juga
+      logger.info(`Bot added to chat`, {
+        chatId: chatId,
+        chatTitle: chatTitle,
+        chatType: chatType,
+        status: newStatus,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Opsional: Kirim pesan ke group bahwa bot sudah aktif
+      await ctx.api.sendMessage(
+        chatId,
+        `🤖 Bot aktif!\n\n` +
+        `📋 Gunakan /start untuk memulai.\n` +
+        `🆔 ID Group ini: <code>${chatId}</code>`,
+        { parse_mode: "HTML" }
+      );
+      
+      // Opsional: Simpan ID group ke database atau environment variable
+      // await db.execute(
+      //   `INSERT INTO group_settings (group_id, group_name, is_active) 
+      //    VALUES (?, ?, TRUE) 
+      //    ON DUPLICATE KEY UPDATE group_name = ?, is_active = TRUE`,
+      //   [chatId, chatTitle, chatTitle]
+      // );
+      
+    } else if (newStatus === "left" || newStatus === "kicked") {
+      // Bot dikeluarkan dari group
+      console.log("\x1b[31m%s\x1b[0m", `❌ Bot dikeluarkan dari group:`);
+      console.log(`   🆔 ID: ${chat.id}`);
+      console.log(`   📝 Nama: ${chat.title}`);
+      
+      logger.warn(`Bot removed from chat`, {
+        chatId: chat.id,
+        chatTitle: chat.title,
+        oldStatus: oldStatus,
+        newStatus: newStatus
+      });
+    }
+    
+  } catch (error) {
+    console.error("Error in my_chat_member handler:", error);
+    logger.error("Error handling my_chat_member", { error: error.message });
+  }
+});
+
 logger.success(" Bot is running successfully!", {
   botToken: process.env.BOT_TOKEN ? "✓ configured" : "✗ missing",
   superUserId: process.env.SUPER_USER_ID || "not configured",
