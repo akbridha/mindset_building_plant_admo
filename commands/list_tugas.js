@@ -8,18 +8,20 @@ const laporanService = require("../services/laporanService");
 async function listTugasCommand(ctx) {
   try {
     const telegram_id = ctx.state.telegram_id;
+      const users_id = ctx.state.userDatabaseId;
 
     // Check if user is team member
-    if (!ctx.state.isTeamMember) {
-      return ctx.reply(
-        "❌ Anda bukan anggota tim Follow-up.\n\n" +
-        "Hanya anggota tim yang dapat menggunakan perintah ini."
-      );
-    }
+    // if (!ctx.state.isTeamMember) {
+    //   return ctx.reply(
+    //     "❌ Anda bukan anggota tim Follow-up.\n\n" +
+    //     "Hanya anggota tim yang dapat menggunakan perintah ini."
+    //   );
+    // }
 
     // Get reports where user is PIC
-    const reports = await laporanService.getReportsByPIC(telegram_id);
+    // const reports = await laporanService.getReportsByPIC(telegram_id);
 
+   return ctx.reply(ctx);
     if (reports.length === 0) {
       return ctx.reply(
         "<b>📋 Tugas Saya (PIC)</b>\n\n" +

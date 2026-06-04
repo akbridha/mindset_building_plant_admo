@@ -2,6 +2,9 @@ const stateService = require("../services/stateService");
 const referenceService = require("../services/referenceService");
 const logger = require("../services/logger");
 const dotenv = require("dotenv");
+const { db } = require("../db");  // ✅ TAMBAHKAN INI!
+const { encryptTelegramId } = require("../services/encryptionService");
+const teamService = require("../services/teamService");
 
 dotenv.config();
 
@@ -21,36 +24,13 @@ async function stateMiddleware(ctx, next) {
       ctx.state = {};
     }
 
-    // Set admin flag based on TELEGRAM_ID_OWNER
-    // ctx.state.isAdmin = telegram_id === parseInt(TELEGRAM_ID_OWNER);
-
-
-
-    // Check if state has timed out
-    // const isTimedOut = await stateService.isStateTimedOut(telegram_id);
-    
-    // if (isTimedOut) {
-    //   // Clear the timed-out state
-    //   await stateService.clearState(telegram_id);
-      
-    //   // Notify user of timeout
-    //   await ctx.reply(
-    //     "⏱️ Sesi Anda telah kedaluwarsa (5 menit ketidakaktifan).\n\n" +
-    //     "Ketik /start untuk memulai lagi."
-    //   );
-      
-    //   // Still process the command, but state is now cleared
-    // }
-
     // Get current state and attach to context for use in handlers
     const state = await stateService.getState(telegram_id);
     ctx.state.userState = state.current_state;
     ctx.state.userContext = state.context_data || {};
     ctx.state.telegram_id = telegram_id;
 
-
-
-        // ========== PRIORITAS DEMO ROLE ==========
+    // ========== PRIORITAS DEMO ROLE ==========
     let isAdmin = false;
     const demoRole = ctx.state.userContext.demo_role;
 
@@ -59,82 +39,62 @@ async function stateMiddleware(ctx, next) {
     } else if (demoRole === "user") {
       isAdmin = false;
     } else {
-      // Fallback ke hardcoded owner
       isAdmin = (telegram_id === parseInt(TELEGRAM_ID_OWNER));
     }
-
     ctx.state.isAdmin = isAdmin;
     
-    // Optional: Log untuk debugging
     if (demoRole) {
       console.log(`User ${telegram_id} in demo mode: ${demoRole}, isAdmin: ${isAdmin}`);
     }
 
-    // iflogger.info(`Demo mode detected`, {
-    //     userId: telegram_id,
-    //     demoRole: demoRole,
-    //     isAdmin: isAdmin,})
-    // ========================================
+    // ========== LAPOR PAK ROLE DETECTION (SATU KALI SAJA) ==========
+    const SUPER_USER_ID = process.env.SUPER_USER_ID;
+    ctx.state.isSuperUser = SUPER_USER_ID && telegram_id === parseInt(SUPER_USER_ID);
 
-
-// ========== LAPOR PAK ROLE DETECTION ==========
-const SUPER_USER_ID = process.env.SUPER_USER_ID;
-ctx.state.isSuperUser = SUPER_USER_ID && telegram_id === parseInt(SUPER_USER_ID);
-
-// Check if user is a team member (SH/PSD)
-const { db } = require("../db");
-const { encryptTelegramId } = require("../services/encryptionService");
-const teamService = require("../services/teamService");
-
-try {
-  // ✅ CARI DULU ID USER DI TABEL `users` BERDASARKAN TELEGRAM ID
-  const encryptedId = encryptTelegramId(telegram_id);
-  const [users] = await db.execute(
-    `SELECT id FROM users WHERE encrypted_telegram_id = ?`,
-    [encryptedId]
-  );
-  
-  if (users.length > 0) {
-    const userId = users[0].id;  // Ini adalah ID dari tabel users (contoh: 10)
-    const teamRole = await teamService.getTeamRole(userId);  // ✅ Kirim userId yang benar
-    ctx.state.teamRole = teamRole; // 'SH', 'PSD', atau null
-    ctx.state.isTeamMember = teamRole !== null;
-    
-    console.log(`✅ User ${telegram_id} -> users.id=${userId}, role=${teamRole}`);
-  } else {
-    // User belum terdaftar di tabel users
-    ctx.state.teamRole = null;
-    ctx.state.isTeamMember = false;
-    console.log(`⚠️ User ${telegram_id} not found in users table`);
-  }
-} catch (error) {
-  console.warn(`Error checking team role for user ${telegram_id}:`, error);
-  ctx.state.teamRole = null;
-  ctx.state.isTeamMember = false;
-}
-// ============================================
+    try {
+      const encryptedId = encryptTelegramId(telegram_id);
+      const [users] = await db.execute(
+        `SELECT id FROM users WHERE encrypted_telegram_id = ?`,
+        [encryptedId]
+      );
+      
+      if (users.length > 0) {
+        const userId = users[0].id;
+        // ✅ SIMPAN ID INI
+        ctx.state.userDatabaseId = userId;
+        
+        const teamRole = await teamService.getTeamRole(userId);
+        ctx.state.teamRole = teamRole;
+        ctx.state.isTeamMember = teamRole !== null;
+        
+        console.log(`[STATE] User ${telegram_id} -> users.id=${userId}, role=${teamRole}, isTeamMember=${ctx.state.isTeamMember}`);
+      } else {
+        ctx.state.userDatabaseId = null;
+        ctx.state.teamRole = null;
+        ctx.state.isTeamMember = false;
+        console.log(`[STATE] User ${telegram_id} not found in users table`);
+      }
+    } catch (error) {
+      console.warn(`Error checking team role for user ${telegram_id}:`, error);
+      ctx.state.userDatabaseId = null;
+      ctx.state.teamRole = null;
+      ctx.state.isTeamMember = false;
+    }
+    // ============================================
 
     // Get user's reference code from database
     const sql = "SELECT reference_code, reminder_time FROM ms_user WHERE telegram_id = ?";
     const [rows] = await db.execute(sql, [telegram_id]);
-    ctx.state.reminder_time = rows[0].reminder_time; 
+    ctx.state.reminder_time = rows[0]?.reminder_time || null; 
     
     if (ctx.state.isAdmin === false && rows.length > 0 && rows[0].reference_code) {
       const referenceCode = rows[0].reference_code;
       ctx.state.referenceCode = referenceCode;
-logger.warn(`Reference code expired`, {
-          userId: telegram_id,
-          referenceCode: referenceCode,
-        });
-        
-      // Check if reference code status is still OPEN
+      
       const isValid = await referenceService.isReferenceCodeValid(referenceCode);
       
       if (!isValid) {
-        // Reference code has been CLOSED
         await stateService.clearState(telegram_id);
-        
-        // Notify user that reference code is closed
         await ctx.reply(
           "❌ Reference code Anda sudah ditutup oleh admin.\n\n" +
           "Hubungi admin untuk mendapatkan reference code baru."
@@ -142,19 +102,16 @@ logger.warn(`Reference code expired`, {
       }
     }
 
-  console.log("=== DEBUG STATE MIDDLEWARE ===");
-  console.log("Telegram ID:", telegram_id);
-  // console.log("Encrypted ID:", encryptedId);
-  // console.log("Users found:", users.length > 0 ? users[0].id : "NOT FOUND");
-  // if (users.length > 0) {
-  //   console.log("Team role:", await teamService.getTeamRole(users[0].id));
-  // }
+    console.log("=== DEBUG STATE MIDDLEWARE ===");
+    console.log("Telegram ID:", telegram_id);
+    console.log("userDatabaseId:", ctx.state.userDatabaseId);
+    console.log("isTeamMember:", ctx.state.isTeamMember);
+    console.log("teamRole:", ctx.state.teamRole);
 
     // Continue to next handler
     return next();
   } catch (error) {
     console.error("State middleware error:", error);
-    // Continue even on error to not break the bot
     return next();
   }
 }
