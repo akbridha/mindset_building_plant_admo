@@ -19,9 +19,8 @@ async function listTugasCommand(ctx) {
     // }
 
     // Get reports where user is PIC
-    // const reports = await laporanService.getReportsByPIC(telegram_id);
+    const reports = await laporanService.getReportsByPIC(users_id);
 
-   return ctx.reply(ctx);
     if (reports.length === 0) {
       return ctx.reply(
         "<b>📋 Tugas Saya (PIC)</b>\n\n" +
@@ -64,13 +63,13 @@ async function listTugasCommand(ctx) {
           "id-ID"
         )}</i>\n\n`;
 
-      // Add button
-      buttons.push([
-        {
-          text: `${statusIcon} ${report.lapor_pak_id}${pendingStr ? " 🔴" : ""}`,
-          callback_data: `detail_pic_${report.id}`,
-        },
-      ]);
+      // button gausah dipush
+      // buttons.push([
+      //   {
+      //     text: `${statusIcon} ${report.lapor_pak_id}${pendingStr ? " 🔴" : ""}`,
+      //     callback_data: `detail_pic_${report.id}`,
+      //   },
+      // ]);
     });
 
     // Send with inline buttons
