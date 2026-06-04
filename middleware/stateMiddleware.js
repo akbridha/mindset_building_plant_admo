@@ -144,11 +144,11 @@ logger.warn(`Reference code expired`, {
 
   console.log("=== DEBUG STATE MIDDLEWARE ===");
   console.log("Telegram ID:", telegram_id);
-  console.log("Encrypted ID:", encryptedId);
-  console.log("Users found:", users.length > 0 ? users[0].id : "NOT FOUND");
-  if (users.length > 0) {
-    console.log("Team role:", await teamService.getTeamRole(users[0].id));
-  }
+  // console.log("Encrypted ID:", encryptedId);
+  // console.log("Users found:", users.length > 0 ? users[0].id : "NOT FOUND");
+  // if (users.length > 0) {
+  //   console.log("Team role:", await teamService.getTeamRole(users[0].id));
+  // }
 
     // Continue to next handler
     return next();

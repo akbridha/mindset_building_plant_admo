@@ -75,6 +75,7 @@ const  {
   handleRejectUpdateCallback,
 } = require("./commands/approval_handlers");
 const { summaryCommand } = require("./commands/summary");
+const { listFollowupCommand } = require("./commands/get_approved_laporan");
 
 // ========== IMPORT MIDDLEWARE ==========
 const stateMiddleware = require("./middleware/stateMiddleware");
@@ -142,6 +143,7 @@ bot.command("addmember", addMemberCommand);
 bot.command("removemember", removeMemberCommand);
 bot.command("listmember", listMemberCommand);
 bot.command("summary", summaryCommand);
+bot.command("listlaporan", listFollowupCommand);
 
 
 bot.command("testgroup", async (ctx) => {
