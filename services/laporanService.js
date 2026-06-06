@@ -314,11 +314,12 @@ async function addUpdate(lapor_pak_id, psd_id, pic_id, message_text) {
  * @param {number} update_id - Update ID
  * @returns {Promise<Object>} - Update details for notification
  */
+// Di laporanService.js
 async function approveUpdate(update_id) {
   try {
     // Get update details before approving
     const [updateRows] = await db.execute(
-      `SELECT u.id, u.laporan_id, u.message_text, l.lapor_pak_id
+      `SELECT u.id, u.laporan_id, u.message_text, u.psd_id, l.lapor_pak_id
        FROM updates u
        JOIN laporan l ON u.laporan_id = l.id
        WHERE u.id = ?`,

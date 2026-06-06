@@ -151,6 +151,28 @@ async function getUserById(userId) {
   }
 }
 
+/**
+ * Get raw Telegram ID from ms_user table by user ID
+ * @param {number} userId - Internal user ID from users table
+ * @returns {Promise<number|null>} - Raw Telegram ID or null
+ */
+async function getRawTelegramIdByUserId(userId) {
+  try {
+    const [rows] = await db.execute(
+      `SELECT telegram_id FROM ms_user WHERE user_id = ?`,
+      [userId]
+    );
+    
+    return rows.length > 0 ? rows[0].telegram_id : null;
+  } catch (error) {
+    console.error("Error getting raw telegram ID:", error);
+    return null;
+  }
+}
+
+/**
+ * Get user by internal user ID (already exists, but export it)
+ */
 async function getUserById(userId) {
   try {
     const [rows] = await db.execute(
@@ -171,6 +193,7 @@ module.exports ={
   getUserById,         
   updateTimeReminder,
   findUserByUsername, 
-  createUserFromTelegram 
+  createUserFromTelegram,
+  getRawTelegramIdByUserId 
 
 }

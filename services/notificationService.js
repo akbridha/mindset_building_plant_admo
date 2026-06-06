@@ -1,72 +1,67 @@
 /**
  * Notification Service for LAPOR PAK system
  * Routes messages to users/groups with appropriate formatting
- *
- * NOTE: This service is prepared for integration with the bot instance
- * and requires the bot context to be passed in or available globally
  */
 
 /**
  * Send private notification to a user
- * Usage: await notifyUser(bot, user_id, message, options)
- * @param {object} bot - Bot instance from grammy
- * @param {number} user_id - Telegram user ID
+ * @param {object} api - Bot API instance (ctx.api)
+ * @param {number} user_telegram_id - Raw Telegram ID (from ms_user)
  * @param {string} message - Message text
- * @param {object} options - Optional Telegram API options (parse_mode, reply_markup, etc)
+ * @param {object} options - Optional Telegram API options
  * @returns {Promise<void>}
  */
-async function notifyUser(bot, user_id, message, options = {}) {
+async function notifyUser(api, user_telegram_id, message, options = {}) {
   try {
-    await bot.api.sendMessage(user_id, message, {
+    await api.sendMessage(user_telegram_id, message, {
       parse_mode: "HTML",
       ...options,
     });
+    console.log(`✅ Notifikasi terkirim ke user: ${user_telegram_id}`);
   } catch (error) {
-    console.error(`Error notifying user ${user_id}:`, error);
+    console.error(`Error notifying user ${user_telegram_id}:`, error);
     // Don't throw - notifications should not break workflow
   }
 }
 
 /**
  * Send message to team group
- * Usage: await notifyGroup(bot, group_id, message, options)
- * @param {object} bot - Bot instance from grammy
+ * @param {object} api - Bot API instance (ctx.api)
  * @param {number} group_id - Telegram group ID (negative for groups)
  * @param {string} message - Message text
  * @param {object} options - Optional Telegram API options
  * @returns {Promise<void>}
  */
-async function notifyGroup(bot, group_id, message, options = {}) {
+async function notifyGroup(api, group_id, message, options = {}) {
   try {
-    await bot.api.sendMessage(group_id, message, {
+    await api.sendMessage(group_id, message, {
       parse_mode: "HTML",
       ...options,
     });
+    console.log(`✅ Notifikasi terkirim ke group: ${group_id}`);
   } catch (error) {
     console.error(`Error notifying group ${group_id}:`, error);
-    // Don't throw - notifications should not break workflow
   }
 }
 
 /**
  * Notify PIC about pending update approval
- * Usage: await notifyPICForApproval(bot, pic_user_id, lapor_pak_id, update_text, update_id)
- * @param {object} bot - Bot instance
- * @param {number} pic_user_id - Telegram user ID of PIC
+ * @param {object} api - Bot API instance (ctx.api)
+ * @param {number} pic_telegram_id - Raw Telegram ID of PIC
  * @param {string} lapor_pak_id - Report ID
  * @param {string} update_text - Update content
  * @param {number} update_id - Update ID for callback
  * @returns {Promise<void>}
  */
 async function notifyPICForApproval(
-  bot,
-  pic_user_id,
+  api,
+  pic_telegram_id,
   lapor_pak_id,
   update_text,
   update_id
 ) {
   try {
-    const message = `<b>Update Memerlukan Persetujuan</b>\n\n` +
+    const message = `<b>📝 Update Memerlukan Persetujuan</b>\n\n` +
       `<b>Laporan:</b> ${lapor_pak_id}\n` +
       `<b>Update:</b>\n${update_text}\n\n` +
       `Silakan setujui atau tolak update ini.`;
@@ -82,68 +77,44 @@ async function notifyPICForApproval(
       },
     };
 
-    await notifyUser(bot, pic_user_id, message, options);
+    await notifyUser(api, pic_telegram_id, message, options);
   } catch (error) {
-    console.error(`Error notifying PIC ${pic_user_id}:`, error);
-  }
-}
-/**
- * Notify group about approved report
- * @param {object} api - Bot API instance (ctx.api) 
- * @param {number} group_id - Telegram group ID
- * @param {string} lapor_pak_id - Report ID
- * @param {string} message_text - Report content
- * @returns {Promise<void>}
- */
-async function notifyGroupAboutApprovedReport(api, group_id, lapor_pak_id, message_text) {
-  try {
-    const message = `<b>📋 [${lapor_pak_id}] Laporan Baru</b>\n\n${message_text}`;
-    
-    // ✅ Gunakan parameter 'api' langsung (karena kita passing ctx.api)
-    await api.sendMessage(group_id, message, { 
-      parse_mode: "HTML",
-      disable_web_page_preview: true
-    });
-    
-    console.log(`✅ Notifikasi group terkirim: ${lapor_pak_id} ke ${group_id}`);
-  } catch (error) {
-    console.error(`Error notifying group about report:`, error);
+    console.error(`Error notifying PIC:`, error);
     throw error;
   }
 }
+
 /**
  * Notify PSD about rejected update
- * Usage: await notifyPSDAboutRejection(bot, psd_user_id, lapor_pak_id, update_text)
- * @param {object} bot - Bot instance
- * @param {number} psd_user_id - Telegram user ID of PSD
+ * @param {object} api - Bot API instance
+ * @param {number} psd_telegram_id - Raw Telegram ID of PSD
  * @param {string} lapor_pak_id - Report ID
  * @param {string} update_text - Update that was rejected
  * @returns {Promise<void>}
  */
 async function notifyPSDAboutRejection(
-  bot,
-  psd_user_id,
+  api,
+  psd_telegram_id,
   lapor_pak_id,
   update_text
 ) {
   try {
-    const message = `<b>Update Ditolak - Perlu Revisi</b>\n\n` +
+    const message = `<b>❌ Update Ditolak - Perlu Revisi</b>\n\n` +
       `<b>Laporan:</b> ${lapor_pak_id}\n\n` +
       `<b>Update yang ditolak:</b>\n${update_text}\n\n` +
       `Silakan revisi dan kirim kembali dengan perintah:\n` +
-      `<code>/update ${lapor_pak_id} [isi update baru]</code>`;
+      `<code>/updatelaporan ${lapor_pak_id}</code>`;
 
-    await notifyUser(bot, psd_user_id, message);
+    await notifyUser(api, psd_telegram_id, message);
   } catch (error) {
-    console.error(`Error notifying PSD ${psd_user_id}:`, error);
+    console.error(`Error notifying PSD:`, error);
   }
 }
 
 /**
- * Notify Super User about pending approval
- * Usage: await notifyApprovalQueue(bot, superuser_id, lapor_pak_id, message_text, type)
- * @param {object} bot - Bot instance
- * @param {number} superuser_id - Telegram user ID
+ * Notify Super User about pending approval (report or feedback)
+ * @param {object} api - Bot API instance
+ * @param {number} superuser_telegram_id - Raw Telegram ID of Super User
  * @param {string} lapor_pak_id - Report ID
  * @param {string} message_text - Content to approve
  * @param {string} type - 'report' or 'feedback'
@@ -151,16 +122,16 @@ async function notifyPSDAboutRejection(
  * @returns {Promise<void>}
  */
 async function notifyApprovalQueue(
-  bot,
-  superuser_id,
+  api,
+  superuser_telegram_id,
   lapor_pak_id,
   message_text,
   type,
   item_id
 ) {
   try {
-    const typeLabel = type === "report" ? "Laporan Baru" : "Feedback";
-    const message = `<b>📬 ${typeLabel} Menunggu Persetujuan</b>\n\n` +
+    const typeLabel = type === "report" ? "📋 Laporan Baru" : "💬 Feedback Baru";
+    const message = `<b>${typeLabel} Menunggu Persetujuan</b>\n\n` +
       `<b>ID:</b> ${lapor_pak_id}\n\n` +
       `<b>Isi:</b>\n${message_text}\n\n` +
       `Silakan setujui atau tolak.`;
@@ -179,7 +150,7 @@ async function notifyApprovalQueue(
       },
     };
 
-    await notifyUser(bot, superuser_id, message, options);
+    await notifyUser(api, superuser_telegram_id, message, options);
   } catch (error) {
     console.error(`Error notifying approval queue:`, error);
   }
@@ -187,8 +158,7 @@ async function notifyApprovalQueue(
 
 /**
  * Notify group about approved report
- * Usage: await notifyGroupAboutApprovedReport(bot, group_id, lapor_pak_id, message_text)
- * @param {object} bot - Bot instance
+ * @param {object} api - Bot API instance
  * @param {number} group_id - Telegram group ID
  * @param {string} lapor_pak_id - Report ID
  * @param {string} message_text - Report content
@@ -198,7 +168,6 @@ async function notifyGroupAboutApprovedReport(api, group_id, lapor_pak_id, messa
   try {
     const message = `<b>📋 [${lapor_pak_id}] Laporan Baru</b>\n\n${message_text}`;
     
-    // ✅ LANGSUNG panggil api.sendMessage (karena api adalah ctx.api)
     await api.sendMessage(group_id, message, { 
       parse_mode: "HTML",
       disable_web_page_preview: true
@@ -213,23 +182,21 @@ async function notifyGroupAboutApprovedReport(api, group_id, lapor_pak_id, messa
 
 /**
  * Notify group about approved feedback
- * Usage: await notifyGroupAboutApprovedFeedback(bot, group_id, lapor_pak_id, feedback_text)
- * @param {object} bot - Bot instance
+ * @param {object} api - Bot API instance
  * @param {number} group_id - Telegram group ID
  * @param {string} lapor_pak_id - Report ID
  * @param {string} feedback_text - Feedback content
  * @returns {Promise<void>}
  */
 async function notifyGroupAboutApprovedFeedback(
-  bot,
+  api,
   group_id,
   lapor_pak_id,
   feedback_text
 ) {
   try {
-    const message =
-      `<b>[${lapor_pak_id}] 💬 Feedback</b>\n\n${feedback_text}`;
-    await notifyGroup(bot, group_id, message);
+    const message = `<b>💬 [${lapor_pak_id}] Feedback Baru</b>\n\n${feedback_text}`;
+    await notifyGroup(api, group_id, message);
   } catch (error) {
     console.error(`Error notifying group about feedback:`, error);
   }
@@ -237,23 +204,22 @@ async function notifyGroupAboutApprovedFeedback(
 
 /**
  * Notify group about PIC assignment
- * Usage: await notifyGroupAboutPICAssignment(bot, group_id, lapor_pak_id, pic_username)
- * @param {object} bot - Bot instance
+ * @param {object} api - Bot API instance
  * @param {number} group_id - Telegram group ID
  * @param {string} lapor_pak_id - Report ID
  * @param {string} pic_username - Username of assigned PIC
  * @returns {Promise<void>}
  */
 async function notifyGroupAboutPICAssignment(
-  bot,
+  api,
   group_id,
   lapor_pak_id,
   pic_username
 ) {
   try {
-    const message = `<b>[${lapor_pak_id}] 👤 PIC Ditunjuk</b>\n\n` +
+    const message = `<b>👤 [${lapor_pak_id}] PIC Ditunjuk</b>\n\n` +
       `PIC: @${pic_username}`;
-    await notifyGroup(bot, group_id, message);
+    await notifyGroup(api, group_id, message);
   } catch (error) {
     console.error(`Error notifying group about PIC assignment:`, error);
   }
@@ -261,16 +227,15 @@ async function notifyGroupAboutPICAssignment(
 
 /**
  * Notify PIC about assignment
- * Usage: await notifyPICAboutAssignment(bot, pic_user_id, lapor_pak_id, report_text)
- * @param {object} bot - Bot instance
- * @param {number} pic_user_id - Telegram user ID of PIC
+ * @param {object} api - Bot API instance
+ * @param {number} pic_telegram_id - Raw Telegram ID of PIC
  * @param {string} lapor_pak_id - Report ID
  * @param {string} report_text - Report content
  * @returns {Promise<void>}
  */
 async function notifyPICAboutAssignment(
-  bot,
-  pic_user_id,
+  api,
+  pic_telegram_id,
   lapor_pak_id,
   report_text
 ) {
@@ -278,9 +243,10 @@ async function notifyPICAboutAssignment(
     const message = `<b>👤 Anda Ditunjuk sebagai PIC</b>\n\n` +
       `<b>Laporan:</b> ${lapor_pak_id}\n\n` +
       `<b>Isi Laporan:</b>\n${report_text}\n\n` +
-      `Silakan lakukan follow-up dan kelola update untuk laporan ini.`;
+      `Silakan lakukan follow-up dan kelola update untuk laporan ini.\n\n` +
+      `Gunakan /updatelaporan ${lapor_pak_id} untuk menambah update.`;
 
-    await notifyUser(bot, pic_user_id, message);
+    await notifyUser(api, pic_telegram_id, message);
   } catch (error) {
     console.error(`Error notifying PIC about assignment:`, error);
   }
@@ -290,7 +256,6 @@ module.exports = {
   notifyUser,
   notifyGroup,
   notifyPICForApproval,
-  // notifyReporterAboutUpdate,
   notifyPSDAboutRejection,
   notifyApprovalQueue,
   notifyGroupAboutApprovedReport,

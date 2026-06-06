@@ -1,7 +1,7 @@
 const { getTeksBalasan } = require("../services/textService");
 const stateService = require("../services/stateService");
 const { encryptTelegramId } = require("../services/encryptionService");
-const { db } = require("../db"); // ⬅️ JANGAN LUPA IMPORT db!
+const { db } = require("../db");
 
 module.exports = async (ctx) => {
   try {
@@ -16,32 +16,59 @@ module.exports = async (ctx) => {
       );
     }
 
-    // Initialize admin in database (without reference_code, preserves context)
+    // Initialize admin state
     await stateService.setStateOnly(telegram_id, null);
 
-    // ========== SYNC KE TABEL `users` ==========
-    // Kode ini SEKARANG sudah benar karena berada di dalam fungsi async
+    // ========== SYNC KE TABEL `users` DAN `ms_user` ==========
     const encryptedId = encryptTelegramId(telegram_id);
+    const username = ctx.from.username || null;
+    const firstName = ctx.from.first_name || null;
+    
+    // 1. Handle users table
     const [existingUsers] = await db.execute(
       `SELECT id FROM users WHERE encrypted_telegram_id = ?`, 
       [encryptedId]
     );
 
+    let userId;
     if (existingUsers.length === 0) {
-      await db.execute(
+      const [result] = await db.execute(
         `INSERT INTO users (encrypted_telegram_id, username, first_name, created_at)
          VALUES (?, ?, ?, CURRENT_TIMESTAMP)`,
-        [encryptedId, ctx.from.username || null, ctx.from.first_name || null]
+        [encryptedId, username, firstName]
       );
-      console.log(`✅ Admin ${telegram_id} registered to users table`);
+      userId = result.insertId;
+      console.log(`✅ Admin ${telegram_id} registered to users table with ID ${userId}`);
     } else {
-      // Update username jika berubah
+      userId = existingUsers[0].id;
       await db.execute(
         `UPDATE users SET username = ?, first_name = ? WHERE id = ?`,
-        [ctx.from.username || null, ctx.from.first_name || null, existingUsers[0].id]
+        [username, firstName, userId]
       );
+      console.log(`✅ Admin ${telegram_id} synced to users table (ID: ${userId})`);
     }
-    // ==========================================
+
+    // 2. Handle ms_user table with user_id
+    const [existingMsUser] = await db.execute(
+      "SELECT telegram_id FROM ms_user WHERE telegram_id = ?",
+      [telegram_id]
+    );
+
+    if (existingMsUser.length > 0) {
+      await db.execute(
+        "UPDATE ms_user SET user_id = ? WHERE telegram_id = ?",
+        [userId, telegram_id]
+      );
+      console.log(`✅ Updated ms_user with user_id: ${userId}`);
+    } else {
+      await db.execute(
+        `INSERT INTO ms_user (telegram_id, user_id, reference_code, current_state, context_data, created_at, updated_at)
+         VALUES (?, ?, NULL, NULL, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+        [telegram_id, userId]
+      );
+      console.log(`✅ Created ms_user record with user_id: ${userId}`);
+    }
+    // ===========================================================
 
     // Show main menu
     ctx.reply(getTeksBalasan(), {

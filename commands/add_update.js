@@ -1,6 +1,7 @@
 const laporanService = require("../services/laporanService");
 const stateService = require("../services/stateService");
 const userService = require("../services/userService");
+const notificationService = require("../services/notificationService");
 const { db } = require("../db");
 
 /**
@@ -172,7 +173,6 @@ async function updateStep2(ctx, userInput) {
 //   }
 // }
 
-
 async function updateStep3(ctx, userInput) {
   try {
     const telegram_id = ctx.state.telegram_id;
@@ -222,6 +222,21 @@ async function updateStep3(ctx, userInput) {
     const pic_id = picUser.id;
     console.log(`PIC User: ID ${pic_id}, Name: ${picUser.first_name}`);
 
+    // 🔑 KRITIKAL: Dapatkan RAW TELEGRAM ID dari ms_user
+    const picTelegramId = await userService.getRawTelegramIdByUserId(pic_id);
+    
+    if (!picTelegramId) {
+      console.error(`❌ Telegram ID not found for user ID: ${pic_id}`);
+      // Update tetap bisa disimpan, tapi kasih warning
+      await ctx.reply(
+        "⚠️ Update tersimpan, tetapi gagal mengirim notifikasi ke PIC.\n\n" +
+        "Silakan informasikan ke admin bahwa data PIC perlu diperbaiki.\n" +
+        `(User ID: ${pic_id}, Name: ${picUser.first_name})`
+      );
+    } else {
+      console.log(`✅ Found Telegram ID for PIC: ${picTelegramId} (Raw ID, not database ID)`);
+    }
+
     // 4. Validate input
     if (!userInput || userInput.trim().length < 5) {
       return ctx.reply(
@@ -246,18 +261,41 @@ async function updateStep3(ctx, userInput) {
 
     console.log(`Update inserted: ID ${result.insertId}`);
 
-    // 6. Clear state
+    // 6. KIRIM NOTIFIKASI KE PIC (GUNAKAN RAW TELEGRAM ID, BUKAN DATABASE ID!)
+    if (picTelegramId) {
+      try {
+        await notificationService.notifyPICForApproval(
+          ctx.api,                    // bot instance
+          picTelegramId,              // ✅ RAW Telegram ID (1011093409, BUKAN 10!)
+          lapor_pak_id,               // ID laporan (LAP-00001)
+          userInput.trim(),           // isi update
+          result.insertId             // ID update untuk callback
+        );
+        console.log(`✅ Notifikasi terkirim ke PIC Telegram ID: ${picTelegramId}`);
+      } catch (notifError) {
+        console.error(`❌ Gagal kirim notifikasi ke PIC ${picTelegramId}:`, notifError.message);
+        // Notifikasi gagal tapi update tetap tersimpan
+      }
+    } else {
+      console.warn(`⚠️ Skip notifikasi: No raw Telegram ID for user ID ${pic_id}`);
+    }
+
+    // 7. Clear state
     await stateService.clearState(telegram_id);
 
-    // 7. Send success message
-    return ctx.reply(
-      `<b>✅ Update Diterima</b>\n\n` +
+    // 8. Send success message
+    let successMessage = `<b>✅ Update Diterima</b>\n\n` +
       `Update untuk ${lapor_pak_id} telah disimpan.\n\n` +
       `📝 Update: ${userInput.trim().substring(0, 100)}${userInput.trim().length > 100 ? '...' : ''}\n\n` +
-      `⏳ Status: Menunggu persetujuan dari ${picUser.first_name || 'PIC'}\n\n` +
-      `Anda akan menerima notifikasi ketika disetujui atau ditolak.`,
-      { parse_mode: "HTML" }
-    );
+      `⏳ Status: Menunggu persetujuan dari ${picUser.first_name || 'PIC'}`;
+    
+    if (!picTelegramId) {
+      successMessage += `\n\n⚠️ <b>Catatan:</b> Notifikasi tidak terkirim ke PIC karena data Telegram ID tidak ditemukan.`;
+    } else {
+      successMessage += `\n\n📬 Notifikasi telah dikirim ke PIC.`;
+    }
+    
+    return ctx.reply(successMessage, { parse_mode: "HTML" });
     
   } catch (error) {
     console.error("Error in updateStep3:", error);
@@ -268,7 +306,6 @@ async function updateStep3(ctx, userInput) {
     );
   }
 }
-
 module.exports = {
   addUpdateCommand,
   updateStep2,
