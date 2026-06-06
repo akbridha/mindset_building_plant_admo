@@ -136,7 +136,7 @@ bot.command("qr", async (ctx) => {
 bot.command("lapor", laporCommand);
 bot.command("laporansaya", laporansayaCommand);
 bot.command("pic", assignPICCommand);
-bot.command("update", addUpdateCommand);
+bot.command("updatelaporan", addUpdateCommand);
 bot.command("listtugas", listTugasCommand);
 bot.command("approve", approveCommand);
 bot.command("addmember", addMemberCommand);

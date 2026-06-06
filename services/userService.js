@@ -1,6 +1,8 @@
 const { db } = require("../db");
 
 
+const { encryptTelegramId } = require("./encryptionService");
+
 // async function setTimeReminder(ctx) {
 
 //     //TODO : Pengecekan status
@@ -58,26 +60,115 @@ async function findUserByUsername(username) {
   }
 }
 
+
+/**
+ * Create or get user from Telegram data
+ * @param {number|string} telegramId - Raw Telegram ID
+ * @param {string|null} username - Telegram username
+ * @param {string|null} firstName - Telegram first name
+ * @returns {Promise<number>} - User internal ID
+ */
 async function createUserFromTelegram(telegramId, username, firstName) {
   try {
+    // ENKRIPSI telegram_id
+    const encryptedId = encryptTelegramId(telegramId);
+    
+    // Cek apakah user sudah ada
+    let user = await getUserByTelegramId(telegramId);
+    
+    if (user) {
+      // Update existing user jika perlu
+      if (username || firstName) {
+        await db.execute(
+          `UPDATE users 
+           SET username = COALESCE(?, username),
+               first_name = COALESCE(?, first_name)
+           WHERE encrypted_telegram_id = ?`,
+          [username, firstName, encryptedId]
+        );
+      }
+      return user.id;
+    }
+    
+    // Insert new user
     const [result] = await db.execute(
       `INSERT INTO users (encrypted_telegram_id, username, first_name, created_at)
-       VALUES (?, ?, ?, CURRENT_TIMESTAMP)
-       ON DUPLICATE KEY UPDATE 
-         username = COALESCE(?, username),
-         first_name = COALESCE(?, first_name)`,
-      [telegramId.toString(), username, firstName, username, firstName]
+       VALUES (?, ?, ?, CURRENT_TIMESTAMP)`,
+      [encryptedId, username || null, firstName || null]
     );
     
-    const [user] = await db.execute(`SELECT id FROM users WHERE encrypted_telegram_id = ?`, [telegramId.toString()]);
-    return user[0].id;
+    return result.insertId;
   } catch (error) {
     console.error("Error creating user:", error);
     throw error;
   }
 }
 
+
+
+/**
+ * Get user by raw telegram_id (encrypted lookup)
+ * @param {number|string} telegram_id - Raw Telegram ID
+ * @returns {Promise<Object|null>} - User data or null
+ */
+async function getUserByTelegramId(telegram_id) {
+  try {
+    // ENKRIPSI telegram_id terlebih dahulu
+    const encryptedId = encryptTelegramId(telegram_id);
+    
+    const [rows] = await db.execute(
+      `SELECT id, encrypted_telegram_id, username, first_name, is_super_admin, created_at
+       FROM users 
+       WHERE encrypted_telegram_id = ?`,
+      [encryptedId]
+    );
+    
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    console.error("Error finding user by telegram_id:", error);
+    throw error;
+  }
+}
+
+/**
+ * Get user by internal user ID
+ * @param {number} userId - Internal user ID
+ * @returns {Promise<Object|null>} - User data or null
+ */
+async function getUserById(userId) {
+  try {
+    const [rows] = await db.execute(
+      `SELECT id, encrypted_telegram_id, username, first_name, is_super_admin, created_at
+       FROM users 
+       WHERE id = ?`,
+      [userId]
+    );
+    
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    console.error("Error finding user by ID:", error);
+    throw error;
+  }
+}
+
+async function getUserById(userId) {
+  try {
+    const [rows] = await db.execute(
+      `SELECT id, encrypted_telegram_id, username, first_name, is_super_admin, created_at
+       FROM users 
+       WHERE id = ?`,
+      [userId]
+    );
+    
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    console.error("Error finding user by ID:", error);
+    throw error;
+  }
+}
 module.exports ={
+  getUserByTelegramId, 
+  getUserById,         
   updateTimeReminder,
   findUserByUsername, 
   createUserFromTelegram 

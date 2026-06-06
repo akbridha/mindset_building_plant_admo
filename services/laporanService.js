@@ -522,8 +522,23 @@ async function getSummary() {
   }
 }
 
+
+async function getLaporanByLaporPakId(lapor_pak_id) {
+  try {
+    const [rows] = await db.execute(
+      'SELECT id, lapor_pak_id, reporter_id, message_text, status, pic_id FROM laporan WHERE lapor_pak_id = ?',
+      [lapor_pak_id]
+    );
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    console.error("Error getting laporan:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   createReport,
+  getLaporanByLaporPakId,
   getReporterReports,
   getReportDetail,
   getPendingApprovalReports,
