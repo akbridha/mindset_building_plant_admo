@@ -15,7 +15,8 @@ async function getUserId(telegram_id) {
     const [rows] = await db.execute(sql, [hash]);
     
     if (rows.length === 0) {
-      throw new Error(`User not found for telegram_id: ${telegram_id}`);
+      // throw new Error(`User not found for telegram_id: ${telegram_id}`);
+      return "user_not_found";
     }
     
     return rows[0].user_id;
