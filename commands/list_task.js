@@ -38,7 +38,7 @@ async function listTaskCommand(ctx) {
     tasks.forEach((task, index) => {
       const emoji = emojiNumbers[index] || `${index + 1}.`;
       const status = task.progress >= task.target ? "✅" : "⏳";
-      taskList += `${emoji} <b>${task.task_description}</b>\n`;
+      taskList += `${index + 1}. <b>${task.task_description}</b>\n`;
       // taskList += `   ⏰ ${task.checkpoint_time} | 🎯 ${task.progress}/${task.target} ${status}\n\n`;
       taskList += `🎯target ${task.target} hari\n\n`;
     });
