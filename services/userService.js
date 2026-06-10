@@ -12,6 +12,11 @@ const { encryptTelegramId } = require("./encryptionService");
 // }
 
 
+async function isUserRegistered(telegram_id) {
+    const sql = "SELECT * FROM ms_user WHERE telegram_id = ?";
+    const [rows] = await db.execute(sql, [telegram_id]);
+    return rows.length > 0;
+}
 async function updateTimeReminder(telegram_id, reminder_time) {
     const sql = `
         UPDATE ms_user
@@ -194,6 +199,8 @@ module.exports ={
   updateTimeReminder,
   findUserByUsername, 
   createUserFromTelegram,
-  getRawTelegramIdByUserId 
+  getRawTelegramIdByUserId ,
+  updateTimeReminder,
+  isUserRegistered
 
 }

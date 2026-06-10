@@ -1,4 +1,30 @@
 const { db } = require("../db");
+const { hashTelegramId } = require("./encryptionService");
+
+/**
+ * Get user_id from telegram_id (internal reference)
+ * This function should be called first to get the internal user_id
+ * @param {number} telegram_id - Telegram user ID (plaintext)
+ * @returns {Promise<number>} Internal user_id for database operations
+ * @throws {Error} If user not found or database error
+ */
+async function getUserId(telegram_id) {
+  try {
+    const hash = hashTelegramId(telegram_id);
+    const sql = "SELECT user_id FROM ms_user WHERE telegram_id_hash = ?";
+    const [rows] = await db.execute(sql, [hash]);
+    
+    if (rows.length === 0) {
+      // throw new Error(`User not found for telegram_id: ${telegram_id}`);
+      return "user_not_found";
+    }
+    
+    return rows[0].user_id;
+  } catch (error) {
+    console.error("Error getting user_id:", error);
+    throw error;
+  }
+}
 
 /**
  * Get user's current state from ms_user table
