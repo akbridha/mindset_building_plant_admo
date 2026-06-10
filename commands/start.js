@@ -4,6 +4,8 @@ const { encryptTelegramId } = require("../services/encryptionService");
 const { db } = require("../db");
 const {isUserRegistered} = require("../services/userService");
 
+const { Keyboard } = require("grammy");
+
 module.exports = async (ctx) => {
   try {
     const telegram_id = ctx.state.telegram_id;
@@ -30,7 +32,8 @@ module.exports = async (ctx) => {
     }
 
     // Initialize admin state
-    await stateService.setStateOnly(telegram_id, null);
+
+  await stateService.setState(telegram_id, null);
 
     // ========== SYNC KE TABEL `users` DAN `ms_user` ==========
     const encryptedId = encryptTelegramId(telegram_id);
@@ -83,8 +86,26 @@ module.exports = async (ctx) => {
     }
     // ===========================================================
 
-    // Show main menu
-    ctx.reply(getTeksBalasan(), {
+// / Kirim reply keyboard sebagai pesan terpisah (hanya sekali)
+    const mainMenuReply = new Keyboard()
+      .text("📋 Menu")
+      .text("📝 Daftar perintah")
+      .resized();
+    
+    const userState = await stateService.getState(telegram_id);
+    if (!userState || !userState.context_data?.hasReceivedReplyKeyboard) {
+      await ctx.reply("", {
+        reply_markup: mainMenuReply
+      });
+      
+      // Simpan flag menggunakan updateContext
+      await stateService.updateContext(telegram_id, { 
+        hasReceivedReplyKeyboard: true 
+      });
+    }
+    
+    // Kirim pesan dengan inline keyboard
+    await ctx.reply(getTeksBalasan(), {
       parse_mode: "HTML",
       reply_markup: inlineKeyboard
     });

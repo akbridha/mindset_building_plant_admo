@@ -1,4 +1,4 @@
-const { Bot } = require("grammy");
+const { Bot, Keyboard } = require("grammy");
 const cron = require("node-cron");
 const dotenv = require("dotenv");
 const { startCron } = require("./cron/runner");
@@ -165,6 +165,51 @@ bot.command("testgroup", async (ctx) => {
     console.error("Error testing group:", error);
     await ctx.reply(`❌ Error: ${error.message}`);
   }
+  
+});
+
+
+bot.command("menu", async (ctx) => {
+  const keyboard = new Keyboard()
+    .text("Menu").text("Daftar perintah").row()
+
+    .resized(); // spya tombolnya kecil di HP
+
+  await ctx.reply("Pilih menu:", {
+    reply_markup: keyboard
+  });
+});
+
+
+
+
+
+// Handle tombol dipencet = sama kayak handle text biasa
+bot.hears("Menu", startCommand);
+
+bot.hears("Daftar perintah", async (ctx) => {
+  await ctx.reply("Berikut adalah daftar perintah yang tersedia:\n\n" +
+    "/start - Memulai bot\n" +
+    "/newref - Generate reference code\n" +
+    "/list_task - Melihat daftar tugas\n" +
+    "/new_task - Menambah tugas baru\n" +
+    "/remove_task - Menghapus tugas\n" +
+    "/update - Memperbarui status tugas\n" +
+    "/status - Melihat status tugas\n" +
+    "/cancel - Membatalkan operasi\n" +
+    "/qr - Membuat QR code\n" +
+    "/lapor - Melapor masalah\n" +
+    "/laporansaya - Melihat laporan saya\n" +
+    "/pic - Menetapkan PIC untuk tugas\n" +
+    "/updatelaporan - Memperbarui laporan\n" +
+    "/listtugas - Melihat daftar tugas\n" +
+    "/approve - Menyetujui laporan\n" +
+    "/addmember - Menambah anggota tim\n" +
+    "/removemember - Menghapus anggota tim\n" +
+    "/listmember - Melihat daftar anggota tim\n" +
+    "/summary - Melihat ringkasan tugas\n" +
+    "/listlaporan - Melihat daftar laporan"
+  );
 });
 // ========== HANDLE CALLBACK QUERIES (Button Clicks) ==========
 bot.on("callback_query:data", async (ctx) => {
