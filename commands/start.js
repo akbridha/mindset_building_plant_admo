@@ -33,7 +33,7 @@ module.exports = async (ctx) => {
 
     // Initialize admin state
 
-  await stateService.setState(telegram_id, null);
+   await stateService.setState(telegram_id, null);
 
     // ========== SYNC KE TABEL `users` DAN `ms_user` ==========
     const encryptedId = encryptTelegramId(telegram_id);
@@ -86,29 +86,30 @@ module.exports = async (ctx) => {
     }
     // ===========================================================
 
-// / Kirim reply keyboard sebagai pesan terpisah (hanya sekali)
-    const mainMenuReply = new Keyboard()
-      .text("📋 Menu")
-      .text("📝 Daftar perintah")
-      .resized();
-    
-    const userState = await stateService.getState(telegram_id);
-    if (!userState || !userState.context_data?.hasReceivedReplyKeyboard) {
-      await ctx.reply("", {
-        reply_markup: mainMenuReply
-      });
-      
-      // Simpan flag menggunakan updateContext
-      await stateService.updateContext(telegram_id, { 
-        hasReceivedReplyKeyboard: true 
-      });
-    }
-    
-    // Kirim pesan dengan inline keyboard
-    await ctx.reply(getTeksBalasan(), {
-      parse_mode: "HTML",
-      reply_markup: inlineKeyboard
-    });
+// Kirim reply keyboard sebagai pesan terpisah (hanya sekali)
+const mainMenuReply = new Keyboard()
+  .text("📋 Menu")
+  .text("📝 Daftar perintah")
+  .resized();
+
+const userState = await stateService.getState(telegram_id);
+if (!userState || !userState.context_data?.hasReceivedReplyKeyboard) {
+  // Kirim pesan dengan reply keyboard (harus ada teks)
+  await ctx.reply("📱 Gunakan menu di bawah untuk navigasi:", {
+    reply_markup: mainMenuReply
+  });
+  
+  // Simpan flag menggunakan updateContext
+  await stateService.updateContext(telegram_id, { 
+    hasReceivedReplyKeyboard: true 
+  });
+}
+
+// Kirim pesan dengan inline keyboard
+await ctx.reply(getTeksBalasan(), {
+  parse_mode: "HTML",
+  reply_markup: inlineKeyboard
+});
   } catch (error) {
     console.error("Error in start command:", error);
     return ctx.reply("❌ Error starting bot. Please try again.");
