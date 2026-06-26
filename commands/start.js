@@ -12,7 +12,7 @@ module.exports = async (ctx) => {
     const isAdmin = ctx.state.isAdmin;
     const isRegistered = await isUserRegistered(ctx.state.telegram_id);
 
-    if (!isRegistered) {
+    if (!isRegistered && !isAdmin) {
       return ctx.reply("❌ Anda belum terdaftar. Silakan hubungi admin untuk mendapatkan akses.");
     }
 
