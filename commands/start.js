@@ -88,8 +88,8 @@ module.exports = async (ctx) => {
 
 // Kirim reply keyboard sebagai pesan terpisah (hanya sekali)
 const mainMenuReply = new Keyboard()
-  .text("📋 Menu")
-  .text("📝 Daftar perintah")
+  .text("Menu")
+  .text("Daftar perintah")
   .resized();
 
 const userState = await stateService.getState(telegram_id);

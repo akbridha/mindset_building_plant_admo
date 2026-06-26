@@ -3,6 +3,7 @@ const referenceService = require("../services/referenceService");
 const { getTeksBalasan } = require("../services/textService");
 const { db } = require("../db");
 const { encryptTelegramId } = require("../services/encryptionService");
+const { Keyboard } = require("grammy");
 
 /**
  * Handle /start_CODE123 command
@@ -106,6 +107,27 @@ module.exports = async (ctx) => {
 
     // Update context
     ctx.state.referenceCode = referenceCode;
+    
+
+    // Kirim reply keyboard sebagai pesan terpisah (hanya sekali)
+    const mainMenuReply = new Keyboard()
+      .text("Menu")
+      .text("Daftar perintah")
+      .resized();
+    
+    const userState = await stateService.getState(telegram_id);
+    if (!userState || !userState.context_data?.hasReceivedReplyKeyboard) {
+      // Kirim pesan dengan reply keyboard (harus ada teks)
+      await ctx.reply("📱 Gunakan menu di bawah untuk navigasi:", {
+        reply_markup: mainMenuReply
+      });
+      
+      // Simpan flag menggunakan updateContext
+      await stateService.updateContext(telegram_id, { 
+        hasReceivedReplyKeyboard: true 
+      });
+    }
+
 
     // Show welcome message
     await ctx.reply(
