@@ -14,6 +14,7 @@ async function settingReminderMenu(ctx) {
         parse_mode: "HTML",
         reply_markup: {
           inline_keyboard: [
+            [{ text: "Pagi", callback_data: "set_reminder_pagi" },{ text: "Siang", callback_data: "set_reminder_siang" },{ text: "Malam", callback_data: "set_reminder_malam" }],
             [{ text: "❌ Batal", callback_data: "cancel" }]
           ]
         }
@@ -34,6 +35,12 @@ async function settingReminderMenu(ctx) {
 
 async function processUserInput(ctx, checkPointTimeRaw) {
     const telegram_id = ctx.state.telegram_id;
+    const currentState = ctx.state.userState;
+
+
+    if (currentState !== "awaiting_reminder_time") {
+      return ctx.reply("❌ Perintah tidak valid. Anda tidak sedang dalam proses untuk mengatur reminder.");
+    }
     
     // Validasi format waktu
     let checkPointTime = checkPointTimeRaw.replace(/[. ]/, ':');
@@ -47,7 +54,8 @@ async function processUserInput(ctx, checkPointTimeRaw) {
             "• HH.MM (titik)\n" +
             "• HH MM (spasi)\n\n" +
             "Contoh: 14:30, 14.30, atau 14 30",
-            { parse_mode: "HTML" }
+            { parse_mode: "HTML"
+             }
         );
     }
     

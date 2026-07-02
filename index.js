@@ -456,6 +456,18 @@ bot.on("callback_query:data", async (ctx) => {
         });
         break;
 
+
+        case "set_reminder_pagi":
+          await userReminder.processUserInput(ctx, "08:00");
+          break;
+        case "set_reminder_siang":
+          await userReminder.processUserInput(ctx, "12:00");
+          break;  
+        case "set_reminder_malam":
+          await userReminder.processUserInput(ctx, "20:00");
+          break;  
+      // Add more cases for other callback data as needed
+
       // LAPOR PAK Report Detail Callbacks
       default:
         if (callbackData.startsWith("detail_laporan_")) {
