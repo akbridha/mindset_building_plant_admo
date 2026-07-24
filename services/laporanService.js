@@ -231,6 +231,24 @@ async function getActiveReports() {
 }
 
 /**
+ * Get all reports from the laporan table
+ * @returns {Promise<Array>} - Full list of reports
+ */
+async function getAllReports() {
+  try {
+    const [rows] = await db.execute(
+      `SELECT id, lapor_pak_id, reporter_id, message_text, status, pic_id, created_at, updated_at
+       FROM laporan
+       ORDER BY created_at DESC`
+    );
+    return rows;
+  } catch (error) {
+    console.error("Error getting all reports:", error);
+    throw error;
+  }
+}
+
+/**
  * Assign PIC to a report
  * @param {string} lapor_pak_id - Report ID
  * @param {number} pic_id - User ID of PIC
@@ -547,6 +565,7 @@ module.exports = {
   rejectReport,
   closeReport,
   getActiveReports,
+  getAllReports,
   assignPIC,
   getReportsByPIC,
   addUpdate,

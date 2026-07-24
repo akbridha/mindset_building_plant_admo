@@ -76,6 +76,7 @@ const  {
 } = require("./commands/approval_handlers");
 const { summaryCommand } = require("./commands/summary");
 const { listFollowupCommand } = require("./commands/get_approved_laporan");
+const { listAllReportsCommand } = require("./commands/list_all_laporan");
 
 // ========== IMPORT MIDDLEWARE ==========
 const stateMiddleware = require("./middleware/stateMiddleware");
@@ -440,6 +441,10 @@ bot.on("callback_query:data", async (ctx) => {
 
       case "show_summary":
         await summaryCommand(ctx);
+        break;
+
+      case "show_listall":
+        await listAllReportsCommand(ctx);
         break;
 
       case "back_to_menu":
